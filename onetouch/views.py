@@ -5,7 +5,12 @@ from django.contrib.auth.models import auth
 from product.models import Product
 
 def home(request):
-    return render(request, 'home.html')
+    products = Product.objects.all().filter(is_available=True)
+
+    context = {
+        'products':products,
+    }
+    return render(request, 'home.html', context)
 
 
 def signin(request):
