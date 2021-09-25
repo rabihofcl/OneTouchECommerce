@@ -90,7 +90,7 @@ WSGI_APPLICATION = 'onetouch.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'onetouch1',
+        'NAME': 'onetouch',
         'USER' : 'rabih',
         'PASSWORD' : 'rabih',
         'HOST' : 'localhost',

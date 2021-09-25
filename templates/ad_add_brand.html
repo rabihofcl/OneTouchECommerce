@@ -1,0 +1,23 @@
+{% extends 'admin_base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+<section style="padding-left: 50px;">
+    <div class="row">
+        <form method="POST" action="ad_add_brand" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.errors }}
+            {{ form.as_p }}
+
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</section>
+
+
+
+{% endblock %}
