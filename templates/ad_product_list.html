@@ -6,43 +6,102 @@
 
 
 <section>
-        <div class="row active_user_table">
-            <div class="table-responsive">
-                <caption><p class="table_caption"> Products List</p></caption>
-                <table class="table mt-3" id="myTable">
-                    <thead>
-                        <tr>
-                            <th scope="col">No.</th>
-                            <th scope="col">Image </th>
-                            <th scope="col">Product Name </th>
-                            <th scope="col">Brand</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for product in products %}
-                        <tr>
-                            <td scope="row">{{forloop.counter}}</td>
-                            <td>
-                                <img src="{{ product.images.url }}"  height="30px" alt="">
-                            </td>
-                            <td>{{product.product_name}}</td>
-                            <td>{{product.brand}}</td>
-                            <td>{{product.price}}</td>
-                            <td>
-                                <a href="" class="pe-5"><i
-                                        class="fas fa-user-edit"></i></a>
-                                <a onclick="return confirm('Are you sure to delete?')"
-                                    href=""><i class="fas fa-trash-alt"></i></a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+    <div class="row active_user_table">
+        <div class="table-responsive">
+            <caption>
+                <p class="table_caption"> Products List</p>
+            </caption>
+            <table class="table mt-3" id="myTable">
+                <thead>
+                    <tr>
+                        <th scope="col">No.</th>
+                        <th scope="col">Image </th>
+                        <th scope="col">Product Name </th>
+                        <th scope="col">Brand</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td scope="row">{{forloop.counter}}</td>
+                        <td>
+                            <img src="{{ product.image1.url }}" height="30px" alt="img1">
+                            <img src="{{ product.image2.url }}" height="30px" alt="img2">
+                            <img src="{{ product.image3.url }}" height="30px" alt="img3">
+                            <img src="{{ product.image4.url }}" height="30px" alt="img4">
+                        </td>
+                        <td>{{product.product_name}}</td>
+                        <td>{{product.brand}}</td>
+                        <td>{{product.price}}</td>
+                        <td>
+                            <a onclick="delete_product('{{product.id}}')" type="button" data-toggle="modal"
+                                data-target="#exampleModalCenter"><i class="fas fa-trash-alt"></i></a>
+                        </td>
+
+
+
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
+    </div>
 </section>
 
+<!-- Modal -->
+
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h6>Are you sure to delete {{ product.product_name }} ?</h6>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a onclick="deleteProduct()" id="delete_product" "><button type=" button"
+                    class="btn btn-danger">Delete</button></a>
+            </div>
+            <input type="text">
+        </div>
+    </div>
+</div>
+
+<!-- Modal Ends Here -->
+
+
+<script>
+
+    function delete_product(id) {
+        document.getElementById('delete_product').value = id
+    }
+
+    function deleteProduct() {
+        var id = document.getElementById('delete_product').value
+        console.log(id)
+        $.ajax({
+            url: '/admin/ad_delete_product/',
+            method: 'POST',
+            dataType: 'json',
+            data: {
+                id: id,
+                csrfmiddlewaretoken: "{{csrf_token}}"
+            },
+            success: (response) => {
+                location.reload()
+            }
+        })
+
+    }
+</script>
 
 {% endblock %}

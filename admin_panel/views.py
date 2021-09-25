@@ -1,3 +1,4 @@
+from django.http.response import JsonResponse
 from admin_panel.forms import BrandForm
 from brand.models import Brand
 from product.models import Product
@@ -70,18 +71,30 @@ def ad_add_product(request):
         description = request.POST['description']
         price = request.POST['price']
         stock = request.POST['stock']
-        images = request.FILES['images']
+        image1 = request.FILES['image1']
+        image2 = request.FILES['image2']
+        image3 = request.FILES['image3']
+        image4 = request.FILES['image4']
         slug = product_name.lower()
 
         product = Product(product_name=product_name, brand=brand, description=description,
-                          price=price, stock=stock, images=images, is_available=True, slug=slug)
+                          price=price, stock=stock, image1=image1, image2=image2 ,image3=image3,image4=image4, is_available=True, slug=slug)
         product.save()
         return redirect('ad_product_list')
 
     brands = Brand.objects.all()
     return render(request, 'ad_add_product.html', {'brands': brands})
 
+def ad_delete_product(request):
+    id=request.POST['id']
+    Product.objects.filter(id=id).delete()
+    return JsonResponse({'success':True})
+
 
 def active_users(request):
     users = Account.objects.order_by('id').all()
     return render(request, 'active_users.html', {'users': users})
+
+
+def store(request):
+    return render(request, 'store.html')
