@@ -13,7 +13,10 @@ body{
     padding: 0;
     margin: 0;
 }
-
+header{
+    background-color: var(--main_color);
+    height: 100px;
+}
 
 .sidebar{
     width: 100%;
@@ -67,17 +70,30 @@ body{
     display: flex;
 }
 
-.header{
-    width: 100wh;
-    height: 100px;
-    background-color: var(--main_color);
-    display: flex;
-    justify-content: end;
-}
 
 .username{
     font-weight: bold;
     color: var(--white);
+}
+
+.heading{
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.heading-text{
+    font-size: xx-large;
+    font-weight: bolder;
+    border-bottom: black 1px solid;
+    padding: 0px 100px;
+
+}
+
+.submit{
+    display: flex;
+    justify-content: center;
 }
 
 .active_user_table{
