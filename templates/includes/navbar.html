@@ -1,7 +1,7 @@
 {% load static %}
 
 <header class="section-header">
-    <nav class="navbar p-md-0 navbar-expand-sm navbar-light border-bottom">
+    <nav class="navbar p-md-0 navbar-expand-sm navbar-light border-bottom" style="background-color: blue;">
         <div class="container">
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTop4"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -10,16 +10,16 @@
             <div class="collapse navbar-collapse" id="navbarTop4">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
-                        <a href="#" class="nav-link"> English </a>
+                        <a href="#" class="nav-link" style="color: white;"> English </a>
 
                     </li>
                     <li class="nav-item dropdown">
-                        <a href="#" class="nav-link"> USD </a>
+                        <a href="#" class="nav-link" style="color: white;"> USD </a>
                     </li>
                 </ul>
                 <ul class="navbar-nav">
-                    <li><a href="#" class="nav-link"> <i class="fa fa-envelope"></i> Email </a></li>
-                    <li><a href="#" class="nav-link"> <i class="fa fa-phone"></i> Call us </a></li>
+                    <li><a href="#" class="nav-link" style="color: white;"> <i class="fa fa-envelope" ></i> Email </a></li>
+                    <li><a href="#" class="nav-link" style="color: white;"> <i class="fa fa-phone"></i> Call us </a></li>
                 </ul> <!-- list-inline //  -->
             </div> <!-- navbar-collapse .// -->
         </div> <!-- container //  -->
@@ -29,25 +29,23 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-2 col-md-3 col-6">
-                    <a href="./" class="brand-wrap">
+                    <a href="{% url 'home' %}" class="brand-wrap">
                         <img class="logo" src="{% static './images/logo.png' %}">
                     </a> <!-- brand-wrap.// -->
                 </div>
                 <div class="col-lg col-sm col-md col-6 flex-grow-0">
-                    <div class="category-wrap dropdown d-inline-block float-right">
+                    <!-- <div class="category-wrap dropdown d-inline-block float-right">
                         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                             <i class="fa fa-bars"></i> All category
                         </button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">Machinery / Mechanical Parts / Tools </a>
-                            <a class="dropdown-item" href="#">Consumer Electronics / Home Appliances </a>
-                            <a class="dropdown-item" href="#">Auto / Transportation</a>
-                            <a class="dropdown-item" href="#">Apparel / Textiles / Timepieces </a>
-                            <a class="dropdown-item" href="#">Home & Garden / Construction / Lights </a>
-                            <a class="dropdown-item" href="#">Beauty & Personal Care / Health </a>
+                            {% for brand in links %}
+                            <a class="dropdown-item" href="{{ brand.get_url }}">{{ brand.brand_name }}</a>
+                            {% endfor %}
                         </div>
-                    </div> <!-- category-wrap.// -->
-                </div> <!-- col.// -->
+                    </div> category-wrap.// -->
+                </div> 
+                <!-- col.// -->
                 <a href="{% url 'store' %}" class="btn btn-outline-primary">Store</a>
                 <div class="col-lg  col-md-6 col-sm-12 col">
                     <form action="#" class="search">
@@ -64,7 +62,7 @@
                 </div> <!-- col.// -->
                 <div class="col-lg-3 col-sm-6 col-8 order-2 order-lg-3">
                     <div class="d-flex justify-content-end mb-3 mb-lg-0">
-                        
+
                         {% if user.is_authenticated %}
                         <div class="widget-header">
                             <small class="title text-muted">Welcome {{user.username | capfirst}} !</small>
@@ -96,13 +94,10 @@
 <section>
     <div class="container">
         <div class="row brands_list">
-            <a href="{% url 'apple' %}"><p class="brand">Apple</p></a>
-            <a href="{% url 'samsung' %}"><p class="brand">Samsung</p></a>
-            <a href="{% url 'huawei' %}"><p class="brand">Huawei</p></a>
-            <a href="{% url 'xiaomi' %}"><p class="brand">Xiaomi</p></a>
-            <a href="{% url 'oppo' %}"><p class="brand">Oppo</p></a>
-            <a href="{% url 'vivo' %}"><p class="brand">Vivo</p></a>
-            <a href="{% url 'motorola' %}"><p class="brand">Motorola</p></a>
+            {% for brand in links %}
+            <a href="{{ brand.get_url }}"><p class="brand">{{ brand.brand_name }}</p></a>
+            {% endfor %}
+            
         </div>
     </div>
     <hr>

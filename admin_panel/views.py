@@ -80,7 +80,7 @@ def ad_add_product(request):
         product = Product(product_name=product_name, brand=brand, description=description,
                           price=price, stock=stock, image1=image1, image2=image2 ,image3=image3,image4=image4, is_available=True, slug=slug)
         product.save()
-        return redirect('ad_product_list')
+        return redirect('ad_add_product')
 
     brands = Brand.objects.all()
     return render(request, 'ad_add_product.html', {'brands': brands})
@@ -96,5 +96,3 @@ def active_users(request):
     return render(request, 'active_users.html', {'users': users})
 
 
-def store(request):
-    return render(request, 'store.html')

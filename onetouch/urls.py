@@ -27,13 +27,9 @@ urlpatterns = [
     path('signin', views.signin,name='signin'),
     path('register', views.register,name='register'),
     path('signout', views.signout, name='signout'),
-    path('apple', views.apple, name='apple'),
-    path('samsung', views.samsung, name='samsung'),
-    path('xiaomi', views.xiaomi, name='xiaomi'),
-    path('vivo', views.vivo, name='vivo'),
-    path('oppo', views.oppo, name='oppo'),
-    path('motorola', views.motorola, name='motorola'),
-    path('huawei', views.huawei, name='huawei'),
+    path('store', views.store, name='store'),
+    path('store/<slug:brand_slug>/', views.store, name='product_by_brand'),
+    path('store/<slug:brand_slug>/<slug:product_slug>/', views.product_detail, name='product_detail'),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
