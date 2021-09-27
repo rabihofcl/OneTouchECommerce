@@ -8,6 +8,9 @@
 <section>
     <div class="row active_user_table">
         <div class="table-responsive">
+            <div>
+                <a href="{% url 'ad_add_brand' %}"><button class="btn btn-primary">Add Brand</button></a>
+            </div>
             <caption>
                 <p class="table_caption"> Brands List</p>
             </caption>
@@ -29,10 +32,10 @@
                         </td>
                         <td>{{brand.brand_name}}</td>
                         <td>
-                            <!-- <a href="{% url 'ad_brand_edit' brand.id %}" class="pe-5"><i
-                                class="fas fa-user-edit"></i></a> -->
+                            <a href="{% url 'ad_brand_edit' brand.slug %}" class="pr-5"><i
+                                class="fas fa-user-edit"></i></a>
                             <a onclick="delete_brand('{{brand.id}}')" type="button" data-toggle="modal"
-                                data-target="#exampleModalCenter"><i class="fas fa-trash-alt"></i></a>
+                                data-target="#exampleModalCenter" style="color: red;"><i class="fas fa-trash-alt"></i></a>
                         </td>
                     </tr>
                     {% endfor %}

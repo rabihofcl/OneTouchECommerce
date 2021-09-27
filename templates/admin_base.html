@@ -29,7 +29,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.js"
         integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 
-    
+
 
 
 
@@ -62,7 +62,9 @@
                                     <div class="row sidebar_content">
                                         <div class="col-md-1 sidebar_icons"><i class="fas fa-home"></i></div>
                                         <div class="col-md-8">
-                                            <p class="sidebar_head sidebar_icon">Dashboard </p>
+                                            <a href="{% url 'admin_home' %}" style="text-decoration: none;">
+                                                <p class="sidebar_head sidebar_icon">Dashboard </p>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -231,7 +233,7 @@
                                         </div>
                                         <div class="row sidebar_subcontent">
                                             <div class="col-md-12">
-                                                <a href="" style="text-decoration: none;">
+                                                <a href="{% url 'blocked_users' %}" style="text-decoration: none;">
                                                     <p class="sidebar_subhead ">Blocked Users </p>
                                                 </a>
                                             </div>

@@ -34,7 +34,15 @@ def admin_signin(request):
 
 
 def admin_home(request):
-    return render(request, 'admin_home.html')
+    products = Product.objects.all().count()
+    brands = Brand.objects.all().count()
+    users = Account.objects.all().count()
+    context = {
+        'products':products,
+        'brands':brands,
+        'users':users,
+    }
+    return render(request, 'admin_home.html', context)
 
 
 def ad_brand_list(request):
@@ -63,39 +71,18 @@ def ad_delete_brand(request):
     Brand.objects.filter(id=id).delete()
     return JsonResponse({'success': True})
 
-# def ad_brand_edit(request, slug):
-#     if request.method == 'POST':
-#         brand = Brand.objects.get(slug=slug)
-#         form = BrandForm(request.POST, request.FILES, instance='brand')
 
-#         if form.is_valid():
-#             form.save()
-#             return redirect ('ad_brand_list')
+def ad_brand_edit(request, slug):
+    brand = Brand.objects.get(slug=slug)
+    if request.method == 'POST':
+        form = BrandForm(request.POST,request.FILES, instance=brand)
+        if form.is_valid():
+            form.save()
+            return redirect('ad_brand_list')
 
-#         else:
-#             form = BrandForm(instance=brand)
-#             return render (request, 'ad-brand-edit', {'brand':brand, 'form':form})
-
-
-#         if Product.objects.exclude(id=id).filter(product_name=product_name).exists():
-#             messages.info(request, 'Product already exist')
-#             return redirect('ad_product_edit', id=id)
-#         else:
-#             Product.objects.filter(pk=id).update(product_name=product_name, brand=brand, description=description, price=price,
-#                                                  stock=stock, image1=image1, image2=image2, image3=image3, image4=image4, is_available=True, slug=slug)
-#             return redirect('ad_product_list')
-
-    # else:
-    #     brands = Brand.objects.all()
-    #     product = Product.objects.get(pk=id)
-
-    #     context = {
-    #         'product': product,
-    #         'brands': brands,
-    #     }
-    #     return render(request, 'ad_product_edit.html', context)
-
-
+    else:
+        form = BrandForm(instance=brand)
+        return render(request, 'ad_brand_edit.html', {'brand':brand, 'form':form})
 
 
 def ad_product_list(request):
@@ -174,5 +161,9 @@ def ad_delete_product(request):
 
 
 def active_users(request):
-    users = Account.objects.order_by('id').all()
+    users = Account.objects.order_by('id').filter(is_active=True).all()
     return render(request, 'active_users.html', {'users': users})
+
+def blocked_users(request):
+    users = Account.objects.order_by('id').filter(is_active=False).all()
+    return render(request, 'blocked_users.html', {'users': users})

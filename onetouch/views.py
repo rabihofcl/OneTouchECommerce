@@ -5,6 +5,8 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.models import auth
 from product.models import Product
 from account.models import Account
+from twilio.rest import Client
+import random
 
 
 def home(request):
@@ -35,13 +37,6 @@ def signin(request):
         return render(request, 'signin.html')
 
 
-def apple(request):
-    products = Product.objects.all().filter(
-        is_available=True, brand__brand_name='Apple')
-
-    return render(request, 'apple.html', {'products': products, })
-
-
 def register(request):
     if request.method == 'POST':
         first_name = request.POST['first_name']
@@ -63,15 +58,45 @@ def register(request):
                 messages.info(request, 'Phone number already taken')
                 return redirect('register')
             else:
-                user = Account.objects.create_user(first_name=first_name, last_name=last_name,
+                user = Account(first_name=first_name, last_name=last_name,
                                                    username=username, password=password1, email=email, phone_number=phone_number)
                 user.save()
-                return redirect('home')
+
+                otp_number = random.randint(1000,9999)
+
+                account_sid = "ACbd2e01de49095381f621169be1ce4e98"
+                auth_token = "44b8aceacd094dacc3cf29f80b1f30e3"
+                client = Client(account_sid, auth_token)
+
+                message = client.messages \
+                                .create(
+                                    body="Hey "+str(first_name)+"! Your OTP number to join in OneTouch is "+str(otp_number),
+                                    from_='+14154837685',
+                                    to= '+919567814758'
+                                )
+
+                print(message.sid)
+
+                context = {
+                    'user':user,
+                    'phone_number': phone_number,
+                    'otp_number': otp_number,
+                }
+
+                return render(request, 'otp_register.html', context)
         else:
             messages.info(request, 'Password is not matching')
             return redirect('register')
 
     return render(request, 'register.html')
+
+
+def confirm_otp(requset):
+    return render('home')
+
+def otp_register(request):
+    return render(request, 'otp_register.html')
+
 
 
 def signout(request):

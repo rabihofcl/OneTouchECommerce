@@ -4,7 +4,16 @@
 
 {% block content %}
 
+ <form method="POST">
+     {% csrf_token %}
+     {{ form.errors }}
+     {{ form.as_p }}
 
+     <button type="submit" class="btn btn-warning">Apply Changes</button>
+     <a href="{% url 'ad_brand_list' %}" class="btn btn-primary me-5">Cancel</a>
+
+
+ </form>
 
 
 {% endblock %}

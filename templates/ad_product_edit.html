@@ -76,7 +76,11 @@
                         <label for="available">Available</label> -->
                     </div>
                 </div>
-
+                <div>
+                    {% for message in messages %}
+                    <h5 style="color: red;">{{ message }}</h5>
+                    {% endfor %}
+                </div>
                 <div class="row">
                     <div class="col-md-8 submit">
                         <button type="submit" class="btn btn-success mr-3">Apply Changes</button>

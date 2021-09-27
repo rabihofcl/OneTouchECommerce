@@ -5,7 +5,31 @@
 {% block content %}
 
 
-
+<section class="pl-5">
+        <div class="row ">
+            <p class="dashboard_side_head">Dashboard</p>
+        </div>
+        <div class="row pr-5">
+            <div class="col-md-3 dashboard_widgets widget1">
+                <div class="row"><p class="widget_name">Total Products</p></div>
+                <div class="row">
+                    <p class="widget_no"> {{ products }} </p>
+                </div>
+            </div>
+            <div class="col-md-3 dashboard_widgets widget2">
+                <div class="row"><p class="widget_name">Total Brands</p></div>
+                <div class="row">
+                    <p class="widget_no"> {{ brands }} </p>
+                </div>
+            </div>
+            <div class="col-md-3 dashboard_widgets widget3">
+                <div class="row"><p class="widget_name">Total Users</p></div>
+                <div class="row">
+                    <p class="widget_no"> {{ users }} </p>
+                </div>
+            </div>
+        </div>
+</section>
 
 
 {% endblock %}
