@@ -72,7 +72,7 @@ def register(request):
                                 .create(
                                     body="Hey "+str(first_name)+"! Your OTP number to join in OneTouch is "+str(otp_number),
                                     from_='+14154837685',
-                                    to= '+919567814758'
+                                    to= '+919745876303'
                                 )
 
                 print(message.sid)
