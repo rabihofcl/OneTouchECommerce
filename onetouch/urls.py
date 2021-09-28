@@ -32,6 +32,7 @@ urlpatterns = [
     path('store', views.store, name='store'),
     path('store/<slug:brand_slug>/', views.store, name='product_by_brand'),
     path('store/<slug:brand_slug>/<slug:product_slug>/', views.product_detail, name='product_detail'),
+    path('cart/', include('cart.urls')),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
