@@ -53,13 +53,10 @@ def ad_brand_list(request):
 def ad_add_brand(request):
     if request.method == 'POST':
         form = BrandForm(request.POST, request.FILES)
-        print(form)
         if form.is_valid():
-            print('valid')
             form.save()
             return redirect('ad_brand_list')
         else:
-            print('invalid')
             return redirect('ad_add_brand')
     else:
         form = BrandForm()

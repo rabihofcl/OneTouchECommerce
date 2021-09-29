@@ -12,6 +12,19 @@
 
         <!-- ============================ COMPONENT 1 ================================= -->
 
+        {% if not cart_items %}
+        <h2 class="text-center" style="color: grey;">Your Shopping Cart is Empty</h2>
+        <br>
+        <div class="text-center">
+            <img src="{% static './images/empty-cart.png' %}" alt="zx c">
+        </div>
+        <br>
+        <div class="text-center">
+            <a href="{% url 'store' %}" class="btn btn-primary" style="padding: 10px 80px;">Continue Shopping</a>
+        </div>
+
+
+        {% else %}
         <div class="row">
             <aside class="col-lg-9">
                 <div class="card">
@@ -31,7 +44,7 @@
                                     <figure class="itemside align-items-center">
                                         <div class="aside"><img src="{{ cart_item.product.image1.url }}" class="img-sm" ></div>
                                         <figcaption class="info">
-                                            <a href="#" class="title text-dark">{{ cart_item.product.product_name }}</a>
+                                            <a href="{{ cart_item.product.get_url }}" class="title text-dark">{{ cart_item.product.product_name }}</a>
                                             <p class="text-muted small">Color: Black <br> Brand: {{ cart_item.product.brand }}</p>
                                         </figcaption>
                                     </figure>
@@ -89,7 +102,7 @@
                             <img src="{% static './images/misc/payments.png' %}" height="26">
                         </p>
                         <a href="{% static './place-order.html' %}" class="btn btn-primary btn-block"> Checkout </a>
-                        <a href="{% static './store.html' %}" class="btn btn-light btn-block">Continue Shopping</a>
+                        <a href="{% url 'store' %}" class="btn btn-light btn-block">Continue Shopping</a>
                     </div> <!-- card-body.// -->
                 </div> <!-- card.// -->
 
@@ -97,6 +110,8 @@
 
 
         </div> <!-- row.// -->
+
+        {% endif %}
         <!-- ============================ COMPONENT 1 END .// ================================= -->
 
     </div> <!-- container .//  -->

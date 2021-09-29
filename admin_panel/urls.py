@@ -2,8 +2,6 @@ from django.urls import path
 from . import views
 
 
-def a(request):
-    print('hdslfkj')
 
 
 urlpatterns = [
