@@ -27,7 +27,6 @@ urlpatterns = [
     path('signin', views.signin,name='signin'),
     path('register', views.register,name='register'),
     path('otp_register', views.otp_register, name='otp_register'),
-    path('confirm_otp', views.confirm_otp, name='confirm_otp'),
     path('signout', views.signout, name='signout'),
     path('store', views.store, name='store'),
     path('store/<slug:brand_slug>/', views.store, name='product_by_brand'),

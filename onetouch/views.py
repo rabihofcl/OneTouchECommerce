@@ -47,6 +47,15 @@ def register(request):
         password1 = request.POST['password1']
         password2 = request.POST['password2']
 
+        # saving details to session
+
+        request.session['first_name'] = first_name
+        request.session['last_name'] = last_name
+        request.session['username'] = username
+        request.session['email'] = email
+        request.session['phone_number'] = phone_number
+        request.session['password'] = password1
+
         if password1 == password2:
             if Account.objects.filter(username=username).exists():
                 messages.info(request, 'Username already taken')
@@ -58,32 +67,19 @@ def register(request):
                 messages.info(request, 'Phone number already taken')
                 return redirect('register')
             else:
-                user = Account(first_name=first_name, last_name=last_name,
-                                                   username=username, password=password1, email=email, phone_number=phone_number)
-                user.save()
-
-                otp_number = random.randint(1000,9999)
 
                 account_sid = "ACbd2e01de49095381f621169be1ce4e98"
                 auth_token = "44b8aceacd094dacc3cf29f80b1f30e3"
                 client = Client(account_sid, auth_token)
 
-                message = client.messages \
-                                .create(
-                                    body="Hey "+str(first_name)+"! Your OTP number to join in OneTouch is "+str(otp_number),
-                                    from_='+14154837685',
-                                    to= '+919745876303'
-                                )
+                verification = client.verify \
+                    .services('VA47f566d6a44e75409506f475d3231b04') \
+                    .verifications \
+                    .create(to='+91'+phone_number, channel='sms')
 
-                print(message.sid)
+                print(verification.status)
 
-                context = {
-                    'user':user,
-                    'phone_number': phone_number,
-                    'otp_number': otp_number,
-                }
-
-                return render(request, 'otp_register.html', context)
+                return redirect('otp_register')
         else:
             messages.info(request, 'Password is not matching')
             return redirect('register')
@@ -91,11 +87,55 @@ def register(request):
     return render(request, 'register.html')
 
 
-def confirm_otp(requset):
-    return render('home')
-
 def otp_register(request):
-    return render(request, 'otp_register.html')
+
+    if request.method == 'POST':
+        otp = request.POST['otp']
+
+        phone_number = request.session['phone_number']
+
+        account_sid = "ACbd2e01de49095381f621169be1ce4e98"
+        auth_token = "44b8aceacd094dacc3cf29f80b1f30e3"
+        client = Client(account_sid, auth_token)
+
+        verification_check = client.verify \
+            .services('VA47f566d6a44e75409506f475d3231b04') \
+            .verification_checks \
+            .create(to='+91'+phone_number, code=otp)
+
+        print(verification_check.status)
+
+        if verification_check.status == 'approved':
+            first_name = request.session['first_name']
+            last_name = request.session['last_name']
+            username = request.session['username']
+            email = request.session['email']
+            phone_number = request.session['phone_number']
+            password = request.session['password']
+
+            user = Account.objects.create_user(first_name=first_name, last_name=last_name,
+                                               username=username, email=email, phone_number=phone_number, password=password)
+            user.save()
+            auth.login(request, user)
+
+            # deleting details in session
+
+            del request.session['last_name']
+            del request.session['first_name']
+            del request.session['username']
+            del request.session['email']
+            del request.session['phone_number']
+            del request.session['password']
+
+            return redirect('home')
+
+        else:
+            messages.info(request, 'OTP is not matching')
+            return redirect('otp_register')
+    else:
+        return render(request, 'otp_register.html')
+
+
 
 
 

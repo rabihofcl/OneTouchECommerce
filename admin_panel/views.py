@@ -142,7 +142,8 @@ def ad_product_edit(request, id):
             messages.info(request, 'Product already exist')
             return redirect('ad_product_edit', id=id)
         else:
-            product.save()
+            Product.objects.filter(pk=id).update(product_name=product_name, brand=brand, description=description, price=price,
+                          stock=stock,  is_available=True, slug=slug)
             return redirect('ad_product_list')
 
     else:
