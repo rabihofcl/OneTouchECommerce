@@ -6,20 +6,60 @@
 
 {% block content %}
 
+
+
+
 <!-- ========================= SECTION CONTENT ========================= -->
 <section class="section-conten padding-y" style="min-height:84vh">
 
     <!-- ============================ COMPONENT LOGIN   ================================= -->
-    <div class="card mx-auto" style="max-width: 380px; margin-top:100px;">
-        <div class="card-body">
+    <div class="card mx-auto" style="max-width: 380px; margin-top:100px; border: none;">
+
+        <div class="text-center">
+            <button onclick="email_show()" class="btn btn-outline-primary" style="width: 380px;">Login with Email</button>
+        </div>
+        
+
+        <div class="card-body" id='email_login' style="display: none;">
             <h4 class="card-title mb-4">Sign in</h4>
-            <form method="POST" action="signin">
+            <form method="POST" action="signin" >
                 {% csrf_token %}
                 <div class="form-group">
                     <input type="email" name="email" class="form-control" placeholder="Email Address">
                 </div> <!-- form-group// -->
                 <div class="form-group">
                     <input type="password" name="password" class="form-control" placeholder="Password">
+                </div> <!-- form-group// -->
+                <div class="form-group">
+                    <a href="#" class="float-right">Forgot password?</a>
+
+                </div> <!-- form-group form-check .// -->
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block"> Login </button>
+                </div> <!-- form-group// -->
+            </form>
+
+        </div> <!-- card-body.// -->
+        <br>
+        <div style="display: flex; justify-content: center;">
+            {% for message in messages %}
+            <h5 style="color: red;">{{ message }}</h5>
+            {% endfor %}
+        </div>
+        <br>
+        
+        <div class="text-center">
+            <button onclick="phone_show()" class="btn btn-outline-primary" style="width: 380px;">Login with Phone</button>
+        </div>
+
+
+        <div class="card-body" id='phone_login' style="display: none;">
+            <h4 class="card-title mb-4">Sign in</h4>
+
+            <form method="POST" action="phone_login">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="tel" name="phone_number" class="form-control" placeholder="Phone Number">
                 </div> <!-- form-group// -->
 
                 <div>
@@ -29,23 +69,51 @@
                 </div>
 
                 <div class="form-group">
-                    <a href="#" class="float-right">Forgot password?</a>
-
-                </div> <!-- form-group form-check .// -->
-                <div class="form-group">
                     <button type="submit" class="btn btn-primary btn-block"> Login </button>
                 </div> <!-- form-group// -->
             </form>
         </div> <!-- card-body.// -->
+        
     </div> <!-- card .// -->
 
     <p class="text-center mt-4">Don't have account? <a href="#">Sign up</a></p>
-    <br><br>
+   
     <!-- ============================ COMPONENT LOGIN  END.// ================================= -->
 
 
 </section>
 <!-- ========================= SECTION CONTENT END// ========================= -->
+
+
+<script>
+    function email_show(){
+        var x = document.getElementById('email_login');    
+        var y = document.getElementById('phone_login');  
+        if (y.style.display = "block"){
+            y.style.display = "none"
+        }
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        } 
+    }
+
+    function phone_show(){
+        var x = document.getElementById('phone_login');    
+        var y = document.getElementById('email_login');  
+        if (y.style.display = "block"){
+            y.style.display = "none"
+        }  
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        } 
+    }
+
+    
+</script>
 
 
 {% endblock %}

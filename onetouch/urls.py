@@ -25,6 +25,8 @@ urlpatterns = [
     path('admin/', include('admin_panel.urls')),
     path('', views.home, name='home'),
     path('signin', views.signin,name='signin'),
+    path('phone_login', views.phone_login, name='phone_login'),
+    path('phone_login_otp', views.phone_login_otp, name='phone_login_otp'),
     path('register', views.register,name='register'),
     path('otp_register', views.otp_register, name='otp_register'),
     path('signout', views.signout, name='signout'),

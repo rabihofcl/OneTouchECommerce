@@ -35,9 +35,69 @@ def signin(request):
         else:
             messages.info(request, 'No User found')
             return render(request, 'signin.html')
-
     else:
         return render(request, 'signin.html')
+
+def phone_login(request):
+    if request.method == 'POST':
+        phone_number = request.POST['phone_number']
+
+        user = Account.objects.get(phone_number=phone_number)
+
+        if user is not None:
+            request.session['phone_number'] = phone_number
+
+            account_sid = "ACbd2e01de49095381f621169be1ce4e98"
+            auth_token = "44b8aceacd094dacc3cf29f80b1f30e3"
+            client = Client(account_sid, auth_token)
+
+            verification = client.verify \
+                .services('VA47f566d6a44e75409506f475d3231b04') \
+                .verifications \
+                .create(to='+91'+phone_number, channel='sms')
+
+            print(verification.status)
+            return redirect('phone_login_otp')
+
+        else:
+            messages.info(request, 'Phone Number is not Registered')
+            return render('phone_login')
+
+    return render(request, 'signin.html')
+
+def phone_login_otp(request):
+    if request.method == 'POST':
+        otp = request.POST['otp']
+
+        phone_number = request.session['phone_number']
+
+        account_sid = "ACbd2e01de49095381f621169be1ce4e98"
+        auth_token = "44b8aceacd094dacc3cf29f80b1f30e3"
+        client = Client(account_sid, auth_token)
+
+        verification_check = client.verify \
+            .services('VA47f566d6a44e75409506f475d3231b04') \
+            .verification_checks \
+            .create(to='+91'+phone_number, code=otp)
+
+        print(verification_check.status)
+
+        if verification_check.status == 'approved':
+
+            user = Account.objects.get(phone_number=phone_number)
+
+            if user is not None:
+                auth.login(request, user)
+                del request.session['phone_number']
+                return redirect('home')
+            else:
+                return redirect('phone_login_otp')
+
+        else:
+            messages.info(request, 'OTP is not matching')
+            return redirect('phone_login_otp')
+    else:
+        return render(request, 'phone_login_otp.html')
 
 
 def register(request):
