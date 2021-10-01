@@ -32,7 +32,7 @@
                         </td>
                         <td>{{brand.brand_name}}</td>
                         <td>
-                            <a href="{% url 'ad_brand_edit' brand.slug %}" class="pr-5"><i
+                            <a href="{% url 'ad_brand_edit' brand.brand_name %}" class="pr-5"><i
                                 class="fas fa-user-edit"></i></a>
                             <a onclick="delete_brand('{{brand.id}}')" type="button" data-toggle="modal"
                                 data-target="#exampleModalCenter" style="color: red;"><i class="fas fa-trash-alt"></i></a>

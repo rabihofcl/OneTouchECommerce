@@ -1,9 +1,9 @@
 
 :root {
-    --main_color: #f9a503;
+    --main_color: #4175e4;
     --text_color: #404040;
     --main_background: #E5E5E5;
-    --selection_color:#edf2d9;
+    --selection_color:#ffffff;
     --white: white;
     --black: black;
   }
@@ -13,7 +13,10 @@ body{
     padding: 0;
     margin: 0;
 }
-
+header{
+    background-color: var(--main_color);
+    height: 100px;
+}
 
 .sidebar{
     width: 100%;
@@ -67,17 +70,30 @@ body{
     display: flex;
 }
 
-.header{
-    width: 100wh;
-    height: 100px;
-    background-color: var(--main_color);
-    display: flex;
-    justify-content: end;
-}
 
 .username{
     font-weight: bold;
     color: var(--white);
+}
+
+.heading{
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.heading-text{
+    font-size: xx-large;
+    font-weight: bolder;
+    border-bottom: black 1px solid;
+    padding: 0px 100px;
+
+}
+
+.submit{
+    display: flex;
+    justify-content: center;
 }
 
 .active_user_table{
@@ -92,3 +108,43 @@ body{
     display: flex;
     justify-content: center;
 }
+
+.dashboard_side_head{
+    font-size: 30px;
+    font-weight: bold;
+    padding-top: 10px;
+
+}
+.dashboard_widgets{
+    height: 100px;
+    background-color: var(--white);
+    border-radius: 0px 50px 50px 0px;
+    margin: 0px 10px;
+    
+}
+
+.widget1{
+    border-left: #29335D 10px solid;
+}
+
+.widget2{
+    border-left: #43863D 10px solid;
+}
+
+.widget3{
+    border-left: #FB9246 10px solid;
+}
+
+.widget_name{
+    padding-left: 30px;
+    padding-top: 10px;
+    font-weight: bolder;
+    color: var(--main_color);
+}
+
+.widget_no{
+    padding-left: 30px;
+    font-size: xx-large;
+    padding-top: 0;
+}
+

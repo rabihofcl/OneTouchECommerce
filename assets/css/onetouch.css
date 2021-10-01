@@ -1,0 +1,10 @@
+.brand{
+    color: black;
+
+}
+
+.brands_list{
+    display: flex;
+    justify-content: space-between;
+    padding-top: 10px;
+}
