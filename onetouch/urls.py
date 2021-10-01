@@ -30,10 +30,15 @@ urlpatterns = [
     path('register', views.register,name='register'),
     path('otp_register', views.otp_register, name='otp_register'),
     path('signout', views.signout, name='signout'),
+    path('forgotPass', views.forgotPass, name='forgotPass'),
+    path('forgotPassOtp', views.forgotPassOtp, name='forgotPassOtp'),
+    path('resetPass', views.resetPass, name='resetPass'),
     path('store', views.store, name='store'),
     path('store/<slug:brand_slug>/', views.store, name='product_by_brand'),
     path('store/<slug:brand_slug>/<slug:product_slug>/', views.product_detail, name='product_detail'),
     path('cart/', include('cart.urls')),
+    path('search/', views.search, name='search'),
+    path('dashboard', views.dashboard, name='dashboard'),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

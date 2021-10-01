@@ -11,7 +11,11 @@
 <!-- ========================= SECTION PAGETOP ========================= -->
 <section class="section-pagetop bg">
 	<div class="container">
+		{% if 'search' in request.path %}
+		<h2 class="title-page">Search Result</h2>
+		{% else %}
 		<h2 class="title-page">Our Store</h2>
+		{% endif %}
 
 	</div> <!-- container //  -->
 </section>
@@ -32,7 +36,7 @@
 								<h6 class="title">Categories</h6>
 							</a>
 						</header>
-						<div class="filter-content collapse show" id="collapse_1" style="">
+						<div class="filter-content collapse show" id="collapse_1" >
 							<div class="card-body">
 
 								
@@ -58,7 +62,7 @@
 								<h6 class="title">Sizes </h6>
 							</a>
 						</header>
-						<div class="filter-content collapse show" id="collapse_4" style="">
+						<div class="filter-content collapse show" id="collapse_4" >
 							<div class="card-body">
 								<label class="checkbox-btn">
 									<input type="checkbox">
@@ -90,7 +94,7 @@
 								<h6 class="title">Price range </h6>
 							</a>
 						</header>
-						<div class="filter-content collapse show" id="collapse_3" style="">
+						<div class="filter-content collapse show" id="collapse_3" >
 							<div class="card-body">
 
 								<div class="form-row">
@@ -139,6 +143,7 @@
 
 				<div class="row">
 
+					{% if products %}
 					{% for product in products %}
 					<div class="col-md-4">
 						<figure class="card card-product-grid pt-3">
@@ -164,6 +169,11 @@
 						</figure>
 					</div> <!-- col.// -->
 					{% endfor %}
+					{% else %}
+					<div >
+						<h4 >No Result Found. Please Try Again</h4>
+					</div>
+					{% endif %}
 
 				</div> <!-- row end.// -->
 

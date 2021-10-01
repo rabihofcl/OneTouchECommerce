@@ -16,10 +16,10 @@
 
         <article class="card-body">
             <header class="mb-4">
-                <h4 class="card-title">Sign in</h4>
+                <h4 class="card-title">Forgot Password</h4>
             </header>
 
-            <form method="POST" action="phone_login_otp">
+            <form method="POST" action="forgotPassOtp">
                 {% csrf_token %}
 
                 <div>
@@ -43,7 +43,7 @@
             </form>
         </article><!-- card-body.// -->
     </div> <!-- card .// -->
-    <p class="text-center mt-4">Have an account? <a href="{% url 'signin' %}">Log In</a></p>
+    <p class="text-center mt-4">Have an account? <a href="">Log In</a></p>
     <br><br>
     <!-- ============================ COMPONENT REGISTER  END.// ================================= -->
 

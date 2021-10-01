@@ -1,4 +1,5 @@
 from django.core import paginator
+from django.http.response import HttpResponse
 from cart.views import _cart_id
 from cart.models import CartItem
 from brand.models import Brand
@@ -10,6 +11,10 @@ from product.models import Product
 from account.models import Account
 from twilio.rest import Client
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db.models import Q
+
+
+from django.contrib.auth.decorators import login_required
 
 
 def home(request):
@@ -38,13 +43,14 @@ def signin(request):
     else:
         return render(request, 'signin.html')
 
+
+
 def phone_login(request):
     if request.method == 'POST':
         phone_number = request.POST['phone_number']
 
-        user = Account.objects.get(phone_number=phone_number)
+        if Account.objects.filter(phone_number=phone_number):
 
-        if user is not None:
             request.session['phone_number'] = phone_number
 
             account_sid = "ACbd2e01de49095381f621169be1ce4e98"
@@ -61,9 +67,11 @@ def phone_login(request):
 
         else:
             messages.info(request, 'Phone Number is not Registered')
-            return render('phone_login')
+            return redirect('phone_login')
 
     return render(request, 'signin.html')
+
+    
 
 def phone_login_otp(request):
     if request.method == 'POST':
@@ -201,10 +209,90 @@ def otp_register(request):
 
 
 
-
+@login_required(login_url = 'login')
 def signout(request):
     auth.logout(request)
     return redirect('home')
+
+
+
+def forgotPass(request):
+    if request.method == 'POST':
+        phone_number = request.POST['phone_number']
+
+        if Account.objects.filter(phone_number=phone_number):
+
+            request.session['phone_number'] = phone_number
+
+            account_sid = "ACbd2e01de49095381f621169be1ce4e98"
+            auth_token = "44b8aceacd094dacc3cf29f80b1f30e3"
+            client = Client(account_sid, auth_token)
+
+            verification = client.verify \
+                .services('VA47f566d6a44e75409506f475d3231b04') \
+                .verifications \
+                .create(to='+91'+phone_number, channel='sms')
+
+            print(verification.status)
+            return redirect('forgotPassOtp')
+
+        else:
+            messages.info(request, 'Phone Number is not Registered')
+            return redirect('forgotPass')
+
+    return render(request, 'forgotPass.html')
+
+
+def forgotPassOtp(request):
+    if request.method == 'POST':
+        otp = request.POST['otp']
+
+        phone_number = request.session['phone_number']
+
+        account_sid = "ACbd2e01de49095381f621169be1ce4e98"
+        auth_token = "44b8aceacd094dacc3cf29f80b1f30e3"
+        client = Client(account_sid, auth_token)
+
+        verification_check = client.verify \
+            .services('VA47f566d6a44e75409506f475d3231b04') \
+            .verification_checks \
+            .create(to='+91'+phone_number, code=otp)
+
+        print(verification_check.status)
+
+        if verification_check.status == 'approved':
+            return redirect('resetPass')
+        else:
+            messages.info(request, 'OTP is not matching')
+            return redirect('forgotPassOtp')
+    else:
+        return render(request, 'forgotPassOtp.html')
+
+
+
+
+def resetPass(request):
+    if request.method == 'POST':
+        password1 = request.POST['password1']
+        password2 = request.POST['password2']
+
+        if password1 == password2:
+            phone_number = request.session['phone_number']
+            user = Account.objects.get(phone_number=phone_number)
+            user.set_password(password1)
+            user.save()
+
+            del request.session['phone_number']
+
+            return redirect('signin')
+
+        else:
+            messages.info(request, 'Password is not matching')
+            return redirect('resetPass')
+    else:
+        return render(request, 'resetPass.html')
+
+
 
 
 def store(request, brand_slug=None):
@@ -246,3 +334,22 @@ def product_detail(request, brand_slug, product_slug):
         'in_cart': in_cart
     }
     return render(request, 'product_detail.html', context)
+
+
+def search(request):
+    if 'keyword' in request.GET:
+        keyword = request.GET['keyword']
+        if keyword:
+            products = Product.objects.order_by('-created_date').filter(Q(description__icontains=keyword) | Q(product_name__icontains=keyword) | Q(slug__icontains=keyword))
+            product_count = products.count()
+    context = {
+        'products' : products,
+        'product_count' : product_count,
+    }
+    return render(request, 'store.html', context)
+
+
+
+@login_required(login_url = 'login')
+def dashboard(request):
+    return render(request, 'dashboard.html')
