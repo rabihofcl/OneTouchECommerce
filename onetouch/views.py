@@ -1,7 +1,7 @@
 from django.core import paginator
 from django.http.response import HttpResponse
 from cart.views import _cart_id
-from cart.models import CartItem
+from cart.models import Cart, CartItem
 from brand.models import Brand
 from django.http import request
 from django.contrib import messages
@@ -35,6 +35,19 @@ def signin(request):
         user = auth.authenticate(email=email, password=password)
 
         if user is not None:
+            try:
+                cart = Cart.objects.get(cart_id=_cart_id(request))
+                is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+                if is_cart_item_exists:
+                    cart_item = CartItem.objects.filter(cart=cart)
+
+                    for item in cart_item:
+                        item.user = user
+                        item.save()
+
+            except:
+                pass
+
             auth.login(request, user)
             return redirect('home')
         else:
@@ -108,6 +121,8 @@ def phone_login_otp(request):
         return render(request, 'phone_login_otp.html')
 
 
+
+
 def register(request):
     if request.method == 'POST':
         first_name = request.POST['first_name']
@@ -156,6 +171,8 @@ def register(request):
             return redirect('register')
 
     return render(request, 'register.html')
+
+
 
 
 def otp_register(request):
@@ -209,7 +226,7 @@ def otp_register(request):
 
 
 
-@login_required(login_url = 'login')
+@login_required(login_url = 'signin')
 def signout(request):
     auth.logout(request)
     return redirect('home')
@@ -296,6 +313,7 @@ def resetPass(request):
 
 
 def store(request, brand_slug=None):
+    
     brands = None
     products = None
 
@@ -350,6 +368,6 @@ def search(request):
 
 
 
-@login_required(login_url = 'login')
+@login_required(login_url = 'signin')
 def dashboard(request):
     return render(request, 'dashboard.html')
