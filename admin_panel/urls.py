@@ -18,6 +18,7 @@ urlpatterns = [
     path('ad_add_product', views.ad_add_product, name='ad_add_product'),
     path('active_users', views.active_users, name='active_users'),
     path('blocked_users', views.blocked_users, name='blocked_users'),
+    path('ad_logout', views.ad_logout, name='ad_logout'),
 ]
 
 

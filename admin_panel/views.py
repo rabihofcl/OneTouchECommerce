@@ -34,6 +34,13 @@ def admin_signin(request):
         return render(request, 'admin_signin.html')
 
 
+@login_required(login_url = 'admin_signin')
+def ad_logout(request):
+    auth.logout(request)
+    return redirect('admin_signin')
+
+
+@login_required(login_url = 'admin_signin')
 def admin_home(request):
     products = Product.objects.all().count()
     brands = Brand.objects.all().count()
@@ -46,11 +53,14 @@ def admin_home(request):
     return render(request, 'admin_home.html', context)
 
 
+@login_required(login_url = 'admin_signin')
 def ad_brand_list(request):
     brands = Brand.objects.all()
     return render(request, 'ad_brand_list.html', {'brands': brands})
 
 
+
+@login_required(login_url = 'admin_signin')
 def ad_add_brand(request):
     if request.method == 'POST':
         form = BrandForm(request.POST, request.FILES)
@@ -64,12 +74,16 @@ def ad_add_brand(request):
         return render(request, 'ad_add_brand.html', {'form': form})
 
 
+
+@login_required(login_url = 'admin_signin')
 def ad_delete_brand(request):
     id = request.POST['id']
     Brand.objects.filter(id=id).delete()
     return JsonResponse({'success': True})
 
 
+
+@login_required(login_url = 'admin_signin')
 def ad_brand_edit(request, slug):
     brand = Brand.objects.get(slug=slug)
     if request.method == 'POST':
@@ -83,11 +97,15 @@ def ad_brand_edit(request, slug):
         return render(request, 'ad_brand_edit.html', {'brand':brand, 'form':form})
 
 
+
+@login_required(login_url = 'admin_signin')
 def ad_product_list(request):
     products = Product.objects.all().order_by('-id')
     return render(request, 'ad_product_list.html', {'products': products})
 
 
+
+@login_required(login_url = 'admin_signin')
 def ad_add_product(request):
     if request.method == 'POST':
 
@@ -111,6 +129,8 @@ def ad_add_product(request):
     return render(request, 'ad_add_product.html', {'brands': brands})
 
 
+
+@login_required(login_url = 'admin_signin')
 def ad_product_edit(request, id):
     product = Product.objects.get(pk=id)
 
@@ -153,16 +173,23 @@ def ad_product_edit(request, id):
         return render(request, 'ad_product_edit.html', context)
 
 
+
+@login_required(login_url = 'admin_signin')
 def ad_delete_product(request):
     id = request.POST['id']
     Product.objects.filter(id=id).delete()
     return JsonResponse({'success': True})
 
 
+
+@login_required(login_url = 'admin_signin')
 def active_users(request):
     users = Account.objects.order_by('id').filter(is_active=True).all()
     return render(request, 'active_users.html', {'users': users})
 
+
+
+@login_required(login_url = 'admin_signin')
 def blocked_users(request):
     users = Account.objects.order_by('id').filter(is_active=False).all()
     return render(request, 'blocked_users.html', {'users': users})
