@@ -12,6 +12,7 @@ from account.models import Account
 from twilio.rest import Client
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
+import requests
 
 
 from django.contrib.auth.decorators import login_required
@@ -38,6 +39,7 @@ def signin(request):
             try:
                 cart = Cart.objects.get(cart_id=_cart_id(request))
                 is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+                
                 if is_cart_item_exists:
                     cart_item = CartItem.objects.filter(cart=cart)
 
@@ -49,7 +51,18 @@ def signin(request):
                 pass
 
             auth.login(request, user)
-            return redirect('home')
+
+            url = request.META.get('HTTP_REFERER')
+            try:
+                query = requests.utils.urlparse(url).query
+                # next=/cart/checkout/
+                params = dict(x.split('=') for x in query.split('&'))
+                if 'next' in params:
+                    nextPage = params['next']
+                    return redirect(nextPage)
+            except:
+                return redirect('home')
+
         else:
             messages.info(request, 'No User found')
             return render(request, 'signin.html')
