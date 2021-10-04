@@ -26,11 +26,11 @@
                 <a class="list-group-item" href="#"> Received orders </a>
             </ul>
             <br>
-            <a class="btn btn-light btn-block" href="#"> <i class="fa fa-power-off"></i> <span class="text">Log out</span> </a> 
+            <a class="btn btn-light btn-block" href="{% url 'signout' %}"> <i class="fa fa-power-off"></i> <span class="text">Log out</span> </a> 
             <!--   SIDEBAR .//END   -->
         </aside>
         <main class="col-md-9">
-            <article class="card">
+            <!-- <article class="card">
             <header class="card-header">
                 <strong class="d-inline-block mr-3">Order ID: 6123456789</strong>
                 <span>Order Date: 16 December 2018</span>
@@ -56,8 +56,8 @@
                          <span class="b">Total:  $456 </span>
                         </p>
                     </div>
-                </div> <!-- row.// -->
-            </div> <!-- card-body .// -->
+                </div> row.//
+            </div> card-body .//
             <div class="table-responsive">
             <table class="table table-hover">
                 <tr>
@@ -94,8 +94,8 @@
                     <td> <a href="#" class="btn btn-outline-primary">Track order</a> <a href="#" class="btn btn-light"> Details </a> </td>
                 </tr>
             </table>
-            </div> <!-- table-responsive .end// -->
-            </article> <!-- order-group.// --> 
+            </div> table-responsive .end//
+            </article> order-group.//  -->
         </main>
     </div> <!-- row.// -->
     </div>
