@@ -54,10 +54,10 @@
                                     <div class="col">
                                         <div class="input-group input-spinner">
                                             <div class="input-group-prepend">
-                                                <a href="{% url 'remove_cart' cart_item.product.id %}" class="btn btn-light" type="button" id="button-minus"> <i
+                                                <a onclick="minus_button()" href="{% url 'remove_cart' cart_item.product.id %}" class="btn btn-light" type="button" id="button-minus"> <i
                                                         class="fa fa-minus"></i> </a>
                                             </div>
-                                            <input type="text" class="form-control" value="{{ cart_item.quantity }}">
+                                            <input type="text" class="form-control" id="quantity" value="{{ cart_item.quantity }}">
                                             <div class="input-group-append">
                                                 <a href="{% url 'add_cart' cart_item.product.id %}" class="btn btn-light" type="button" id="button-plus"> <i
                                                         class="fa fa-plus"></i> </a>
@@ -72,7 +72,7 @@
                                     </div> <!-- price-wrap .// -->
                                 </td>
                                 <td class="text-right">
-                                    <a href="{% url 'remove_cart_item' cart_item.product.id %}" class="btn btn-danger"> Remove</a>
+                                    <a onclick="return confirm('Are you sure to delete?')" href="{% url 'remove_cart_item' cart_item.product.id %}" class="btn btn-danger"> Remove</a>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -117,6 +117,26 @@
     </div> <!-- container .//  -->
 </section>
 <!-- ========================= SECTION CONTENT END// ========================= -->
+
+
+
+<script>
+    function minus_button(){
+        var val = document.getElementById('quantity').value
+        console.log(val)
+        if (val <= 1) {
+            console.log('zero')
+            var a = confirm('Are you sure to delete?')
+            if (a == false) {
+                document.getElementById('button-minus').href = ''
+            }
+        }
+    }
+
+
+
+</script>
+
 
 
 

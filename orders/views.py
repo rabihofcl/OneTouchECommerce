@@ -1,5 +1,6 @@
 from django.shortcuts import redirect, render
 from cart.models import CartItem
+from product.models import Product
 from .forms import OrderForm
 import datetime
 from .models import Order, OrderProduct, Payment
@@ -42,11 +43,13 @@ def payments(request):
         orderproduct.save()
 
 
-    # Reduce the quantity of the sold products
-
+        # Reduce the quantity of the sold products
+        product = Product.objects.get(id=item.product_id)
+        product.stock -= item.quantity
+        product.save()
 
     # Clear cart
-
+    CartItem.objects.filter(user=request.user).delete()
 
     # Send order recieved email to customer
 
@@ -123,3 +126,7 @@ def place_order(request, total=0, quantity=0):
             return redirect('checkout')
     else:
         return redirect('checkout')
+
+
+def order_complete(request):
+    return render(request, 'order_complete.html')

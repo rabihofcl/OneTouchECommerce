@@ -10,11 +10,14 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 
+
 def _cart_id(request):
     cart = request.session.session_key
     if not cart:
         cart = request.session.create()
     return cart
+
+
 
 
 def add_cart(request, product_id):
@@ -66,6 +69,7 @@ def add_cart(request, product_id):
     return redirect('cart')
 
 
+
 def remove_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     try:
@@ -84,6 +88,7 @@ def remove_cart(request, product_id):
     return redirect('cart')
 
 
+
 def remove_cart_item(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     if request.user.is_authenticated:
@@ -94,6 +99,7 @@ def remove_cart_item(request, product_id):
         cart_item = CartItem.objects.get(product=product, cart=cart)
     cart_item.delete()
     return redirect('cart')
+
 
 
 def cart(request, total=0, quantity=0, cart_items=None):
