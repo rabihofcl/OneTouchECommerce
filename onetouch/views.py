@@ -7,12 +7,14 @@ from django.http import request
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.models import auth
+from orders.models import Order, OrderProduct
 from product.models import Product
-from account.models import Account
+from account.models import Account, UserProfile
 from twilio.rest import Client
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
 import requests
+from account.forms import UserForm, UserProfileForm
 
 
 
@@ -218,6 +220,13 @@ def otp_register(request):
             user = Account.objects.create_user(first_name=first_name, last_name=last_name,
                                                username=username, email=email, phone_number=phone_number, password=password)
             user.save()
+
+            profile = UserProfile()
+            profile.user_id = user.id
+            profile.profile_picture = 'default/default-pro-pic.png'
+            profile.save()
+
+
             auth.login(request, user)
 
             # deleting details in session
@@ -384,4 +393,95 @@ def search(request):
 
 @login_required(login_url = 'signin')
 def dashboard(request):
-    return render(request, 'dashboard.html')
+    orders = Order.objects.order_by('-created_at').filter(user_id=request.user.id, is_ordered=True)
+
+    userprofile = UserProfile.objects.get(user_id=request.user.id)
+
+    orders_count = orders.count()
+
+    context = {
+        'orders_count': orders_count,
+        'userprofile': userprofile,
+    }
+    return render(request, 'dashboard.html', context)
+
+
+
+@login_required(login_url = 'signin')
+def my_orders(request):
+    orders = Order.objects.filter(user=request.user, is_ordered=True).order_by('-created_at')
+
+    context = {
+        'orders': orders,
+    }
+    return render(request, 'my_orders.html', context)
+
+
+
+@login_required(login_url = 'signin')
+def edit_profile(request):
+    userprofile = get_object_or_404(UserProfile, user=request.user)
+
+    if request.method == 'POST':
+        user_form = UserForm(request.POST, instance=request.user)
+        profile_form = UserProfileForm(request.POST, request.FILES, instance=userprofile)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            return redirect('edit_profile')
+    else:
+        user_form = UserForm(instance = request.user)
+        profile_form = UserProfileForm(instance = userprofile)
+
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form,
+        'userprofile': userprofile,
+    }
+    return render(request, 'edit_profile.html', context)
+
+
+
+@login_required(login_url = 'signin')
+def change_password(request):
+    if request.method == 'POST':
+        current_password = request.POST['current_password']
+        new_password = request.POST['new_password']
+        confirm_password = request.POST['confirm_password']
+
+        user = Account.objects.get(username__exact=request.user.username)
+
+        if new_password == confirm_password:
+            success = user.check_password(current_password)
+            if success:
+                user.set_password(new_password)
+                user.save()
+                messages.success(request, 'Password changed successfully!')
+                return redirect('change_password')
+            else:
+                messages.info(request, 'Please enter valid current password')
+                return redirect('change_password')
+        else:
+            messages.info(request, 'Password is not matching!')
+            return redirect('change_password')
+
+    return render(request, 'change_password.html')
+
+
+
+
+@login_required(login_url = 'signin')
+def order_details(request, order_id):
+    order_detail = OrderProduct.objects.filter(order__order_number=order_id)
+    order = Order.objects.get(order_number=order_id)
+
+    subtotal = 0
+    for i in order_detail:
+        subtotal += i.product_price * i.quantity
+
+    context = {
+        'order_detail':order_detail,
+        'order': order,
+        'subtotal': subtotal
+    }
+    return render(request, 'order_details.html', context)

@@ -21,10 +21,10 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 urlpatterns = [
-    path('mainadmin/', admin.site.urls),
-    path('admin/', include('admin_panel.urls')),
+    path('mainadmin', admin.site.urls),
+    path('admin', include('admin_panel.urls')),
     path('', views.home, name='home'),
-    path('signin', views.signin,name='signin'),
+    path('signin', views.signin, name='signin'),
     path('phone_login', views.phone_login, name='phone_login'),
     path('phone_login_otp', views.phone_login_otp, name='phone_login_otp'),
     path('register', views.register,name='register'),
@@ -36,10 +36,15 @@ urlpatterns = [
     path('store/', views.store, name='store'),
     path('store/<slug:brand_slug>/', views.store, name='product_by_brand'),
     path('store/<slug:brand_slug>/<slug:product_slug>/', views.product_detail, name='product_detail'),
-    path('cart', include('cart.urls')),
+    path('cart/', include('cart.urls')),
     path('search/', views.search, name='search'),
-    path('dashboard', views.dashboard, name='dashboard'),
     path('orders/', include('orders.urls')),
+    path('dashboard/', views.dashboard, name='dashboard'),
+    path('my_orders/', views.my_orders, name='my_orders'),
+    path('edit_profile/', views.edit_profile, name='edit_profile'),
+    path('change_password/', views.change_password, name='change_password'),
+    path('order_details/<int:order_id>/', views.order_details, name='order_details'),
+    
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
