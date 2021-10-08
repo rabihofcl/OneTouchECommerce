@@ -1,0 +1,107 @@
+{% extends 'admin_base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+<section>
+    <div class="container">
+        <div class="row">
+            <main class="col-md-9">
+                <article class="card">
+                    <header class="card-header">
+                        <strong class="d-inline-block mr-3">Edit the Order</strong>
+                    </header>
+                    <div class="card-body">
+                        <div class="row">
+                            <dii class="col-md-12">
+
+                                <form action="#" method="POST">
+                                    {% csrf_token %}
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label>User</label>
+                                            <input type="text" value="{{ order.user }}">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label>Order Number</label>
+                                            {{ order.order_number }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label>Payment</label>
+                                            {{ order.payment }}
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label>Status</label>
+                                            {{ order.status }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label>First Name</label>
+                                            {{ order.first_name }}
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label>Last Name</label>
+                                            {{ order.last_name }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label>Phone</label>
+                                            {{ order.phone }}
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label>Email</label>
+                                            {{ order.email }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label>Address Line 1</label>
+                                            {{ order.address_line_1 }}
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label>Address Line 2</label>
+                                            {{ order.address_line_2 }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label>City</label>
+                                            {{ order.city }}
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label>State</label>
+                                            {{ order.state }}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label>Country</label>
+                                            {{ order.country }}
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label>Pincode</label>
+                                            {{ order.pincode }}
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </dii>
+                        </div>
+                    </div>
+                </article>
+            </main>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+{% endblock %}

@@ -14,3 +14,4 @@ class BrandForm(forms.ModelForm):
     def save(self):
         photo = super(BrandForm, self).save()
         return photo
+

@@ -1,6 +1,7 @@
 from django.http.response import JsonResponse
 from admin_panel.forms import BrandForm
 from brand.models import Brand
+from orders.forms import OrderForm
 from product.models import Product
 from account.models import Account
 from django.contrib import messages
@@ -8,6 +9,8 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.models import auth
 import os
 from django.contrib.auth.decorators import login_required
+from orders.models import Order, OrderProduct 
+from django.db.models import Q
 
 # Create your views here.
 
@@ -193,3 +196,36 @@ def active_users(request):
 def blocked_users(request):
     users = Account.objects.order_by('id').filter(is_active=False).all()
     return render(request, 'blocked_users.html', {'users': users})
+
+
+
+
+def ad_active_orders(request):
+    active_orders = Order.objects.exclude(status='Completed').order_by('-id')
+    context = {
+        'active_orders': active_orders,
+    }
+    return render(request, 'ad_active_orders.html', context)
+
+
+
+
+def ad_past_orders(request):
+    past_orders = Order.objects.filter(Q(status='Completed') | Q(status='Cancelled')).order_by('-id')
+    context = {
+        'past_orders': past_orders,
+    }
+    return render(request, 'ad_past_orders.html', context)
+
+
+
+def ad_order_edit(request, order_id):
+    order_detail = OrderProduct.objects.filter(order__order_number=order_id)
+    order = Order.objects.get(order_number=order_id)
+
+
+    context = {
+        'order': order,
+    }
+    
+    return render(request, 'ad_order_edit.html', context)
