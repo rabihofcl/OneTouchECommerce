@@ -409,13 +409,30 @@ def dashboard(request):
 
 @login_required(login_url = 'signin')
 def my_orders(request):
-    orders = Order.objects.filter(user=request.user, is_ordered=True).order_by('-created_at')
+
+    order_detail = OrderProduct.objects.filter(user=request.user).order_by('-created_at')  
+
+
 
     context = {
-        'orders': orders,
+        'order_detail':order_detail,
     }
     return render(request, 'my_orders.html', context)
 
+
+def cancel_order(request, id):
+    item = OrderProduct.objects.filter(id=id).update(status='Cancelled')
+    return redirect('my_orders')
+
+
+def return_item(request, id):
+    item = OrderProduct.objects.filter(id=id).update(status='Return')
+    return redirect('my_orders')
+
+
+def cancel_return(request, id):
+    item = OrderProduct.objects.filter(id=id).update(status='Delivered')
+    return redirect('my_orders')
 
 
 @login_required(login_url = 'signin')
@@ -432,6 +449,7 @@ def edit_profile(request):
     else:
         user_form = UserForm(instance = request.user)
         profile_form = UserProfileForm(instance = userprofile)
+        
 
     context = {
         'user_form': user_form,

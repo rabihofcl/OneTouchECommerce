@@ -15,42 +15,45 @@
         <div class="row">
             {% include 'includes/dashboard_sidebar.html' %}
             <main class="col-md-9">
-                <article class="card">
-                    <header class="card-header">
-                        <strong class="d-inline-block mr-3">Your Order History</strong>
-                    </header>
-                    <div class="card-body">
-                        <div class="row">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Order #</th>
-                                        <th scope="col">Billing Name</th>
-                                        <th scope="col">phone</th>
-                                        <th scope="col">Order Total</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for order in orders %}
-                                    <tr>
-                                        <th scope="row"><a href="{% url 'order_details' order.order_number %}">{{ order.order_number }}</a></th>
-                                        <td>{{ order.full_name }}</td>
-                                        <td>{{ order.phone }}</td>
-                                        <td>{{ order.order_total }}</td>
-                                        <td>{{ order.status }}</td>
-                                        <td>{{ order.created_at }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                <!-- <article class="card"> -->
+                <header class="card-header mb-3">
+                    <strong class="d-inline-block mr-3">Your Order History</strong>
+                </header>
+                {% for item in order_detail %}
+                <div class="card-header mb-3">
+                    <div class="row">
+                        <div class="col-md-2 text-center">
+                            <img src="{{ item.product.image1.url }}" alt="item_image" height="100px">
+                        </div>
+                        <div class="col-md-4" >
+                            <p class="mb-0 font-weight-bold">{{ item.product.product_name }}</p>
+                            <p class="mb-0">Quantity: {{ item.quantity }}</p>
+                            <a href="{% url 'order_details' item.order.order_number %}"><p class="mb-0">Order: # {{ item.order.order_number }}</p></a>
+                        </div>
+                        <div class="col-md-2" >
+                            <p class="mb-0">Price:</p>
+                            <p class="mb-0"> ₹ {{ item.product_price }}</p>
+                        </div>
+                        <div class="col-md-2" >
+                            <p class="mb-0">Order Status:</p>
+                            <p  {% if item.status == "Shipping" %} class="text-primary" {% elif item.status == "New" %} class="text-warning" {% elif item.status == "Cancelled" %} class="text-danger" {% elif item.status == "Delivered" %} class="text-success" {% endif %} >{{ item.status }}</p>
+                        </div>
+                        <div class="col-md-2 mt-2">
+                            {% if item.status == "Delivered"  %}
+                            <a href="{% url 'order_details' item.order.order_number %}"><button class="btn btn-primary">Invoice</button></a>
+                            <a onclick="return confirm('Are you sure to return the Item?')" href="{% url 'return_item' item.id %}"><button class="btn btn-outline-danger mt-1">Return Item</button></a>
+                            {% elif item.status == "Cancelled"  %}
 
-
+                            {% elif item.status == "Return"  %}
+                            <a  onclick="return confirm('Are you sure to cancel the return?')" href="{% url 'cancel_return' item.id %}"><button class="btn btn-warning">Cancel Return</button></a>
+                            {% else %}
+                            <a  onclick="return confirm('Are you sure to cancel this order?')" href="{% url 'cancel_order' item.id %}"><button class="btn btn-danger">Cancel Order</button></a>
+                            {% endif %}
                         </div>
                     </div>
-
-                </article>
+                </div>
+                {% endfor %}
+                <!-- </article> -->
             </main>
         </div> <!-- row.// -->
     </div>

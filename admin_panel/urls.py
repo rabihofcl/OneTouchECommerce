@@ -1,3 +1,4 @@
+from os import name
 from django.urls import path
 from . import views
 from django.conf import settings
@@ -21,7 +22,8 @@ urlpatterns = [
     path('ad_logout', views.ad_logout, name='ad_logout'),
     path('ad_active_orders',views.ad_active_orders, name='ad_active_orders'),
     path('ad_past_orders',views.ad_past_orders, name='ad_past_orders'),
-    path('ad_order_edit/<int:order_id>/', views.ad_order_edit, name='ad_order_edit'),
+    path('ad_order_edit/<order_number>/', views.ad_order_edit, name='ad_order_edit'),
+    path('change_status/<id>', views.change_status, name='change_status'),
     
 ]
 

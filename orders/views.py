@@ -2,7 +2,7 @@ from django.http.response import JsonResponse
 from django.shortcuts import redirect, render
 from cart.models import CartItem
 from product.models import Product
-from .forms import OrderForm
+from .forms import OrderForm1
 import datetime
 from .models import Order, OrderProduct, Payment
 import json
@@ -88,7 +88,8 @@ def place_order(request, total=0, quantity=0):
 
     if request.method == 'POST':
 
-        form = OrderForm(request.POST)
+        form = OrderForm1(request.POST)
+        print(form)
         
         if form.is_valid():
 
@@ -131,8 +132,6 @@ def place_order(request, total=0, quantity=0):
                 'grand_total': grand_total,
             }
             return render(request, 'payments.html', context)
-        else:
-            return redirect('checkout')
     else:
         return redirect('checkout')
 

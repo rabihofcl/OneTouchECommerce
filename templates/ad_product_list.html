@@ -75,7 +75,7 @@
                 <a onclick="deleteProduct()" id="delete_product" ><button type=" button"
                     class="btn btn-danger">Delete</button></a>
             </div>
-            <input type="text">
+            
         </div>
     </div>
 </div>
@@ -92,7 +92,7 @@
     function deleteProduct() {
         var id = document.getElementById('delete_product').value
         $.ajax({
-            url: '/admin/ad_delete_product/',
+            url: '/admin/ad_delete_product',
             method: 'POST',
             dataType: 'json',
             data: {

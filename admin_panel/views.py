@@ -1,7 +1,7 @@
 from django.http.response import JsonResponse
 from admin_panel.forms import BrandForm
 from brand.models import Brand
-from orders.forms import OrderForm
+from orders.forms import OrderForm, OrderProductForm
 from product.models import Product
 from account.models import Account
 from django.contrib import messages
@@ -201,30 +201,74 @@ def blocked_users(request):
 
 
 def ad_active_orders(request):
-    active_orders = Order.objects.exclude(status='Completed').order_by('-id')
+    orders = Order.objects.filter(user=request.user, is_ordered=True).order_by('-created_at')
+
+    order_detail = OrderProduct.objects.exclude(Q(status='Delivered') | Q(status='Cancelled')).order_by('-created_at')  
+
+    order_product_form = OrderProductForm()
+
+    subtotal = 0
+    for i in order_detail:
+        subtotal += i.product_price * i.quantity
+    
     context = {
-        'active_orders': active_orders,
+        'active_orders': orders,
+        'orders': orders,
+        'order_detail':order_detail,
+        'subtotal': subtotal,
+        'order_product_form': order_product_form,
     }
     return render(request, 'ad_active_orders.html', context)
 
 
 
+def change_status(request, id):
+    if request.method == 'POST':
+        order_product = OrderProduct.objects.get(id=id)
+        order_product_form = OrderProductForm(request.POST,instance=order_product)
+
+        if order_product_form.is_valid():
+            order_product_form.save()
+            return redirect('ad_active_orders')
+    return redirect('ad_active_orders')
+
+
+
 
 def ad_past_orders(request):
-    past_orders = Order.objects.filter(Q(status='Completed') | Q(status='Cancelled')).order_by('-id')
+
+    order_detail = OrderProduct.objects.filter(Q(status='Delivered') | Q(status='Cancelled')).order_by('-created_at')  
+    order_product_form = OrderProductForm()
+
+    subtotal = 0
+    for i in order_detail:
+        subtotal += i.product_price * i.quantity
+
     context = {
-        'past_orders': past_orders,
+        'order_detail':order_detail,
+        'order_product_form': order_product_form,
     }
     return render(request, 'ad_past_orders.html', context)
 
 
 
-def ad_order_edit(request, order_id):
-    order_detail = OrderProduct.objects.filter(order__order_number=order_id)
-    order = Order.objects.get(order_number=order_id)
+def ad_order_edit(request, order_number):
+    order_detail = OrderProduct.objects.filter(order__order_number=order_number)
+    order = Order.objects.get(order_number=order_number)
+
+
+    if request.method == 'POST':
+        order_form = OrderForm(request.POST, instance=order)
+
+        if order_form.is_valid():
+            order_form.save()
+            return redirect('ad_active_orders')
+    else:
+        order_form = OrderForm(instance=order)
 
 
     context = {
+        'order_form': order_form,
         'order': order,
     }
     

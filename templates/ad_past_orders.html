@@ -16,27 +16,33 @@
                     <tr>
                         <th scope="col">No.</th>
                         <th>Order #</th>
-                        <th scope="col">Full Name </th>
-                        <th scope="col">Phone</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Order Total</th>
+                        <th scope="col">Product Name </th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Price</th>
                         <th scope="col">Status</th>
-                        <th scope="col">Is Ordered</th>
-                        <th scope="col">Date</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for order in past_orders %}
+                    {% for item in order_detail %}
                     <tr>
                         <td scope="row">{{forloop.counter}}</td>
-                        <td><a href="">{{ order.order_number }}</a></td>
-                        <td>{{ order.full_name }}</td>
-                        <td>{{ order.phone }}</td>
-                        <td>{{ order.email }}</td>
-                        <td>{{ order.order_total }}</td>
-                        <td>{{ order.status }}</td>
-                        <td>{{ order.is_ordered }}</td>
-                        <td>{{ order.created_at }}</td>
+                        <td><a href="{% url 'ad_order_edit' item.order.order_number %}">{{ item.order.order_number }}</a></td>
+                        <td>{{ item.product.product_name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>₹ {{ item.product_price }}</td>
+                        <td>{{ item.status }}</td>
+                        <td>
+                            <form action="{% url 'change_status' item.id %}" method="post">
+                                {% csrf_token %}
+                                {{ order_product_form.status }}
+                            
+                        </td>
+                        <td>
+                            <input type="submit" value="Update Order" class="btn btn-outline-primary">
+                        </form>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -44,6 +50,7 @@
         </div>
     </div>
 </section>
+
 
 
 

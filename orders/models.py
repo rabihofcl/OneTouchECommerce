@@ -23,7 +23,8 @@ class Order(models.Model):
     STATUS = (
         ('New', 'New'),
         ('Accepted','Accepted'),
-        ('Completed', 'Completed'),
+        ('Shipping', 'Shipping'),
+        ('Delivered', 'Delivered'),
         ('Cancelled', 'Cancelled'),
     )
 
@@ -58,8 +59,19 @@ class Order(models.Model):
     def __str__(self):
         return self.full_name()
 
+    
+
 
 class OrderProduct(models.Model):
+    STATUS1 = (
+        ('New', 'New'),
+        ('Accepted','Accepted'),
+        ('Shipping', 'Shipping'),
+        ('Delivered', 'Delivered'),
+        ('Cancelled', 'Cancelled'),
+        ('Return', 'Return'),
+    )
+    
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, blank=True, null=True)
     user = models.ForeignKey(Account, on_delete=models.CASCADE)
@@ -69,6 +81,7 @@ class OrderProduct(models.Model):
     ordered = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=10, choices=STATUS1, default='New')
 
 
     def __str__(self):
