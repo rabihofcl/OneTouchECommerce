@@ -409,11 +409,7 @@ def dashboard(request):
 
 @login_required(login_url = 'signin')
 def my_orders(request):
-
     order_detail = OrderProduct.objects.filter(user=request.user).order_by('-created_at')  
-
-
-
     context = {
         'order_detail':order_detail,
     }
@@ -421,17 +417,19 @@ def my_orders(request):
 
 
 def cancel_order(request, id):
-    item = OrderProduct.objects.filter(id=id).update(status='Cancelled')
+    cancelled_product = OrderProduct.objects.get(id=id)
+    Product.objects.filter(id=cancelled_product.product.id).update(stock=cancelled_product.product.stock + cancelled_product.quantity)
+    OrderProduct.objects.filter(id=id).update(status='Cancelled')
     return redirect('my_orders')
 
 
 def return_item(request, id):
-    item = OrderProduct.objects.filter(id=id).update(status='Return')
+    OrderProduct.objects.filter(id=id).update(status='Return')
     return redirect('my_orders')
 
 
 def cancel_return(request, id):
-    item = OrderProduct.objects.filter(id=id).update(status='Delivered')
+    OrderProduct.objects.filter(id=id).update(status='Delivered')
     return redirect('my_orders')
 
 

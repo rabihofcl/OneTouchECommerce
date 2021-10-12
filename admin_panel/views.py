@@ -2,6 +2,7 @@ from django.http.response import JsonResponse
 from admin_panel.forms import BrandForm
 from brand.models import Brand
 from orders.forms import OrderForm, OrderProductForm
+from product.forms import ProductForm
 from product.models import Product
 from account.models import Account
 from django.contrib import messages
@@ -48,6 +49,10 @@ def admin_home(request):
     products = Product.objects.all().count()
     brands = Brand.objects.all().count()
     users = Account.objects.all().count()
+
+
+
+
     context = {
         'products':products,
         'brands':brands,
@@ -138,42 +143,14 @@ def ad_product_edit(request, id):
     product = Product.objects.get(pk=id)
 
     if request.method == 'POST':
-        if len(request.FILES) != 0:
-            if len(product.image1) > 0:
-                os.remove(product.image1.path)
-            product.image1 = request.FILES['image1']
-            if len(product.image2) > 0:
-                os.remove(product.image2.path)
-            product.image2 = request.FILES['image2']
-            if len(product.image3) > 0:
-                os.remove(product.image3.path)
-            product.image3 = request.FILES['image3']
-            if len(product.image4) > 0:
-                os.remove(product.image4.path)
-            product.image4 = request.FILES['image4']
-
-        product_name = request.POST['product_name']
-        brand = Brand.objects.get(brand_name=request.POST['brand'])
-        description = request.POST['description']
-        price = request.POST['price']
-        stock = request.POST['stock']
-        slug = product_name.lower().replace(" ","-")
-
-        if Product.objects.exclude(id=id).filter(product_name=product_name).exists():
-            messages.info(request, 'Product already exist')
-            return redirect('ad_product_edit', id=id)
-        else:
-            Product.objects.filter(pk=id).update(product_name=product_name, brand=brand, description=description, price=price,
-                          stock=stock,  is_available=True, slug=slug)
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
             return redirect('ad_product_list')
 
     else:
-        brands = Brand.objects.all()
-        context = {
-            'product': product,
-            'brands': brands,
-        }
-        return render(request, 'ad_product_edit.html', context)
+        form = ProductForm(instance=product)
+        return render(request, 'ad_product_edit.html',  {'product':product, 'form':form})
 
 
 
@@ -273,3 +250,6 @@ def ad_order_edit(request, order_number):
     }
     
     return render(request, 'ad_order_edit.html', context)
+
+
+

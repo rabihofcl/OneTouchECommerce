@@ -17,7 +17,28 @@
 <section style="padding-left: 50px;">
     <div class="row">
         <div class="col-md-12">
-            <form method="POST" action="{% url 'ad_product_edit' product.id %}" enctype="multipart/form-data">
+
+            <section>
+                <div class="row">
+                    <div class="col-md-4">
+                        <form method="POST">
+                            {% csrf_token %}
+                            {{ form.errors }}
+                            {{ form.as_p }}
+            
+                            <button type="submit" class="btn btn-warning">Apply Changes</button>
+                            <a href="{% url 'ad_product_list' %}" class="btn btn-primary me-5">Cancel</a>
+            
+            
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+
+
+
+            <!-- <form method="POST" action="{% url 'ad_product_edit' product.id %}" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="row">
 
@@ -74,7 +95,7 @@
 
                         <!-- <input type="checkbox" id="available" name="available" value="True">
                         <label for="available">Available</label> -->
-                    </div>
+                    <!-- </div>
                 </div>
                 <div>
                     {% for message in messages %}
@@ -87,9 +108,9 @@
                         <a href="{% url 'ad_product_list' %}" class="btn btn-primary me-5">Cancel</a>
 
                     </div>
-                </div>
-
-            </form>
+                </div> -->
+<!-- 
+            </form> --> -->
 
 
         </div>

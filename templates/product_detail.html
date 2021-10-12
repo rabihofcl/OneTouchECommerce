@@ -22,16 +22,16 @@
 							<a href="#"><img class="big_img"  src="{{ single_product.image1.url }}"></a>
 						</div> <!-- img-big-wrap.// -->
 						<div class="row mt-5 exzoom" id="exzoom">
-							<div class="col-md-3 text-center border">
+							<div class="col-md-3 col-3 text-center border">
 								<a href="#"><img class="small_img" src="{{ single_product.image1.url }}" height="100px"></a>
 							</div>
-							<div class="col-md-3 text-center border">
+							<div class="col-md-3 col-3 text-center border">
 								<a href="#"><img class="small_img"  src="{{ single_product.image2.url }}" height="100px"></a>
 							</div>
-							<div class="col-md-3 text-center border">
+							<div class="col-md-3 col-3 text-center border">
 								<a href="#"><img class="small_img"  src="{{ single_product.image3.url }}" height="100px"></a>
 							</div>
-							<div class="col-md-3 text-center border">
+							<div class="col-md-3 col-3 text-center border">
 								<a href="#"><img class="small_img"  src="{{ single_product.image4.url }}" height="100px"></a>
 							</div>
 						</div>
@@ -45,9 +45,8 @@
 						<div class="mb-3">
 							<var class="price h4">₹ {{ single_product.price }}</var>
 						</div>
-
-						<p>{{ single_product.description }}</p>
-
+						<textarea  style="border: none;" readonly cols="60" rows="10">{{ single_product.description }}</textarea>
+						
 
 						<!-- <hr> -->
 						<!-- <div class="row">

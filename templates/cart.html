@@ -10,6 +10,7 @@
 <section class="section-content padding-y bg">
     <div class="container">
 
+
         <!-- ============================ COMPONENT 1 ================================= -->
 
         {% if not cart_items %}
@@ -27,6 +28,13 @@
         {% else %}
         <div class="row">
             <aside class="col-lg-9">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        {% for message in messages %}
+                        <p style="color: red;">{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
                 <div class="card">
                     <table class="table table-borderless table-shopping-cart">
                         <thead class="text-muted">
@@ -42,10 +50,13 @@
                             <tr>
                                 <td>
                                     <figure class="itemside align-items-center">
-                                        <div class="aside"><img src="{{ cart_item.product.image1.url }}" class="img-sm" ></div>
+                                        <div class="aside"><img src="{{ cart_item.product.image1.url }}" class="img-sm">
+                                        </div>
                                         <figcaption class="info">
-                                            <a href="{{ cart_item.product.get_url }}" class="title text-dark">{{ cart_item.product.product_name }}</a>
-                                            <p class="text-muted small">Color: Black <br> Brand: {{ cart_item.product.brand }}</p>
+                                            <a href="{{ cart_item.product.get_url }}"
+                                                class="title text-dark">{{cart_item.product.product_name}}</a>
+                                            <p class="text-muted small">Color: Black <br> Brand:
+                                                {{cart_item.product.brand}}</p>
                                         </figcaption>
                                     </figure>
                                 </td>
@@ -54,14 +65,19 @@
                                     <div class="col">
                                         <div class="input-group input-spinner">
                                             <div class="input-group-prepend">
-                                                <a onclick="minus_button()" href="{% url 'remove_cart' cart_item.product.id %}" class="btn btn-light" type="button" id="button-minus"> <i
+                                                <a onclick="minus_button()"
+                                                    href="{% url 'remove_cart' cart_item.product.id %}"
+                                                    class="btn btn-light" type="button" id="button-minus"> <i
                                                         class="fa fa-minus"></i> </a>
                                             </div>
-                                            <input type="text" class="form-control" id="quantity" value="{{ cart_item.quantity }}">
+                                            <input type="text" class="form-control" id="quantity"
+                                                value="{{ cart_item.quantity }}">
                                             <div class="input-group-append">
-                                                <a href="{% url 'add_cart' cart_item.product.id %}" class="btn btn-light" type="button" id="button-plus"> <i
+                                                <a href="{% url 'add_cart' cart_item.product.id %}"
+                                                    class="btn btn-light" type="button" id="button-plus"> <i
                                                         class="fa fa-plus"></i> </a>
                                             </div>
+
                                         </div> <!-- input-group.// -->
                                     </div> <!-- col.// -->
                                 </td>
@@ -72,7 +88,11 @@
                                     </div> <!-- price-wrap .// -->
                                 </td>
                                 <td class="text-right">
-                                    <a onclick="return confirm('Are you sure to delete?')" href="{% url 'remove_cart_item' cart_item.product.id %}" class="btn btn-danger"> Remove</a>
+                                    <!-- Button trigger modal -->
+                                    <button  onclick="remove_item('{{cart_item.product.id}}')" type="button" class="btn btn-danger" data-toggle="modal"
+                                        data-target="#exampleModalCenter">
+                                        Remove
+                                    </button>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -115,29 +135,87 @@
         <!-- ============================ COMPONENT 1 END .// ================================= -->
 
     </div> <!-- container .//  -->
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h6>Are you sure to remove ?</h6>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <a onclick="removeItem()" id="modal_remove_btn"><button type=" button"
+                        class="btn btn-danger">Remove</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Ends -->
+    
 </section>
-<!-- ========================= SECTION CONTENT END// ========================= -->
+    <!-- ========================= SECTION CONTENT END// ========================= -->
 
 
 
-<script>
-    function minus_button(){
-        var val = document.getElementById('quantity').value
-        console.log(val)
-        if (val <= 1) {
-            console.log('zero')
-            var a = confirm('Are you sure to delete?')
-            if (a == false) {
-                document.getElementById('button-minus').href = ''
+
+    <script>
+        function minus_button() {
+            var val = document.getElementById('quantity').value
+            console.log(val)
+            if (val <= 1) {
+                console.log('zero')
+                var a = confirm('Are you sure to delete?')
+                if (a == false) {
+                    document.getElementById('button-minus').href = ''
+                }
             }
         }
-    }
+
+    </script>
+
+
+    <script>
+        $(document).ready(function () {
+            $('#myModal').on('shown.bs.modal', function () {
+                $('#myInput').trigger('focus')
+            })
+        })
+
+        function remove_item(id) {
+            document.getElementById('modal_remove_btn').value = id
+            console.log(id)
+        }
+
+        function removeItem(){
+            var id = document.getElementById('modal_remove_btn').value
+            console.log(id)
+            $.ajax({
+                url: '/cart/remove_item/',
+                method: 'POST',
+                dataType: 'json',
+                data : {
+                    id:id,
+                    csrfmiddlewaretoken: "{{csrf_token}}"
+                },
+                success: (response) => {
+                    location.reload()
+                }
+            })
+        }
+    </script>
 
 
 
-</script>
 
 
 
-
-{% endblock %}
+    {% endblock %}

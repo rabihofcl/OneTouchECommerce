@@ -89,7 +89,6 @@ def place_order(request, total=0, quantity=0):
     if request.method == 'POST':
 
         form = OrderForm1(request.POST)
-        print(form)
         
         if form.is_valid():
 

@@ -1,6 +1,9 @@
 
 
+
+from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
+from django.http.response import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from product.models import Product
 from cart.models import Cart, CartItem
@@ -35,8 +38,14 @@ def add_cart(request, product_id):
 
         try:
             cart_item = CartItem.objects.get(product=product, user=request.user)
-            cart_item.quantity += 1
-            cart_item.save()
+            if cart_item.quantity > cart_item.product.stock-1:
+                messages.info(request, 'Product Out of Stock')
+                return redirect('cart')
+            else:
+                cart_item.quantity += 1
+                cart_item.save()
+
+
         except CartItem.DoesNotExist:
             cart_item = CartItem.objects.create(
                 product=product,
@@ -57,8 +66,12 @@ def add_cart(request, product_id):
 
         try:
             cart_item = CartItem.objects.get(product=product, cart=cart)
-            cart_item.quantity += 1
-            cart_item.save()
+            if cart_item.quantity > cart_item.product.stock-1:
+                messages.info(request, 'Product Out of Stock')
+                return redirect('cart')
+            else:
+                cart_item.quantity += 1
+                cart_item.save()
         except CartItem.DoesNotExist:
             cart_item = CartItem.objects.create(
                 product=product,
@@ -99,6 +112,19 @@ def remove_cart_item(request, product_id):
 
     cart_item.delete()
     return redirect('cart')
+
+
+def remove_item(request):
+    product_id = request.POST['id']
+    product = get_object_or_404(Product, id=product_id)
+    if request.user.is_authenticated:
+        cart_item = CartItem.objects.get(product=product, user=request.user)
+    else:
+        cart = Cart.objects.get(cart_id=_cart_id(request))
+        cart_item = CartItem.objects.get(product=product, cart=cart)
+
+    cart_item.delete()
+    return JsonResponse({'success': True})
 
 
 
