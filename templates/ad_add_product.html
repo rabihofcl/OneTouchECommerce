@@ -38,6 +38,7 @@
                                 <option value="{{ brand.brand_name }}">{{ brand.brand_name }}</option>
                                 {% endfor %}
                             </select>
+							<a href="{% url 'ad_add_brand' %}" style="display: flex; justify-content: end;" class="mt-1">Add brand</a>
                         </div>
                         <div class="form-group">
                             <label>Stock</label>

@@ -1,6 +1,6 @@
 from django import forms
 from django.db.models import fields
-from .models import Order, OrderProduct
+from .models import Order, OrderProduct, ReviewRating
 from .forms import OrderProduct
 
 
@@ -37,3 +37,9 @@ class OrderProductForm(forms.ModelForm):
             self.fields[field].widget.attrs['class'] = 'form-control'
 
         self.fields['status'].widget.attrs['value'] = 'Select'
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = ReviewRating
+        fields = ['subject', 'review', 'rating']

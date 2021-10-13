@@ -1,4 +1,5 @@
 from django.core import paginator
+from django.db.models.aggregates import Avg
 from django.http.response import HttpResponse
 from cart.views import _cart_id
 from cart.models import Cart, CartItem
@@ -7,7 +8,7 @@ from django.http import request
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.models import auth
-from orders.models import Order, OrderProduct
+from orders.models import Order, OrderProduct, ReviewRating
 from product.models import Product
 from account.models import Account, UserProfile
 from twilio.rest import Client
@@ -41,14 +42,28 @@ def signin(request):
         if user is not None:
             try:
                 cart = Cart.objects.get(cart_id=_cart_id(request))
+                is_user_cart_exists = CartItem.objects.filter(user=user).exists()
                 is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
                 
                 if is_cart_item_exists:
                     cart_item = CartItem.objects.filter(cart=cart)
-
-                    for item in cart_item:
-                        item.user = user
-                        item.save()
+                    if is_user_cart_exists:
+                        for item in cart_item:
+                                is_item_exists = CartItem.objects.filter(user=user,product=item.product).exists()
+                                if is_item_exists:
+                                    user_item = CartItem.objects.get(user=user,product=item.product)
+                                    user_item.quantity += item.quantity
+                                    user_item.save()
+                                    if user_item.quantity > 5:
+                                        user_item.quantity = 5
+                                        user_item.save()
+                                else:
+                                    item.user = user
+                                    item.save()
+                    else:
+                        for item in cart_item:
+                            item.user = user
+                            item.save()
 
             except:
                 pass
@@ -362,6 +377,11 @@ def store(request, brand_slug=None):
 
 
 def product_detail(request, brand_slug, product_slug):
+    single_product = Product.objects.get(
+            brand__slug=brand_slug, slug=product_slug)
+
+    in_cart = CartItem.objects.filter(cart__cart_id=_cart_id(request),product=single_product).exists()
+
     try:
         single_product = Product.objects.get(
             brand__slug=brand_slug, slug=product_slug)
@@ -370,9 +390,30 @@ def product_detail(request, brand_slug, product_slug):
     except Exception as e:
         raise e
 
+    try:
+        orderproduct = OrderProduct.objects.filter(user=request.user, product_id=single_product.id).exists()
+    except:
+        orderproduct = None
+
+
+    reviews = ReviewRating.objects.filter(product_id=single_product.id, status=True)
+
+    all_reviews = ReviewRating.objects.filter(product=single_product.id, status=True)
+    rating_count=all_reviews.count()
+    rating = 0
+    for review in all_reviews:
+        rating += review.rating
+    if rating <= 0:
+        avg_rating = 0
+    else:
+        avg_rating = rating/rating_count
+
     context = {
         'single_product': single_product,
-        'in_cart': in_cart
+        'in_cart': in_cart,
+        'orderproduct': orderproduct,
+        'reviews': reviews,
+        'avg_rating':avg_rating,
     }
     return render(request, 'product_detail.html', context)
 

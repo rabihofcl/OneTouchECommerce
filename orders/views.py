@@ -2,9 +2,9 @@ from django.http.response import JsonResponse
 from django.shortcuts import redirect, render
 from cart.models import CartItem
 from product.models import Product
-from .forms import OrderForm1
+from .forms import OrderForm1, ReviewForm
 import datetime
-from .models import Order, OrderProduct, Payment
+from .models import Order, OrderProduct, Payment, ReviewRating
 import json
 
 # Create your views here.
@@ -160,3 +160,26 @@ def order_complete(request):
         return render(request, 'order_complete.html', context)
     except (Payment.DoesNotExist, Order.DoesNotExist):
         return redirect('home')
+
+
+def submit_review(request, product_id):
+    url = request.META.get('HTTP_REFERER')
+    if request.method == 'POST':
+        try:
+            reviews = ReviewRating.objects.get(user__id=request.user.id, product__id=product_id)
+            form = ReviewForm(request.POST, instance=reviews)
+            form.save()
+            return redirect(url)
+        except:
+            form = ReviewForm(request.POST)
+            if form.is_valid():
+                data = ReviewRating()
+                data.subject = form.cleaned_data['subject']
+                data.rating = form.cleaned_data['rating']
+                data.review = form.cleaned_data['review']
+                data.ip = request.META.get('REMOTE_ADDR')
+                data.product_id = product_id
+                data.user_id = request.user.id
+                data.save()
+                return redirect(url)
+            

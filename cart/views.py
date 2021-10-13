@@ -24,6 +24,7 @@ def _cart_id(request):
 
 
 def add_cart(request, product_id):
+    url = request.META.get('HTTP_REFERER')
     product = Product.objects.get(id=product_id)  # get the product
 
     if request.user.is_authenticated:
@@ -79,7 +80,7 @@ def add_cart(request, product_id):
                 cart=cart,
             )
             cart_item.save()
-    return redirect('cart')
+    return redirect(url)
 
 
 
@@ -134,10 +135,10 @@ def cart(request, total=0, quantity=0, cart_items=None):
         grand_total = 0
         
         if request.user.is_authenticated:
-            cart_items = CartItem.objects.filter(user=request.user, is_active=True)
+            cart_items = CartItem.objects.filter(user=request.user, is_active=True).order_by('-id')
         else:
             cart = Cart.objects.get(cart_id=_cart_id(request))
-            cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+            cart_items = CartItem.objects.filter(cart=cart, is_active=True).order_by('-id')
         for cart_item in cart_items:
             total += (cart_item.product.price * cart_item.quantity)
             quantity += cart_item.quantity
