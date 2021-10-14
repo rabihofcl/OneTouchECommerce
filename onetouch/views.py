@@ -1,6 +1,6 @@
 from django.core import paginator
 from django.db.models.aggregates import Avg
-from django.http.response import HttpResponse
+from django.http.response import HttpResponse, JsonResponse
 from cart.views import _cart_id
 from cart.models import Cart, CartItem
 from brand.models import Brand
@@ -10,12 +10,12 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.models import auth
 from orders.models import Order, OrderProduct, ReviewRating
 from product.models import Product
-from account.models import Account, UserProfile
+from account.models import Account, Address, UserProfile
 from twilio.rest import Client
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
 import requests
-from account.forms import UserForm, UserProfileForm
+from account.forms import AddressForm, UserForm, UserProfileForm
 
 
 
@@ -501,6 +501,42 @@ def edit_profile(request):
         'userprofile': userprofile,
     }
     return render(request, 'edit_profile.html', context)
+
+
+
+@login_required(login_url = 'signin')
+def my_addresses(request):
+
+    url = request.META.get('HTTP_REFERER')
+
+    if request.method == 'POST':
+        address_form = AddressForm(request.POST)
+        if address_form.is_valid():
+            address = address_form.save(commit=False)
+            address.user = request.user
+            address.save()
+            print('saved')
+            return redirect(url)
+        else:
+            print('ddd')
+    else:
+        address_form = AddressForm()
+
+    addresses = Address.objects.filter(user=request.user)
+
+    context = {
+        'address_form': address_form,
+        'addresses': addresses,
+    }
+
+    return render(request, 'my_addresses.html', context)
+
+
+@login_required(login_url = 'signin')
+def delete_address(request):
+    address_id = request.POST['id']
+    Address.objects.filter(id=address_id).delete()
+    return JsonResponse({'success': True})
 
 
 

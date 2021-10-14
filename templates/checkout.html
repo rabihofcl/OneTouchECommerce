@@ -17,7 +17,64 @@
             <aside class="col-lg-6">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title mb-4">Billing Address</h4>
+
+
+
+                        <article class="card">
+                            <header class="card-header mb-2" style="display: flex; justify-content: space-between;">
+                                <strong class="d-inline-block mr-3">My Addresses</strong>
+                                <a href="{% url 'my_addresses' %}">Add Address</a>
+                            </header>
+
+                            <div class="container">
+                                <form>
+                                    {% for address in addresses %}
+                                    <div class="row">
+                                        <div class="col-md-1 pt-2 text-center">
+                                            <input type="radio" id="{{address.id}}" name="address" value="{{address}}">
+                                        </div>
+                                        <div class="col-md-11">
+                                            <label for="html">
+                                                <div class="col-sm-12 mt-2 mb-2">
+                                                    <div class="card">
+                                                        <div class="card-body" style="height: 160px;">
+                                                            <h5 class="card-title mb-0">{{address.full_name}}</h5>
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+        
+                                                                    <p class="card-text mb-0">Address:</p>
+                                                                    <p class="card-text mb-0">{{address.full_address}}</p>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <p class="card-text mb-0">{{address.city}},
+                                                                        {{address.state}}</p>
+                                                                    <p class="card-text mb-0">{{address.country}}, PIN:
+                                                                        {{address.pincode}}
+                                                                    </p>
+                                                                    <p class="card-text mb-0">Phone: {{address.all_numbers}}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </form>
+                            </div>
+                            <div class="row">
+                                {% if addresses %}
+                                {% else %}
+                                <p class="pb-2" style="padding-left: 30px;">No saved addresses</p>
+                                {% endif %}
+                            </div>
+                        </article>
+
+
+
+
+                        <h4 class="card-title mt-4 mb-4">Billing Address</h4>
 
                         <form action="{% url 'place_order' %}" method="POST">
                             {% csrf_token %}
@@ -86,7 +143,7 @@
 
                 <div class="card">
                     <div class="card-body">
-                        
+
                         <table class="table table-borderless table-shopping-cart">
                             <thead class="text-muted">
                                 <tr class="small text-uppercase">
