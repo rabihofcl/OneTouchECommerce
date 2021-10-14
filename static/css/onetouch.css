@@ -55,3 +55,13 @@ input:checked + label:hover, input:checked ~ label:hover, input:checked ~ label:
 .rating-star i{
     color: #ffb503  !important;
 }
+
+.rating{
+    padding: 5px 10px;
+    border: none;
+    background-color: rgb(56, 151, 56);
+    color: white;
+    font-weight: bold;
+    border-radius: 20px;
+    
+}

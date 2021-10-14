@@ -390,10 +390,14 @@ def product_detail(request, brand_slug, product_slug):
     except Exception as e:
         raise e
 
-    try:
-        orderproduct = OrderProduct.objects.filter(user=request.user, product_id=single_product.id).exists()
-    except:
+    if request.user.is_authenticated:
+        try:
+            orderproduct = OrderProduct.objects.filter(user=request.user, product_id=single_product.id).exists()
+        except:
+            orderproduct = None
+    else:
         orderproduct = None
+
 
 
     reviews = ReviewRating.objects.filter(product_id=single_product.id, status=True)
@@ -414,6 +418,7 @@ def product_detail(request, brand_slug, product_slug):
         'orderproduct': orderproduct,
         'reviews': reviews,
         'avg_rating':avg_rating,
+        'rating_count': rating_count,
     }
     return render(request, 'product_detail.html', context)
 
