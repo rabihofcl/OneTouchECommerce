@@ -116,25 +116,23 @@ def ad_product_list(request):
 @login_required(login_url = 'admin_signin')
 def ad_add_product(request):
     if request.method == 'POST':
-
-        product_name = request.POST['product_name']
-        brand = Brand.objects.get(brand_name=request.POST['brand'])
-        description = request.POST['description']
-        price = request.POST['price']
-        stock = request.POST['stock']
-        image1 = request.FILES['image1']
-        image2 = request.FILES['image2']
-        image3 = request.FILES['image3']
-        image4 = request.FILES['image4']
-        slug = product_name.lower().replace(" ","-")
-
-        product = Product(product_name=product_name, brand=brand, description=description, price=price,
-                          stock=stock, image1=image1, image2=image2, image3=image3, image4=image4, is_available=True, slug=slug)
-        product.save()
-        return redirect('ad_add_product')
+        product_form = ProductForm(request.POST, request.FILES)
+        print(product_form)
+        if product_form.is_valid():
+            product = product_form.save(commit=False)
+            product.slug = product.product_name.lower().replace(" ","-")
+            product_form.save()
+            return redirect('ad_add_product')
+    else:
+        product_form = ProductForm()
 
     brands = Brand.objects.all()
-    return render(request, 'ad_add_product.html', {'brands': brands})
+
+    context = {
+        'brands': brands,
+        'product_form': product_form,
+    }
+    return render(request, 'ad_add_product.html', context)
 
 
 
@@ -253,3 +251,20 @@ def ad_order_edit(request, order_number):
 
 
 
+
+
+
+# product_name = request.POST['product_name']
+#         brand = Brand.objects.get(brand_name=request.POST['brand'])
+#         description = request.POST['description']
+#         price = request.POST['price']
+#         stock = request.POST['stock']
+#         image1 = request.FILES['image1']
+#         image2 = request.FILES['image2']
+#         image3 = request.FILES['image3']
+#         image4 = request.FILES['image4']
+#         slug = product_name.lower().replace(" ","-")
+
+#         product = Product(product_name=product_name, brand=brand, description=description, price=price,
+#                           stock=stock, image1=image1, image2=image2, image3=image3, image4=image4, is_available=True, slug=slug)
+#         product.save()
