@@ -16,3 +16,15 @@ class ProductForm(forms.ModelForm):
         super(ProductForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = 'form-control'
+
+            self.fields['image1'].widget.attrs['data-toggle'] = 'modal'
+            self.fields['image1'].widget.attrs['data-target'] = '#exampleModal'
+
+            self.fields['image2'].widget.attrs['data-toggle'] = 'modal'
+            self.fields['image2'].widget.attrs['data-target'] = '#exampleModal'
+
+            self.fields['image3'].widget.attrs['data-toggle'] = 'modal'
+            self.fields['image3'].widget.attrs['data-target'] = '#exampleModal'
+
+            self.fields['image4'].widget.attrs['data-toggle'] = 'modal'
+            self.fields['image4'].widget.attrs['data-target'] = '#exampleModal'

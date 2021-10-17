@@ -6,7 +6,7 @@
 {% block content %}
 
 <section>
-	<div >
+	<div>
 		<div class="col-md-12 heading mt-3 mb-3">
 			<p class="heading-text">Add Brand</p>
 		</div>
@@ -14,14 +14,14 @@
 </section>
 
 
-<section >
-	<div class="row "  style="display: flex; justify-content: center;">
+<section>
+	<div class="row " style="display: flex; justify-content: center;">
 		<div class="col-md-6 card" style="display: flex; justify-content: center;">
 			<form method="POST" action="" enctype="multipart/form-data">
 				{% csrf_token %}
 				<div class="col-md-12 mt-3">
 
-				
+
 					<div class="form-group mr-2">
 						<label>Product Name</label>
 						{{form.brand_name}}
@@ -40,28 +40,46 @@
 						</div>
 					</div>
 
-					<div class="row">
-						<div class="col-md-12 submit">
-							<div id="image-box" class="image-container"></div><br>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-12 submit">
-							<button class="btn btn-outline-info" id="crop-btn" style="width: 100%; margin-top: 10px; display: none;"
-								type="button">Crop</button>
-						</div>
-					</div>
 
-					<div class="form-group mb-0">
+
+					<div class="form-group mb-3">
 						<button class="btn btn-info" id="confirm-btn" style="width: 100%; margin-top: 10px;"
 							type="submit">Add</button>
 					</div>
 
-			</div>
+				</div>
 			</form>
 		</div>
 	</div>
 </section>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Upload Image</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12 submit">
+						<div id="image-box" class="image-container"></div><br>
+					</div>
+				</div>
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" id="crop-btn" class="btn btn-primary" data-dismiss="modal">Crop</button>
+			</div>
+		</div>
+	</div>
+</div>
 
 
 
@@ -101,13 +119,13 @@
 			// Displaying the Crop buttton
 			document.getElementById('crop-btn').style.display = 'block'
 			// Hiding the Post button
-			document.getElementById('confirm-btn').style.display = 'none'
+			document.getElementById('confirm-btn').style.display = 'block'
 
 			// Creating a croper object with the cropping view image
 			// The new Cropper() method will do all the magic and diplay the cropping view and adding cropping functionality on the website
 			// For more settings, check out their official documentation at https://github.com/fengyuanchen/cropperjs
 			const cropper = new Cropper(image, {
-				aspectRatio: 1/1,
+				aspectRatio: 1 / 1,
 				minCropBoxWidth: 200,
 				minCropBoxHeight: 200,
 			})
@@ -139,6 +157,8 @@
 					document.getElementById('crop-btn').style.display = 'none'
 					// Display the Post button
 					document.getElementById('confirm-btn').style.display = 'block'
+
+					// document.getElementById('exampleModal').style.display = 'none'
 
 				});
 			});

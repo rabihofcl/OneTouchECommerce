@@ -1,8 +1,11 @@
 from django import forms
 from brand.models import Brand
 
+
 class BrandForm(forms.ModelForm):
-    logo = forms.ImageField(required=False, error_messages = {'invalid':("Image files only")}, widget=forms.FileInput)
+    logo = forms.ImageField(required=False, error_messages={
+                            'invalid': ("Image files only")}, widget=forms.FileInput)
+
     class Meta:
         model = Brand
         fields = ['brand_name', 'description', 'logo']
@@ -16,4 +19,7 @@ class BrandForm(forms.ModelForm):
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = 'form-control'
 
+            self.fields['logo'].widget.attrs['data-toggle'] = 'modal'
+            self.fields['logo'].widget.attrs['data-target'] = '#exampleModal'
 
+        # data-toggle="modal" data-target="#exampleModal"
