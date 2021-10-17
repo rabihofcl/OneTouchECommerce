@@ -32,7 +32,7 @@ class UserProfileForm(forms.ModelForm):
 class AddressForm(forms.ModelForm):
     class Meta:
         model = Address
-        fields = ['first_name', 'last_name', 'phone_number_1', 'phone_number_2','address_line_1', 'address_line_2', 'city', 'state', 'country','pincode']
+        fields = ['first_name', 'last_name', 'phone_number', 'email','address_line_1', 'address_line_2', 'city', 'state', 'country','pincode']
 
     def __init__(self, *args, **kwargs):
         super(AddressForm, self).__init__(*args, **kwargs)

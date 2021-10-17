@@ -73,13 +73,16 @@ def ad_add_brand(request):
     if request.method == 'POST':
         form = BrandForm(request.POST, request.FILES)
         if form.is_valid():
+            brand = form.save()
+            brand.slug = brand.brand_name.lower().replace(" ","-")
             form.save()
             return redirect('ad_brand_list')
         else:
             return redirect('ad_add_brand')
     else:
         form = BrandForm()
-        return render(request, 'ad_add_brand.html', {'form': form})
+
+    return render(request, 'ad_add_brand.html', {'form': form})
 
 
 
@@ -93,16 +96,20 @@ def ad_delete_brand(request):
 
 @login_required(login_url = 'admin_signin')
 def ad_brand_edit(request, slug):
-    brand = Brand.objects.get(slug=slug)
+    brand = Brand.objects.get(slug = slug)
+
     if request.method == 'POST':
         form = BrandForm(request.POST,request.FILES, instance=brand)
         if form.is_valid():
+            brand = form.save()
+            brand.slug = brand.brand_name.lower().replace(" ","-")
             form.save()
             return redirect('ad_brand_list')
 
     else:
         form = BrandForm(instance=brand)
-        return render(request, 'ad_brand_edit.html', {'brand':brand, 'form':form})
+    
+    return render(request, 'ad_brand_edit.html', {'brand':brand, 'form':form})
 
 
 
@@ -141,14 +148,21 @@ def ad_product_edit(request, id):
     product = Product.objects.get(pk=id)
 
     if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES, instance=product)
-        if form.is_valid():
-            form.save()
+        product_form = ProductForm(request.POST, request.FILES, instance=product)
+        if product_form.is_valid():
+            product = product_form.save(commit=False)
+            product.slug = product.product_name.lower().replace(" ","-")
+            product_form.save()
             return redirect('ad_product_list')
 
     else:
-        form = ProductForm(instance=product)
-        return render(request, 'ad_product_edit.html',  {'product':product, 'form':form})
+        product_form = ProductForm(instance=product)
+
+    context = {
+        'product_form': product_form,
+        'product': product,
+    }
+    return render(request, 'ad_product_edit.html',  context)
 
 
 

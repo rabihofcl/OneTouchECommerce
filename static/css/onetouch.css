@@ -65,3 +65,7 @@ input:checked + label:hover, input:checked ~ label:hover, input:checked ~ label:
     border-radius: 20px;
     
 }
+
+.error{
+    color: red;
+}

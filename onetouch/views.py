@@ -98,7 +98,7 @@ def phone_login(request):
             request.session['phone_number'] = phone_number
 
             account_sid = "ACbd2e01de49095381f621169be1ce4e98"
-            auth_token = "44b8aceacd094dacc3cf29f80b1f30e3"
+            auth_token = "c0f995014d1876e0f2ee93d6667f66f8"
             client = Client(account_sid, auth_token)
 
             verification = client.verify \
@@ -124,7 +124,7 @@ def phone_login_otp(request):
         phone_number = request.session['phone_number']
 
         account_sid = "ACbd2e01de49095381f621169be1ce4e98"
-        auth_token = "44b8aceacd094dacc3cf29f80b1f30e3"
+        auth_token = "c0f995014d1876e0f2ee93d6667f66f8"
         client = Client(account_sid, auth_token)
 
         verification_check = client.verify \
@@ -186,7 +186,7 @@ def register(request):
             else:
 
                 account_sid = "ACbd2e01de49095381f621169be1ce4e98"
-                auth_token = "44b8aceacd094dacc3cf29f80b1f30e3"
+                auth_token = "c0f995014d1876e0f2ee93d6667f66f8"
                 client = Client(account_sid, auth_token)
 
                 verification = client.verify \
@@ -214,7 +214,7 @@ def otp_register(request):
         phone_number = request.session['phone_number']
 
         account_sid = "ACbd2e01de49095381f621169be1ce4e98"
-        auth_token = "44b8aceacd094dacc3cf29f80b1f30e3"
+        auth_token = "c0f995014d1876e0f2ee93d6667f66f8"
         client = Client(account_sid, auth_token)
 
         verification_check = client.verify \
@@ -280,7 +280,7 @@ def forgotPass(request):
             request.session['phone_number'] = phone_number
 
             account_sid = "ACbd2e01de49095381f621169be1ce4e98"
-            auth_token = "44b8aceacd094dacc3cf29f80b1f30e3"
+            auth_token = "c0f995014d1876e0f2ee93d6667f66f8"
             client = Client(account_sid, auth_token)
 
             verification = client.verify \
@@ -305,7 +305,7 @@ def forgotPassOtp(request):
         phone_number = request.session['phone_number']
 
         account_sid = "ACbd2e01de49095381f621169be1ce4e98"
-        auth_token = "44b8aceacd094dacc3cf29f80b1f30e3"
+        auth_token = "c0f995014d1876e0f2ee93d6667f66f8"
         client = Client(account_sid, auth_token)
 
         verification_check = client.verify \

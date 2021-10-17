@@ -14,12 +14,12 @@
 
     <!-- ============================ COMPONENT LOGIN   ================================= -->
     <div class="card mx-auto" style="max-width: 380px; margin-top:100px; border: none;">
-        
 
-        <div class="card-body" id='email_login' >
+
+        <div class="card-body" id='email_login'>
             <h4 class="card-title mb-4">Reset Password</h4>
-            
-            <form method="POST" action="resetPass" >
+
+            <form method="POST" action="resetPass" id="submit-form">
                 {% csrf_token %}
 
                 <div class="form-group">
@@ -28,7 +28,7 @@
                 <div class="form-group">
                     <input type="password" name="password2" class="form-control" placeholder="Confirm Password">
                 </div> <!-- form-group// -->
-                
+
 
                 <div style="display: flex; justify-content: center;">
                     {% for message in messages %}
@@ -41,17 +41,32 @@
             </form>
 
         </div> <!-- card-body.// -->
-        
-        
+
+
     </div> <!-- card .// -->
 
     <p class="text-center mt-4">Don't have account? <a href="{% url 'register' %}">Sign up</a></p>
-   
+
     <!-- ============================ COMPONENT LOGIN  END.// ================================= -->
 
 
 </section>
 <!-- ========================= SECTION CONTENT END// ========================= -->
 
+<script>
+    $(document).ready(function () {
+
+        $("#submit-form").validate({
+            rules: {
+                password1: {
+                    required: true,
+                },
+                password2: {
+                    required: true,
+                },
+            },
+        })
+    })
+</script>
 
 {% endblock %}

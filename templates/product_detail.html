@@ -110,7 +110,10 @@
 									class="text">Add to Cart</span>
 								<i class="fas fa-shopping-cart"></i> </a>
 							{% endif %}
-							{% endif %}
+							<a href="{% url 'buy_now' single_product.id %}" class="btn" style="background: rgb(250, 111, 12); color: white;"> <span
+								class="text">Buy Now</span>
+								<i class="fas fa-bolt"></i> </a>
+						{% endif %}
 					</article> <!-- product-info-aside .// -->
 				</main> <!-- col.// -->
 			</div> <!-- row.// -->

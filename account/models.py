@@ -110,17 +110,14 @@ class Address(models.Model):
     state = models.CharField(max_length=20)
     country = models.CharField(max_length=20)
     pincode = models.CharField(max_length=10)
-    phone_number_1 = models.CharField(max_length=15)
-    phone_number_2 = models.CharField(max_length=15, blank=True)
+    phone_number = models.CharField(max_length=15)
+    email = models.EmailField(max_length=200)
 
     def full_name(self):
         return f'{self.first_name} {self.last_name}'
 
     def full_address(self):
         return f'{self.address_line_1}, {self.address_line_2}'
-
-    def all_numbers(self):
-        return f'{self.phone_number_1}, {self.phone_number_2}'
 
     def __str__(self):
         return self.full_name()

@@ -55,7 +55,7 @@
                     </header>
 
                     <div class="col-md-12">
-                        <form action="" method="post">
+                        <form action="" method="post" id="submit-form">
                             {% csrf_token %}
 
                             <div class="form-row mt-3">
@@ -64,7 +64,7 @@
                                     {{ address_form.first_name }}
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label>Profile Picture</label>
+                                    <label>Last Name</label>
                                     {{ address_form.last_name }}
                                 </div>
                             </div>
@@ -101,12 +101,12 @@
 
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label>Phone Number 1</label>
-                                    {{ address_form.phone_number_1 }}
+                                    <label>Phone Number</label>
+                                    {{ address_form.phone_number }}
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label>Phone Number (Optional)</label>
-                                    {{ address_form.phone_number_2 }}
+                                    <label>Email</label>
+                                    {{ address_form.email }}
                                 </div>
                             </div>
 
@@ -148,10 +148,10 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <a onclick="deleteAddress()" id="delete_address" ><button type=" button"
-                    class="btn btn-danger">Delete</button></a>
+                <a onclick="deleteAddress()" id="delete_address"><button type=" button"
+                        class="btn btn-danger">Delete</button></a>
             </div>
-            
+
         </div>
     </div>
 </div>
@@ -186,7 +186,79 @@
 
 <!-- Modal Ends Here -->
 
+<script>
+    $(document).ready(function () {
+        $.validator.addMethod("alpha", function (value, element) {
+            return this.optional(element) || value == value.match(/^[a-zA-Z\s]+$/);
+        });
 
+        jQuery.validator.addMethod("noSpace", function (value, element) {
+            return value == '' || value.trim('').length >= 4;
+        }, "At least four characters");
+
+        $.validator.addMethod("isEmail", function (value, element) {
+            return this.optional(element) || value == value.match(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b/i);
+        });
+
+
+        $("#submit-form").validate({
+            rules: {
+                first_name: {
+                    required: true,
+                    alpha: true,
+                },
+                last_name: {
+                    required: true,
+                    alpha: true,
+                },
+                address_line_1: {
+                    required: true,
+                },
+                city: {
+                    required: true,
+                },
+                state: {
+                    required: true,
+                },
+                country: {
+                    required: true,
+                },
+                pincode: {
+                    required: true,
+                    minlength: 6,
+                    maxlength: 6,
+                },
+                phone_number: {
+                    required: true,
+                    minlength: 10,
+                    maxlength: 10,
+                    number: true
+                },
+                email: {
+                    required: true,
+                    isEmail: true
+                },
+
+            },
+            messages: {
+                first_name: {
+                    alpha: "Please enter letters only"
+                },
+                last_name: {
+                    alpha: "Please enter letters only"
+                },
+                email: {
+                    isEmail: "Please enter a valid email address"
+                },
+                phone_number: {
+                    number: "Please enter a valid mobile number",
+                    minlength: "Please enter atleast 10 digits",
+                    maxlength: "Please enter only 10 digits",
+                },
+            },
+        })
+    })
+</script>
 
 
 {% endblock %}

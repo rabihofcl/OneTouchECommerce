@@ -16,13 +16,14 @@
     <div class="card mx-auto" style="max-width: 380px; margin-top:100px; border: none;">
 
         <div class="text-center">
-            <button onclick="email_show()" class="btn btn-outline-primary" style="width: 380px;">Login with Email</button>
+            <button onclick="email_show()" class="btn btn-outline-primary" style="width: 380px;">Login with
+                Email</button>
         </div>
-        
+
 
         <div class="card-body" id='email_login' style="display: block;">
             <h4 class="card-title mb-4">Sign in</h4>
-            <form method="POST" action="signin" >
+            <form method="POST" action="signin" id="submit-form">
                 {% csrf_token %}
                 <div class="form-group">
                     <input type="email" name="email" class="form-control" placeholder="Email Address">
@@ -47,16 +48,17 @@
             {% endfor %}
         </div>
         <br>
-        
+
         <div class="text-center">
-            <button onclick="phone_show()" class="btn btn-outline-primary" style="width: 380px;">Login with Phone</button>
+            <button onclick="phone_show()" class="btn btn-outline-primary" style="width: 380px;">Login with
+                Phone</button>
         </div>
 
 
         <div class="card-body" id='phone_login' style="display: none;">
             <h4 class="card-title mb-4">Sign in</h4>
 
-            <form method="POST" action="phone_login">
+            <form method="POST" action="phone_login" id="submit-form1">
                 {% csrf_token %}
                 <div class="form-group">
                     <input type="tel" name="phone_number" class="form-control" placeholder="Phone Number">
@@ -67,11 +69,11 @@
                 </div> <!-- form-group// -->
             </form>
         </div> <!-- card-body.// -->
-        
+
     </div> <!-- card .// -->
 
     <p class="text-center mt-4">Don't have account? <a href="{% url 'register' %}">Sign up</a></p>
-   
+
     <!-- ============================ COMPONENT LOGIN  END.// ================================= -->
 
 
@@ -80,33 +82,91 @@
 
 
 <script>
-    function email_show(){
-        var x = document.getElementById('email_login');    
-        var y = document.getElementById('phone_login');  
-        if (y.style.display = "block"){
+    function email_show() {
+        var x = document.getElementById('email_login');
+        var y = document.getElementById('phone_login');
+        if (y.style.display = "block") {
             y.style.display = "none"
         }
         if (x.style.display === "none") {
             x.style.display = "block";
         } else {
             x.style.display = "none";
-        } 
+        }
     }
 
-    function phone_show(){
-        var x = document.getElementById('phone_login');    
-        var y = document.getElementById('email_login');  
-        if (y.style.display = "block"){
+    function phone_show() {
+        var x = document.getElementById('phone_login');
+        var y = document.getElementById('email_login');
+        if (y.style.display = "block") {
             y.style.display = "none"
-        }  
+        }
         if (x.style.display === "none") {
             x.style.display = "block";
         } else {
             x.style.display = "none";
-        } 
+        }
     }
 
-    
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        $.validator.addMethod("alpha", function (value, element) {
+            return this.optional(element) || value == value.match(/^[a-zA-Z\s]+$/);
+        });
+
+        jQuery.validator.addMethod("noSpace", function (value, element) {
+            return value == '' || value.trim('').length >= 4;
+        }, "At least four characters");
+
+        $.validator.addMethod("isEmail", function (value, element) {
+            return this.optional(element) || value == value.match(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b/i);
+        });
+
+
+
+        $("#submit-form1").validate({
+            rules: {
+                phone_number: {
+                    required: true,
+                    minlength: 10,
+                    maxlength: 10,
+                    number: true
+                },
+            },
+            messages: {
+                phone_number: {
+                    number: "Please enter a valid mobile number",
+                    minlength: "Please enter atleast 10 digits",
+                    maxlength: "Please enter only 10 digits",
+                },
+            },
+        })
+
+
+        $("#submit-form").validate({
+            rules: {
+                email: {
+                    required: true,
+                    isEmail: true
+                },
+                password: {
+                    required: true
+                },
+            },
+            messages: {
+                email: {
+                    isEmail: "Please enter a valid email address"
+                },
+            },
+        })
+
+
+
+    })
+
 </script>
 
 

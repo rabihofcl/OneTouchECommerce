@@ -14,12 +14,12 @@
 
     <!-- ============================ COMPONENT LOGIN   ================================= -->
     <div class="card mx-auto" style="max-width: 380px; margin-top:100px; border: none;">
-        
 
-        <div class="card-body" id='email_login' >
+
+        <div class="card-body" id='email_login'>
             <h4 class="card-title mb-4">Forgot Password</h4>
-            
-            <form method="POST" action="forgotPass" >
+
+            <form method="POST" action="forgotPass" id="submit-form">
                 {% csrf_token %}
                 <div class="form-group">
                     <input type="tel" name="phone_number" class="form-control" placeholder="Phone Number">
@@ -39,17 +39,39 @@
             </form>
 
         </div> <!-- card-body.// -->
-        
-        
+
+
     </div> <!-- card .// -->
 
     <p class="text-center mt-4">Don't have account? <a href="{% url 'register' %}">Sign up</a></p>
-   
+
     <!-- ============================ COMPONENT LOGIN  END.// ================================= -->
 
 
 </section>
 <!-- ========================= SECTION CONTENT END// ========================= -->
+
+<script>
+    $(document).ready(function () {
+        $("#submit-form").validate({
+            rules: {
+                phone_number: {
+                    required: true,
+                    minlength: 10,
+                    maxlength: 10,
+                    number: true
+                },
+            },
+            messages: {
+                phone_number: {
+                    number: "Please enter a valid mobile number",
+                    minlength: "Please enter atleast 10 digits",
+                    maxlength: "Please enter only 10 digits",
+                },
+            },
+        })
+    })
+</script>
 
 
 {% endblock %}
