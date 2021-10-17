@@ -7,9 +7,37 @@
 
 {% block content %}
 
+<style>
+    @media print {
+        /* Hide every other element */
+        body * {
+            visibility: hidden;
+        }
+
+        /* Then displaying print container elements */
+        .print-container, .print-container * {
+            visibility: visible;
+        }
+
+        /* Adjusting the position to always start from top left */
+        .print-container {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+        }
+    }
+</style>
 
 
-<div class="container" style="margin: 0 auto;width: 50%;padding: 50px;background: #f1f1f1;margin-top: 50px;margin-bottom: 50px;">
+<div class="row mt-5">
+    <div class="col-md-12 text-center">
+        <a onclick="window.print();" class="btn btn-primary text-white">Print Receipt</a>
+    </div>
+</div>
+
+
+
+<div class="container print-container" style="margin: 0 auto;width: 50%;padding: 50px;background: #f1f1f1;margin-top: 50px;margin-bottom: 50px;">
     <div class="row invoice row-printable">
         <div class="col-md-12">
             <!-- col-lg-12 start here -->

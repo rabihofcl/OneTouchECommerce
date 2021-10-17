@@ -17,13 +17,13 @@
 <section>
 	<div class="row " style="display: flex; justify-content: center;">
 		<div class="col-md-6 card" style="display: flex; justify-content: center;">
-			<form method="POST" action="" enctype="multipart/form-data">
+			<form method="POST" action="" enctype="multipart/form-data" id="submit-form">
 				{% csrf_token %}
 				<div class="col-md-12 mt-3">
 
 
 					<div class="form-group mr-2">
-						<label>Product Name</label>
+						<label>Brand Name</label>
 						{{form.brand_name}}
 					</div>
 					<div class="form-group mr-2">
@@ -166,6 +166,26 @@
 	});
 </script>
 
+
+<script>
+	$(document).ready(function () {
+  
+  
+	  $("#submit-form").validate({
+		rules: {
+		  brand_name: {
+			required: true,
+		  },
+		  description: {
+			required: true,
+		  },
+		  logo: {
+			required: true,
+		  },
+		},
+	  })
+	})
+  </script>
 
 
 

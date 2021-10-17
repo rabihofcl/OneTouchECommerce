@@ -146,3 +146,7 @@ header{
     padding-top: 0;
 }
 
+
+.error{
+    color: red;
+}

@@ -17,7 +17,7 @@
 <section style="padding-left: 50px;">
 	<div class="row">
 		<div class="col-md-10 card">
-			<form method="POST" action="" enctype="multipart/form-data">
+			<form method="POST" action="" enctype="multipart/form-data" id="submit-form">
 				{% csrf_token %}
 				<div class="row ">
 
@@ -404,6 +404,48 @@
 
 
 </script>
+
+
+<script>
+	$(document).ready(function () {
+
+
+		$("#submit-form").validate({
+			rules: {
+				product_name: {
+					required: true,
+				},
+				price: {
+					required: true,
+					digits: true,
+				},
+				brand: {
+					required: true,
+				},
+				stock: {
+					required: true,
+					digits: true,
+				},
+				description: {
+					required: true,
+				},
+				image1: {
+					required: true
+				},
+				image2: {
+					required: true
+				},
+				image3: {
+					required: true
+				},
+				image4: {
+					required: true
+				},
+			},
+		})
+	})
+</script>
+
 
 
 
