@@ -67,22 +67,23 @@
 
                                             {% if cart_item.quantity == 1%}
                                             <div class="input-group-prepend">
-                                                <a onclick="remove_item('{{cart_item.product.id}}')"  data-toggle="modal" data-target="#exampleModalCenter"
-                                                    class="btn btn-light" type="button" id="button-minus"> <i
-                                                        class="fa fa-minus"></i> </a>
+                                                <a onclick="remove_item('{{cart_item.product.id}}')" data-toggle="modal"
+                                                    data-target="#exampleModalCenter" class="btn btn-light"
+                                                    type="button" id="button-minus"> <i class="fa fa-minus"></i> </a>
                                             </div>
 
 
                                             <input type="text" class="form-control" id="quantity"
                                                 value="{{ cart_item.quantity }}">
                                             <div class="input-group-append">
-                                                <a href="{% url 'add_cart' cart_item.product.id %}"
-                                                    class="btn btn-light" type="button" id="button-plus"> <i
-                                                        class="fa fa-plus"></i> </a>
+                                                <a onclick="add_item('{{cart_item.product.id}}')" class="btn btn-light"
+                                                    type="button" id="button-plus"> <i class="fa fa-plus"></i> </a>
                                             </div>
+
+
                                             {% else %}
                                             <div class="input-group-prepend">
-                                                <a href="{% url 'remove_cart' cart_item.product.id %}"
+                                                <a onclick="remove_cart('{{cart_item.product.id}}')" 
                                                     class="btn btn-light" type="button" id="button-minus"> <i
                                                         class="fa fa-minus"></i> </a>
                                             </div>
@@ -91,9 +92,8 @@
                                             <input type="text" class="form-control" id="quantity"
                                                 value="{{ cart_item.quantity }}">
                                             <div class="input-group-append">
-                                                <a onclick="add_item('{{cart_item.product.id}}')"
-                                                    class="btn btn-light" type="button" id="button-plus"> <i
-                                                        class="fa fa-plus"></i> </a>
+                                                <a onclick="add_item('{{cart_item.product.id}}')" class="btn btn-light"
+                                                    type="button" id="button-plus"> <i class="fa fa-plus"></i> </a>
                                             </div>
                                             {% endif %}
                                         </div> <!-- input-group.// -->
@@ -196,12 +196,10 @@
 
     function remove_item(id) {
         document.getElementById('modal_remove_btn').value = id
-        console.log(id)
     }
 
     function removeItem() {
         var id = document.getElementById('modal_remove_btn').value
-        console.log(id)
         $.ajax({
             url: '/cart/remove_item/',
             method: 'POST',
@@ -216,16 +214,45 @@
         })
     }
 
+    function remove_cart(id) {
+        var id = id
+        console.log(id)
+        $.ajax({
+            url: '/cart/remove_cart/',
+            method: 'POST',
+            dataType: 'json',
+            data: {
+                id: id,
+                csrfmiddlewaretoken: "{{csrf_token}}"
+            },
+            success: (response) => {
+                location.reload()
+            }
+        })
+    }
 
-    function add_item(){
+
+    function add_item(id) {
+        var id = id
+        console.log(id)
+        $.ajax({
+            url: '/cart/add_item/',
+            method: 'POST',
+            dataType: 'json',
+            data: {
+                id: id,
+                csrfmiddlewaretoken: "{{csrf_token}}"
+            },
+            success: (response) => {
+                location.reload()
+            }
+
+        })
 
     }
 </script>
 
 
-<script>
-    
-</script>
 
 
 

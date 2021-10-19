@@ -85,7 +85,9 @@ def add_cart(request, product_id):
 
 
 
-def remove_cart(request, product_id):
+def remove_cart(request):
+    product_id = request.POST['id']
+    print(id)
     product = get_object_or_404(Product, id=product_id)
     try:
         if request.user.is_authenticated:
@@ -100,7 +102,7 @@ def remove_cart(request, product_id):
             cart_item.delete()
     except:
         pass
-    return redirect('cart')
+    return JsonResponse({'success': True})
 
 
 
@@ -127,9 +129,70 @@ def remove_item(request):
 
     cart_item.delete()
     return JsonResponse({'success': True})
+    
+
+def add_item(request):
+    product_id = request.POST['id']
+    product = Product.objects.get(id=product_id)
+    if request.user.is_authenticated:
+        try:
+            # get the cart using the cart id present in the session
+            cart = Cart.objects.get(cart_id=_cart_id(request))
+        except Cart.DoesNotExist:
+            cart = Cart.objects.create(
+                cart_id=_cart_id(request)
+            )
+        cart.save()
+
+        try:
+            cart_item = CartItem.objects.get(product=product, user=request.user)
+            if cart_item.quantity > cart_item.product.stock-1:
+                messages.info(request, 'Product Out of Stock')
+                return redirect('cart')
+            else:
+                cart_item.quantity += 1
+                cart_item.save()
+
+
+        except CartItem.DoesNotExist:
+            cart_item = CartItem.objects.create(
+                product=product,
+                quantity=1,
+                user=request.user,
+            )
+            cart_item.save()
+
+    else:
+        try:
+            # get the cart using the cart id present in the session
+            cart = Cart.objects.get(cart_id=_cart_id(request))
+        except Cart.DoesNotExist:
+            cart = Cart.objects.create(
+                cart_id=_cart_id(request)
+            )
+        cart.save()
+
+        try:
+            cart_item = CartItem.objects.get(product=product, cart=cart)
+            if cart_item.quantity > cart_item.product.stock-1:
+                messages.info(request, 'Product Out of Stock')
+                return redirect('cart')
+            else:
+                cart_item.quantity += 1
+                cart_item.save()
+        except CartItem.DoesNotExist:
+            cart_item = CartItem.objects.create(
+                product=product,
+                quantity=1,
+                cart=cart,
+            )
+            cart_item.save()
+    return JsonResponse({'success': True})
 
 
 
+
+@login_required(login_url = 'signin')
 def cart(request, total=0, quantity=0, cart_items=None):
     try:
         tax = 0
