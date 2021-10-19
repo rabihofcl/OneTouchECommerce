@@ -1,10 +1,12 @@
-from django.http.response import JsonResponse
+from django.http.response import HttpResponse, JsonResponse
 from admin_panel.forms import BrandForm
+from ads.forms import AdsForm
 from brand.models import Brand
 from orders.forms import OrderForm, OrderProductForm
 from product.forms import ProductForm
 from product.models import Product
 from account.models import Account
+from ads.models import Ads
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import auth
@@ -265,20 +267,25 @@ def ad_order_edit(request, order_number):
 
 
 
+def ads(request):
+    pass
+    # ads_list = Ads.Objects.all()
+
+    # print(ads_list)
+
+    # context = {
+    #     'ads_list': ads_list,
+    # }
+    # return render(request, 'ad_ads.html', context)
 
 
+def ad_add_ads(request):
+    pass
+    # ads_form = AdsForm()
 
-# product_name = request.POST['product_name']
-#         brand = Brand.objects.get(brand_name=request.POST['brand'])
-#         description = request.POST['description']
-#         price = request.POST['price']
-#         stock = request.POST['stock']
-#         image1 = request.FILES['image1']
-#         image2 = request.FILES['image2']
-#         image3 = request.FILES['image3']
-#         image4 = request.FILES['image4']
-#         slug = product_name.lower().replace(" ","-")
 
-#         product = Product(product_name=product_name, brand=brand, description=description, price=price,
-#                           stock=stock, image1=image1, image2=image2, image3=image3, image4=image4, is_available=True, slug=slug)
-#         product.save()
+    # context = {
+    #     'ads_form': ads_form,
+    # }
+
+    # return render(request, 'ad_add_ads.html', context)

@@ -197,7 +197,6 @@ def checkout(request, total=0, quantity=0, cart_items=None):
 
 @login_required(login_url = 'signin')
 def buy_now(request,id,tax=0, total=0, quantity=0, cart_items=None):
-    Cart.objects.all().delete()
     CartItem.objects.all().delete()
     
     product = Product.objects.get(id=id)

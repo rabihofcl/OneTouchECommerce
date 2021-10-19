@@ -1,0 +1,61 @@
+{% extends 'admin_base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+<section>
+	<div>
+		<div class="col-md-12 heading mt-3 mb-3">
+			<p class="heading-text">Advertisements</p>
+		</div>
+	</div>
+</section>
+
+
+<section>
+    <div class="row active_user_table">
+        <div class="table-responsive">
+            <div>
+                <a href=""><button class="btn btn-primary">Add Ads</button></a>
+            </div>
+            <caption>
+                <p class="table_caption"> Ads List</p>
+            </caption>
+            <table class="table mt-3" id="myTable">
+                <thead>
+                    <tr>
+                        <th scope="col">No.</th>
+                        <th scope="col">Banner </th>
+                        <th>Banner Name</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ads in ads_list %}
+                    <tr>
+                        <th scope="row">{{forloop.counter}}</th>
+                        <td><img src="{{ads.banner.url}}" height="30px" alt=""></td>
+                        <td>
+                            {{ad.banner_name}}
+                        </td>
+                        
+                        <td>
+                            <a href="" class="pr-5"><i class="fas fa-edit"></i></a>
+
+                            
+                            <a onclick="delete_ads('{{ads.id}}')" type="button" data-toggle="modal"
+                                data-target="#exampleModalCenter" style="color: red;"><i
+                                    class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}

@@ -36,7 +36,7 @@
                     </div>
                 </div>
                 <div class="card">
-                    <table class="table table-borderless table-shopping-cart">
+                    <table class="table table-borderless table-shopping-cart table-responsive">
                         <thead class="text-muted">
                             <tr class="small text-uppercase">
                                 <th scope="col">Product</th>
@@ -64,12 +64,15 @@
                                     <!-- col.// -->
                                     <div class="col">
                                         <div class="input-group input-spinner">
+
+                                            {% if cart_item.quantity == 1%}
                                             <div class="input-group-prepend">
-                                                <a onclick="minus_button()"
-                                                    href="{% url 'remove_cart' cart_item.product.id %}"
+                                                <a onclick="remove_item('{{cart_item.product.id}}')"  data-toggle="modal" data-target="#exampleModalCenter"
                                                     class="btn btn-light" type="button" id="button-minus"> <i
                                                         class="fa fa-minus"></i> </a>
                                             </div>
+
+
                                             <input type="text" class="form-control" id="quantity"
                                                 value="{{ cart_item.quantity }}">
                                             <div class="input-group-append">
@@ -77,7 +80,22 @@
                                                     class="btn btn-light" type="button" id="button-plus"> <i
                                                         class="fa fa-plus"></i> </a>
                                             </div>
+                                            {% else %}
+                                            <div class="input-group-prepend">
+                                                <a href="{% url 'remove_cart' cart_item.product.id %}"
+                                                    class="btn btn-light" type="button" id="button-minus"> <i
+                                                        class="fa fa-minus"></i> </a>
+                                            </div>
 
+
+                                            <input type="text" class="form-control" id="quantity"
+                                                value="{{ cart_item.quantity }}">
+                                            <div class="input-group-append">
+                                                <a onclick="add_item('{{cart_item.product.id}}')"
+                                                    class="btn btn-light" type="button" id="button-plus"> <i
+                                                        class="fa fa-plus"></i> </a>
+                                            </div>
+                                            {% endif %}
                                         </div> <!-- input-group.// -->
                                     </div> <!-- col.// -->
                                 </td>
@@ -89,8 +107,8 @@
                                 </td>
                                 <td class="text-right">
                                     <!-- Button trigger modal -->
-                                    <button  onclick="remove_item('{{cart_item.product.id}}')" type="button" class="btn btn-danger" data-toggle="modal"
-                                        data-target="#exampleModalCenter">
+                                    <button onclick="remove_item('{{cart_item.product.id}}')" type="button"
+                                        class="btn btn-danger" data-toggle="modal" data-target="#exampleModalCenter">
                                         Remove
                                     </button>
                                 </td>
@@ -154,68 +172,63 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <a onclick="removeItem()" id="modal_remove_btn"><button type=" button"
-                        class="btn btn-danger">Remove</button></a>
+                            class="btn btn-danger">Remove</button></a>
                 </div>
             </div>
         </div>
     </div>
     <!-- Modal Ends -->
-    
+
 </section>
-    <!-- ========================= SECTION CONTENT END// ========================= -->
+<!-- ========================= SECTION CONTENT END// ========================= -->
 
 
 
 
-    <script>
-        function minus_button() {
-            var val = document.getElementById('quantity').value
-            console.log(val)
-            if (val <= 1) {
-                console.log('zero')
-                var a = confirm('Are you sure to delete?')
-                if (a == false) {
-                    document.getElementById('button-minus').href = ''
-                }
-            }
-        }
-
-    </script>
 
 
-    <script>
-        $(document).ready(function () {
-            $('#myModal').on('shown.bs.modal', function () {
-                $('#myInput').trigger('focus')
-            })
+<script>
+    $(document).ready(function () {
+        $('#myModal').on('shown.bs.modal', function () {
+            $('#myInput').trigger('focus')
         })
+    })
 
-        function remove_item(id) {
-            document.getElementById('modal_remove_btn').value = id
-            console.log(id)
-        }
+    function remove_item(id) {
+        document.getElementById('modal_remove_btn').value = id
+        console.log(id)
+    }
 
-        function removeItem(){
-            var id = document.getElementById('modal_remove_btn').value
-            console.log(id)
-            $.ajax({
-                url: '/cart/remove_item/',
-                method: 'POST',
-                dataType: 'json',
-                data : {
-                    id:id,
-                    csrfmiddlewaretoken: "{{csrf_token}}"
-                },
-                success: (response) => {
-                    location.reload()
-                }
-            })
-        }
-    </script>
-
-
+    function removeItem() {
+        var id = document.getElementById('modal_remove_btn').value
+        console.log(id)
+        $.ajax({
+            url: '/cart/remove_item/',
+            method: 'POST',
+            dataType: 'json',
+            data: {
+                id: id,
+                csrfmiddlewaretoken: "{{csrf_token}}"
+            },
+            success: (response) => {
+                location.reload()
+            }
+        })
+    }
 
 
+    function add_item(){
+
+    }
+</script>
 
 
-    {% endblock %}
+<script>
+    
+</script>
+
+
+
+
+
+{% endblock %}
