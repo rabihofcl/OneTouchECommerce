@@ -1,0 +1,194 @@
+{% extends 'admin_base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+
+
+<section>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row active_user_table">
+                <div class="table-responsive">
+                    <caption>
+                        <p class="table_caption"
+                            style="background-color: rgb(11, 76, 106); height: 50px; align-items: center; color: white;">
+                            All Orders
+                        </p>
+                    </caption>
+                    <div class="row mb-2">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <a href="{% url 'order_export_csv' %}" class="btn btn-outline-info ml-3 mr-2">Export
+                                    CSV</a>
+                                <a href="{% url 'order_export_excel' %}" class="btn btn-outline-info mr-2">Export
+                                    Excel</a>
+                                <a href="{% url 'order_export_pdf' %}" class="btn btn-outline-info mr-2">Export
+                                    PDF</a>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table mt-3" id="myTable3">
+                        <thead>
+                            <tr>
+                                <th scope="col">No.</th>
+                                <th scope="col">Order No.</th>
+                                <th scope="col">Full Name </th>
+                                <th scope="col">Phone</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Order Total</th>
+                                <th scope="col">Tax</th>
+                                <th scope="col">Ordered on</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td scope="row">{{forloop.counter}}</td>
+                                <td>{{order.order_number}}</td>
+                                <td>{{order.full_name}}</td>
+                                <td>{{order.phone}}</td>
+                                <td>{{order.email}}</td>
+                                <td>{{order.order_total}}</td>
+                                <td>{{order.tax}}</td>
+                                <td>{{order.created_at}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+<section>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row active_user_table">
+                <div class="table-responsive">
+                    <caption>
+                        <p class="table_caption"
+                            style="background-color: rgb(11, 76, 106); height: 50px; align-items: center; color: white;">
+                            All Products
+                        </p>
+                    </caption>
+                    <div class="row mb-2">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <a href="{% url 'product_export_csv' %}" class="btn btn-outline-info ml-3 mr-2">Export
+                                    CSV</a>
+                                <a href="{% url 'product_export_excel' %}" class="btn btn-outline-info mr-2">Export
+                                    Excel</a>
+                                <a href="{% url 'product_export_pdf' %}" class="btn btn-outline-info mr-2">Export
+                                    PDF</a>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table mt-3" id="myTable2">
+                        <thead>
+                            <tr>
+                                <th scope="col">No.</th>
+                                <th scope="col">Product Name </th>
+                                <th scope="col">Stock </th>
+                                <th scope="col">Brand</th>
+                                <th scope="col">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in products %}
+                            <tr>
+                                <td scope="row">{{forloop.counter}}</td>
+                                <td>{{product.product_name}}</td>
+                                <td>{{product.stock}}</td>
+                                <td>{{product.brand}}</td>
+                                <td>{{product.price}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row active_user_table">
+                <div class="table-responsive">
+                    <caption>
+                        <p class="table_caption"
+                            style="background-color: rgb(11, 76, 106); height: 50px; align-items: center; color: white  ;">
+                            All Brands
+                        </p>
+                    </caption>
+                    <div class="row mb-2">
+                        <div class="col-md-12">
+                            <div class="row">
+                                    <a href="{% url 'brand_export_csv' %}" class="btn btn-outline-info ml-3 mr-2">Export
+                                        CSV</a>
+                                    <a href="{% url 'brand_export_excel' %}" class="btn btn-outline-info mr-2">Export
+                                        Excel</a>
+                                    <a href="{% url 'brand_export_pdf' %}" class="btn btn-outline-info mr-2">Export
+                                        PDF</a>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table mt-3" id="myTable1">
+                        <thead>
+                            <tr>
+                                <th scope="col">No.</th>
+                                <th scope="col">Brand Name </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for brand in brands %}
+                            <tr>
+                                <th scope="row">{{forloop.counter}}</th>
+                                <td>{{brand.brand_name}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+
+<script>
+
+
+    $(document).ready(function () {
+        $('#myTable1').DataTable();
+    });
+
+    $(document).ready(function () {
+        $('#myTable2').DataTable();
+    });
+
+    $(document).ready(function () {
+        $('#myTable3').DataTable();
+    });
+
+</script>
+
+
+
+{% endblock %}

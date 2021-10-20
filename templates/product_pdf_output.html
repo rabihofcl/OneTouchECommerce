@@ -1,0 +1,60 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Output</title>
+
+    <style>
+        @page {
+            size: 'A4';
+            margin: 2.5cm, 1.5cm, 3.5cm, 1.5cm;
+
+            @top-center {
+                content: "ONETOUCH MOBILES";
+            }
+
+            @bottom-right {
+                content: "Page "counter(page) "of "counter(pages);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="row " style="display: flex; justify-content: center;">
+        <img class="logo" src="{% static './images/logoog.png' %}">
+    </div>
+    
+
+    <h2>Products List</h2>
+
+    <table class="table mt-3">
+        <thead>
+            <tr>
+                <th scope="col">No.</th>
+                <th scope="col">Product Name </th>
+                <th scope="col">Brand</th>
+                <th scope="col">Stock </th>
+                <th scope="col">Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td scope="row">{{forloop.counter}}</td>
+                <td>{{product.product_name}}</td>
+                <td>{{product.brand}}</td>
+                <td>{{product.stock}}</td>
+                <td>{{product.price}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+
+</html>

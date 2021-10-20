@@ -1,0 +1,51 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Output</title>
+
+    <style>
+        @page {
+            size: 'A4';
+            margin: 2.5cm, 1.5cm, 3.5cm, 1.5cm;
+
+            @top-center {
+                content: "ONETOUCH MOBILES";
+            }
+
+            @bottom-right {
+                content: "Page " counter(page) "of " counter(pages);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <img class="logo" src="{% static './images/logo.png' %}">
+
+    <h2>Brands List</h2>
+
+    <table class="table mt-3" >
+        <thead>
+            <tr>
+                <th scope="col">No.</th>
+                <th scope="col">Brand Name </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for brand in brands %}
+            <tr>
+                <th scope="row">{{forloop.counter}}</th>
+                <td>{{brand.brand_name}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+
+</html>

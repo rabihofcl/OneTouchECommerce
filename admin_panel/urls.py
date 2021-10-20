@@ -26,6 +26,17 @@ urlpatterns = [
     path('change_status/<id>', views.change_status, name='change_status'),
     path('ads', views.ads, name='ads'),
     path('ad_add_ads', views.ad_add_ads, name='ad_add_ads'),
+    path('report', views.report, name='report'),
+    path('brand_export_csv', views.brand_export_csv, name='brand_export_csv'),
+    path('brand_export_excel', views.brand_export_excel, name='brand_export_excel'),
+    path('brand_export_pdf', views.brand_export_pdf, name='brand_export_pdf'),
+    path('product_export_csv', views.product_export_csv, name='product_export_csv'),
+    path('product_export_excel', views.product_export_excel, name='product_export_excel'),
+    path('product_export_pdf', views.product_export_pdf, name='product_export_pdf'),
+    path('order_export_csv', views.order_export_csv, name='order_export_csv'),
+    path('order_export_excel', views.order_export_excel, name='order_export_excel'),
+    path('order_export_pdf', views.order_export_pdf, name='order_export_pdf'),
+
     
 ]
 

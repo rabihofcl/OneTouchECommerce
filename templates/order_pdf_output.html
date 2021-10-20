@@ -1,0 +1,63 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Output</title>
+
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 2.5cm, 1.5cm, 3.5cm, 1.5cm;
+
+            @top-center {
+                content: "ONETOUCH MOBILES";
+            }
+
+            @bottom-right {
+                content: "Page "counter(page) "of "counter(pages);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <img class="logo" src="{% static './images/logo.png' %}">
+
+    <h2>Orders List</h2>
+
+    <table class="table mt-3">
+        <thead>
+            <tr>
+                <th scope="col">No.</th>
+                <th scope="col">Order No.</th>
+                <th scope="col">Full Name </th>
+                <th scope="col">Phone</th>
+                <th scope="col">Email</th>
+                <th scope="col">Order Total</th>
+                <th scope="col">Tax</th>
+                <th scope="col">Ordered on</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td scope="row">{{forloop.counter}}</td>
+                <td>{{order.order_number}}</td>
+                <td>{{order.full_name}}</td>
+                <td>{{order.phone}}</td>
+                <td>{{order.email}}</td>
+                <td>{{order.order_total}}</td>
+                <td>{{order.tax}}</td>
+                <td>{{order.created_at}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+
+</html>

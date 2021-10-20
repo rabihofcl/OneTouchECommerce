@@ -1,3 +1,4 @@
+
 from django.http.response import HttpResponse, JsonResponse
 from admin_panel.forms import BrandForm
 from ads.forms import AdsForm
@@ -14,6 +15,13 @@ import os
 from django.contrib.auth.decorators import login_required
 from orders.models import Order, OrderProduct 
 from django.db.models import Q
+import datetime
+import csv
+import xlwt
+from django.template.loader import render_to_string
+from weasyprint import HTML
+import tempfile
+from django.db.models import Sum
 
 # Create your views here.
 
@@ -289,3 +297,222 @@ def ad_add_ads(request):
     # }
 
     # return render(request, 'ad_add_ads.html', context)
+
+
+def report(request):
+    brands = Brand.objects.all()
+    products = Product.objects.all()
+    orders = Order.objects.filter(is_ordered = True).order_by('-created_at')
+
+    context = {
+        'brands': brands,
+        'products': products,
+        'orders': orders,
+    }
+    return render(request, 'ad_report.html', context)
+
+
+
+
+
+def brand_export_csv(request):
+    response = HttpResponse(content_type = 'text/csv')
+    response['Content-Disposition'] = 'attachment; filename = Brands ' + str(datetime.datetime.now()) + '.csv'
+
+    writer = csv.writer(response)
+    writer.writerow(['BRAND NAME', 'BRAND ID'])
+
+    brands = Brand.objects.all().order_by('id')
+
+    for brand in brands:
+        writer.writerow([brand.brand_name, brand.id])
+
+    return response
+
+
+def brand_export_excel(request):
+    response = HttpResponse(content_type = 'application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename = Brands ' + str(datetime.datetime.now()) + '.xls'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Brands')
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['BRAND NAME', 'BRAND ID']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    font_style = xlwt.XFStyle()
+
+    rows = Brand.objects.all().order_by('id').values_list('brand_name', 'id')
+
+    for row in rows:
+        row_num += 1
+
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, str(row[col_num]), font_style)
+
+    wb.save(response)
+
+    return response
+
+def brand_export_pdf(request):
+    response = HttpResponse(content_type = 'application/pdf')
+    response['Content-Disposition'] = 'inline; attachment; filename = Brands ' + str(datetime.datetime.now()) + '.pdf'
+    response['Content-Transfer-Encoding'] = 'binary'
+
+    brands = Brand.objects.all().order_by('id')
+
+    html_string = render_to_string('brand_pdf_output.html', {'brands': brands, 'total': 0})
+    html = HTML(string = html_string)
+
+    result = html.write_pdf()
+
+    with tempfile.NamedTemporaryFile(delete=True) as output:
+        output.write(result)
+        output.flush()
+        output = open(output.name, 'rb')
+        response.write(output.read())
+
+    return response
+
+
+
+
+
+
+def product_export_csv(request):
+    response = HttpResponse(content_type = 'text/csv')
+    response['Content-Disposition'] = 'attachment; filename = Products ' + str(datetime.datetime.now()) + '.csv'
+
+    writer = csv.writer(response)
+    writer.writerow(['PRODUCT NAME', 'BRAND', 'STOCK', 'PRICE'])
+
+    products = Product.objects.all().order_by('id')
+
+    for product in products:
+        writer.writerow([product.product_name, product.brand,  product.stock, product.price])
+
+    return response
+
+
+def product_export_excel(request):
+    response = HttpResponse(content_type = 'application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename = Products ' + str(datetime.datetime.now()) + '.xls'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Products')
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['PRODUCT NAME', 'BRAND', 'STOCK', 'PRICE']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    font_style = xlwt.XFStyle()
+
+    rows = Product.objects.all().order_by('id').values_list('product_name', 'brand', 'stock', 'price')
+
+    for row in rows:
+        row_num += 1
+
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, str(row[col_num]), font_style)
+
+    wb.save(response)
+
+    return response
+
+def product_export_pdf(request):
+    response = HttpResponse(content_type = 'application/pdf')
+    response['Content-Disposition'] = 'inline; attachment; filename = Products ' + str(datetime.datetime.now()) + '.pdf'
+    response['Content-Transfer-Encoding'] = 'binary'
+
+    products = Product.objects.all().order_by('id')
+
+    html_string = render_to_string('product_pdf_output.html', {'products': products, 'total': 0})
+    html = HTML(string = html_string)
+
+    result = html.write_pdf()
+
+    with tempfile.NamedTemporaryFile(delete=True) as output:
+        output.write(result)
+        output.flush()
+        output = open(output.name, 'rb')
+        response.write(output.read())
+
+    return response
+
+
+
+
+
+def order_export_csv(request):
+    response = HttpResponse(content_type = 'text/csv')
+    response['Content-Disposition'] = 'attachment; filename = Orders ' + str(datetime.datetime.now()) + '.csv'
+
+    writer = csv.writer(response)
+    writer.writerow(['ORDER NUMBER', 'FULL NAME', 'PHONE', 'EMIAL', 'ORDER TOTAL', 'TAX', 'CREATED AT'])
+
+    orders = Order.objects.filter(is_ordered = True).order_by('-created_at')
+
+    for order in orders:
+        writer.writerow([order.order_number, order.full_name(), order.phone, order.email, order.order_total, order.tax, order.created_at])
+
+    return response
+
+
+def order_export_excel(request):
+    response = HttpResponse(content_type = 'application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename = Orders ' + str(datetime.datetime.now()) + '.xls'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Orders')
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['ORDER NUMBER', 'FULL NAME', 'PHONE', 'EMIAL', 'ORDER TOTAL', 'TAX', 'CREATED AT']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    font_style = xlwt.XFStyle()
+
+    rows = Order.objects.filter(is_ordered = True).order_by('-created_at').values_list('order_number', 'first_name', 'phone', 'email', 'order_total', 'tax', 'created_at')
+
+    for row in rows:
+        row_num += 1
+
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, str(row[col_num]), font_style)
+
+    wb.save(response)
+
+    return response
+
+
+def order_export_pdf(request):
+    response = HttpResponse(content_type = 'application/pdf')
+    response['Content-Disposition'] = 'inline; attachment; filename = Orders ' + str(datetime.datetime.now()) + '.pdf'
+    response['Content-Transfer-Encoding'] = 'binary'
+
+    orders = Order.objects.filter(is_ordered = True).order_by('-created_at')
+
+    html_string = render_to_string('order_pdf_output.html', {'orders': orders, 'total': 0})
+    html = HTML(string = html_string)
+
+    result = html.write_pdf()
+
+    with tempfile.NamedTemporaryFile(delete=True) as output:
+        output.write(result)
+        output.flush()
+        output = open(output.name, 'rb')
+        response.write(output.read())
+
+    return response
