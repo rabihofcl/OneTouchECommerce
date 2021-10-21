@@ -60,13 +60,23 @@ def admin_home(request):
     brands = Brand.objects.all().count()
     users = Account.objects.all().count()
 
+    labels = []
+    data = []
 
+    queryset = Product.objects.all()
+
+    for product in queryset:
+        labels.append(product.product_name)
+        data.append(product.price)
 
 
     context = {
         'products':products,
         'brands':brands,
         'users':users,
+
+        'labels': labels,
+        'data': data,
     }
     return render(request, 'admin_home.html', context)
 

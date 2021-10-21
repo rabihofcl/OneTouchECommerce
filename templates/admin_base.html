@@ -46,9 +46,19 @@
 
 <body>
     <header>
-        <div class="container">
-            <div class="row" style="display: flex; justify-content: end; padding-top: 25px;">
-                <a href="{% url 'ad_logout' %}" class="btn btn-light">Logout</a>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-3 mt-4" >
+                        <img src="{% static './images/logo.png' %}" alt="" class="img-fluid" style="padding-left: 50px; width: 250px;">
+                    </div>
+                    <div class="col-md-6">
+
+                    </div>
+                    <div class="col-md-3 text-center mt-4">
+                        <a href="{% url 'ad_logout' %}" class="btn logout">Logout</a>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
@@ -56,12 +66,6 @@
     <section>
         <div class="row">
             <div class="col-md-2 sidebar">
-                <!-- <div class="row">
-                    <div class="col-md-12">
-                        <p class="logo">OneTouch.</p>
-                    </div>
-                </div>
-                <hr style="background: brown;"> -->
                 <div class="container">
                     <div class="row sidebar_list">
 
@@ -86,7 +90,7 @@
                                         <button class="btn bg-transparent" data-toggle="collapse"
                                             data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                             <div class="row">
-                                                <div class="col-md-1 sidebar_icons"><i class="far fa-star"></i></div>
+                                                <div class="col-md-1 sidebar_icons"><i class="fas fa-star"></i></div>
                                                 <div class="col-md-8">
                                                     <p class="sidebar_head" style="padding-bottom: 0rem;">BRAND MANAGEMENT</p>
                                                 </div>

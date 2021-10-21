@@ -13,8 +13,7 @@
             <div class="row active_user_table">
                 <div class="table-responsive">
                     <caption>
-                        <p class="table_caption"
-                            style="background-color: rgb(11, 76, 106); height: 50px; align-items: center; color: white;">
+                        <p class="table_caption  report-table">
                             All Orders
                         </p>
                     </caption>
@@ -74,8 +73,7 @@
             <div class="row active_user_table">
                 <div class="table-responsive">
                     <caption>
-                        <p class="table_caption"
-                            style="background-color: rgb(11, 76, 106); height: 50px; align-items: center; color: white;">
+                        <p class="table_caption report-table">
                             All Products
                         </p>
                     </caption>
@@ -124,22 +122,21 @@
     <div class="row">
         <div class="col-md-6">
             <div class="row active_user_table">
-                <div class="table-responsive">
+                <div class="table-responsive ">
                     <caption>
-                        <p class="table_caption"
-                            style="background-color: rgb(11, 76, 106); height: 50px; align-items: center; color: white  ;">
+                        <p class="table_caption  report-table">
                             All Brands
                         </p>
                     </caption>
                     <div class="row mb-2">
                         <div class="col-md-12">
                             <div class="row">
-                                    <a href="{% url 'brand_export_csv' %}" class="btn btn-outline-info ml-3 mr-2">Export
-                                        CSV</a>
-                                    <a href="{% url 'brand_export_excel' %}" class="btn btn-outline-info mr-2">Export
-                                        Excel</a>
-                                    <a href="{% url 'brand_export_pdf' %}" class="btn btn-outline-info mr-2">Export
-                                        PDF</a>
+                                <a href="{% url 'brand_export_csv' %}" class="btn btn-outline-info ml-3 mr-2">Export
+                                    CSV</a>
+                                <a href="{% url 'brand_export_excel' %}" class="btn btn-outline-info mr-2">Export
+                                    Excel</a>
+                                <a href="{% url 'brand_export_pdf' %}" class="btn btn-outline-info mr-2">Export
+                                    PDF</a>
                             </div>
                         </div>
                     </div>

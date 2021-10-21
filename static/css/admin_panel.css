@@ -1,6 +1,6 @@
 
 :root {
-    --main_color: #4175e4;
+    --main_color: #e44641;
     --text_color: #404040;
     --main_background: #E5E5E5;
     --selection_color:#ffffff;
@@ -15,6 +15,18 @@ body{
 header{
     border-bottom: 1px solid black;
     height: 100px;
+}
+
+.logout {
+    border: solid 1px var(--main_color);
+    color: var(--main_color);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.logout:hover {
+    background-color: var(--main_color);
+    color: var(--white);
 }
 
 .sidebar{
@@ -45,6 +57,7 @@ header{
 .sidebar_subhead{
     padding-left: 4em;
     font-weight: bold;
+    color: var(--main_color);
 }
 
 .sidebar_icons{
@@ -149,4 +162,12 @@ header{
 
 .error{
     color: red;
+}
+
+
+.report-table {
+    background-color: var(--main_color);
+    height: 50px;
+    align-items: center;
+    color: var(--white);
 }
