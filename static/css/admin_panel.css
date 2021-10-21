@@ -127,23 +127,20 @@ header{
 
 }
 .dashboard_widgets{
-    height: 100px;
     background-color: var(--white);
     border-radius: 0px 50px 50px 0px;
-    margin: 0px 10px;
-    
 }
 
 .widget1{
-    border-left: #29335D 10px solid;
+    border-left: #29335D 15px solid;
 }
 
 .widget2{
-    border-left: #43863D 10px solid;
+    border-left: #43863D 15px solid;
 }
 
 .widget3{
-    border-left: #FB9246 10px solid;
+    border-left: #FB9246 15px solid;
 }
 
 .widget_name{

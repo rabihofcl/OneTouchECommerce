@@ -36,6 +36,8 @@ urlpatterns = [
     path('order_export_csv', views.order_export_csv, name='order_export_csv'),
     path('order_export_excel', views.order_export_excel, name='order_export_excel'),
     path('order_export_pdf', views.order_export_pdf, name='order_export_pdf'),
+    path('coupon', views.coupon, name='coupon'),
+    path('add_coupon', views.add_coupon, name='add_coupon'),
 
     
 ]

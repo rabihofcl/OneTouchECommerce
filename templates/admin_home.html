@@ -10,42 +10,54 @@
         <p class="dashboard_side_head">Dashboard</p>
     </div>
     <div class="row pr-5">
-        <div class="col-md-3 dashboard_widgets widget1">
+        <div class="col-md-12">
             <div class="row">
-                <p class="widget_name">Total Products</p>
-            </div>
-            <div class="row">
-                <p class="widget_no"> {{ products }} </p>
-            </div>
-        </div>
-        <div class="col-md-3 dashboard_widgets widget2">
-            <div class="row">
-                <p class="widget_name">Total Brands</p>
-            </div>
-            <div class="row">
-                <p class="widget_no"> {{ brands }} </p>
-            </div>
-        </div>
-        <div class="col-md-3 dashboard_widgets widget3">
-            <div class="row">
-                <p class="widget_name">Total Users</p>
-            </div>
-            <div class="row">
-                <p class="widget_no"> {{ users }} </p>
+                <div class="col-md-3">
+                    <div class="row">
+                        <p class="mb-0 mt-2" style="font-size: x-large; font-weight: bold; color: var(--main_color);">Total Revenue</p>
+                    </div>
+                    <div class="row">
+                        <p style="color: #17a2b8; font-weight: bold; font-size: 45px;">₹ {{payment_total}}</p>
+                    </div>
+                </div>
+                <div class="col-md-3 dashboard_widgets widget1">
+                    <div class="row">
+                        <p class="widget_name">Total Products</p>
+                    </div>
+                    <div class="row">
+                        <p class="widget_no"> {{ products }} </p>
+                    </div>
+                </div>
+                <div class="col-md-3 dashboard_widgets widget2">
+                    <div class="row">
+                        <p class="widget_name">Total Brands</p>
+                    </div>
+                    <div class="row">
+                        <p class="widget_no"> {{ brands }} </p>
+                    </div>
+                </div>
+                <div class="col-md-3 dashboard_widgets widget3">
+                    <div class="row">
+                        <p class="widget_name">Total Users</p>
+                    </div>
+                    <div class="row">
+                        <p class="widget_no"> {{ users }} </p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
 <section>
-    <div class="row">
+    <div class="row mt-5">
         <div class="col-md-12">
             <div class="row">
                 <div class="col-md-6">
                     <canvas id="myChart" width="400" height="200"></canvas>
                 </div>
-                <div class="col-md-6">
-                    <canvas id="myChart2" width="400" height="200"></canvas>
+                <div class="col-md-3">
+                    <canvas id="myChart2" width="200" height="200"></canvas>
                 </div>
             </div>
         </div>
@@ -53,6 +65,10 @@
 </section>
 
 
+
+
+<section>
+</section>
 
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
@@ -61,11 +77,11 @@
 <script>
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
-        type: 'bar',
+        type: 'line',
         data: {
             labels: {{ labels| safe}},
     datasets: [{
-        label: '# of Votes',
+        label: 'price',
         data: {{ data| safe}},
         backgroundColor: [
         'rgba(255, 99, 132, 1)',
@@ -90,6 +106,54 @@
         scales: {
             y: {
                 beginAtZero: true
+            }
+        },
+        plugins: {
+            title: {
+                display: true,
+                text: 'Latest Orders'
+            }
+        }
+    }
+});
+</script>
+
+
+<script>
+    var ctx = document.getElementById('myChart2').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: {{ labels2| safe}},
+    datasets: [{
+        label: '# of Votes',
+        data: {{ data2| safe}},
+        backgroundColor: [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)'
+    ],
+        borderColor: [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)'
+    ],
+        borderWidth: 1,
+        hoverOffset: 4
+        }]
+    },
+
+    options: {
+        plugins: {
+            title: {
+                display: true,
+                text: 'Leading Brands'
             }
         }
     }

@@ -1,8 +1,11 @@
 
+from django.db.models.aggregates import Count
 from django.http.response import HttpResponse, JsonResponse
 from admin_panel.forms import BrandForm
 from ads.forms import AdsForm
 from brand.models import Brand
+from coupon.forms import CouponForm
+from coupon.models import Coupon
 from orders.forms import OrderForm, OrderProductForm
 from product.forms import ProductForm
 from product.models import Product
@@ -13,7 +16,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.models import auth
 import os
 from django.contrib.auth.decorators import login_required
-from orders.models import Order, OrderProduct 
+from orders.models import Order, OrderProduct, Payment
 from django.db.models import Q
 import datetime
 import csv
@@ -48,53 +51,74 @@ def admin_signin(request):
         return render(request, 'admin_signin.html')
 
 
-@login_required(login_url = 'admin_signin')
+@login_required(login_url='admin_signin')
 def ad_logout(request):
     auth.logout(request)
     return redirect('admin_signin')
 
 
-@login_required(login_url = 'admin_signin')
+@login_required(login_url='admin_signin')
 def admin_home(request):
     products = Product.objects.all().count()
     brands = Brand.objects.all().count()
     users = Account.objects.all().count()
 
-    labels = []
-    data = []
 
-    queryset = Product.objects.all()
+    #orders chart data
+    labels1 = []
+    data1= []
 
-    for product in queryset:
-        labels.append(product.product_name)
-        data.append(product.price)
+    orders = Order.objects.filter(is_ordered=True).order_by('-created_at')[:10]
+    for order in orders:
+        labels1.append(order.order_number)
+        data1.append(order.order_total)
 
+    #prodcuts chart data
+    labels2 = []
+    data2= []
+
+    products_count = (Product.objects.values('brand__brand_name').annotate(dcount=Count('brand')).order_by()) 
+    for product_count in products_count:
+        labels2.append(product_count["brand__brand_name"])
+        data2.append(product_count["dcount"])
+
+    
+    payments = Payment.objects.all()
+    payment_total = 0
+    for payment in payments:
+        payment_total += float(payment.amount_paid)
+    
+    print(payment_total)
 
     context = {
-        'products':products,
-        'brands':brands,
-        'users':users,
+        'products': products,
+        'brands': brands,
+        'users': users,
 
-        'labels': labels,
-        'data': data,
+        'labels': labels1,
+        'data': data1,
+
+        'labels2': labels2,
+        'data2': data2,
+
+        'payment_total': payment_total,
     }
     return render(request, 'admin_home.html', context)
 
 
-@login_required(login_url = 'admin_signin')
+@login_required(login_url='admin_signin')
 def ad_brand_list(request):
     brands = Brand.objects.all()
     return render(request, 'ad_brand_list.html', {'brands': brands})
 
 
-
-@login_required(login_url = 'admin_signin')
+@login_required(login_url='admin_signin')
 def ad_add_brand(request):
     if request.method == 'POST':
         form = BrandForm(request.POST, request.FILES)
         if form.is_valid():
             brand = form.save()
-            brand.slug = brand.brand_name.lower().replace(" ","-")
+            brand.slug = brand.brand_name.lower().replace(" ", "-")
             form.save()
             return redirect('ad_brand_list')
         else:
@@ -105,49 +129,45 @@ def ad_add_brand(request):
     return render(request, 'ad_add_brand.html', {'form': form})
 
 
-
-@login_required(login_url = 'admin_signin')
+@login_required(login_url='admin_signin')
 def ad_delete_brand(request):
     id = request.POST['id']
     Brand.objects.filter(id=id).delete()
     return JsonResponse({'success': True})
 
 
-
-@login_required(login_url = 'admin_signin')
+@login_required(login_url='admin_signin')
 def ad_brand_edit(request, slug):
-    brand = Brand.objects.get(slug = slug)
+    brand = Brand.objects.get(slug=slug)
 
     if request.method == 'POST':
-        form = BrandForm(request.POST,request.FILES, instance=brand)
+        form = BrandForm(request.POST, request.FILES, instance=brand)
         if form.is_valid():
             brand = form.save()
-            brand.slug = brand.brand_name.lower().replace(" ","-")
+            brand.slug = brand.brand_name.lower().replace(" ", "-")
             form.save()
             return redirect('ad_brand_list')
 
     else:
         form = BrandForm(instance=brand)
-    
-    return render(request, 'ad_brand_edit.html', {'brand':brand, 'form':form})
+
+    return render(request, 'ad_brand_edit.html', {'brand': brand, 'form': form})
 
 
-
-@login_required(login_url = 'admin_signin')
+@login_required(login_url='admin_signin')
 def ad_product_list(request):
     products = Product.objects.all().order_by('-id')
     return render(request, 'ad_product_list.html', {'products': products})
 
 
-
-@login_required(login_url = 'admin_signin')
+@login_required(login_url='admin_signin')
 def ad_add_product(request):
     if request.method == 'POST':
         product_form = ProductForm(request.POST, request.FILES)
         print(product_form)
         if product_form.is_valid():
             product = product_form.save(commit=False)
-            product.slug = product.product_name.lower().replace(" ","-")
+            product.slug = product.product_name.lower().replace(" ", "-")
             product_form.save()
             return redirect('ad_add_product')
     else:
@@ -162,16 +182,16 @@ def ad_add_product(request):
     return render(request, 'ad_add_product.html', context)
 
 
-
-@login_required(login_url = 'admin_signin')
+@login_required(login_url='admin_signin')
 def ad_product_edit(request, id):
     product = Product.objects.get(pk=id)
 
     if request.method == 'POST':
-        product_form = ProductForm(request.POST, request.FILES, instance=product)
+        product_form = ProductForm(
+            request.POST, request.FILES, instance=product)
         if product_form.is_valid():
             product = product_form.save(commit=False)
-            product.slug = product.product_name.lower().replace(" ","-")
+            product.slug = product.product_name.lower().replace(" ", "-")
             product_form.save()
             return redirect('ad_product_list')
 
@@ -185,56 +205,53 @@ def ad_product_edit(request, id):
     return render(request, 'ad_product_edit.html',  context)
 
 
-
-@login_required(login_url = 'admin_signin')
+@login_required(login_url='admin_signin')
 def ad_delete_product(request):
     id = request.POST['id']
     Product.objects.filter(id=id).delete()
     return JsonResponse({'success': True})
 
 
-
-@login_required(login_url = 'admin_signin')
+@login_required(login_url='admin_signin')
 def active_users(request):
     users = Account.objects.order_by('id').filter(is_active=True).all()
     return render(request, 'active_users.html', {'users': users})
 
 
-
-@login_required(login_url = 'admin_signin')
+@login_required(login_url='admin_signin')
 def blocked_users(request):
     users = Account.objects.order_by('id').filter(is_active=False).all()
     return render(request, 'blocked_users.html', {'users': users})
 
 
-
-
 def ad_active_orders(request):
-    orders = Order.objects.filter(user=request.user, is_ordered=True).order_by('-created_at')
+    orders = Order.objects.filter(
+        user=request.user, is_ordered=True).order_by('-created_at')
 
-    order_detail = OrderProduct.objects.exclude(Q(status='Delivered') | Q(status='Cancelled')).order_by('-created_at')  
+    order_detail = OrderProduct.objects.exclude(
+        Q(status='Delivered') | Q(status='Cancelled')).order_by('-created_at')
 
     order_product_form = OrderProductForm()
 
     subtotal = 0
     for i in order_detail:
         subtotal += i.product_price * i.quantity
-    
+
     context = {
         'active_orders': orders,
         'orders': orders,
-        'order_detail':order_detail,
+        'order_detail': order_detail,
         'subtotal': subtotal,
         'order_product_form': order_product_form,
     }
     return render(request, 'ad_active_orders.html', context)
 
 
-
 def change_status(request, id):
     if request.method == 'POST':
         order_product = OrderProduct.objects.get(id=id)
-        order_product_form = OrderProductForm(request.POST,instance=order_product)
+        order_product_form = OrderProductForm(
+            request.POST, instance=order_product)
 
         if order_product_form.is_valid():
             order_product_form.save()
@@ -242,11 +259,10 @@ def change_status(request, id):
     return redirect('ad_active_orders')
 
 
-
-
 def ad_past_orders(request):
 
-    order_detail = OrderProduct.objects.filter(Q(status='Delivered') | Q(status='Cancelled')).order_by('-created_at')  
+    order_detail = OrderProduct.objects.filter(
+        Q(status='Delivered') | Q(status='Cancelled')).order_by('-created_at')
     order_product_form = OrderProductForm()
 
     subtotal = 0
@@ -254,17 +270,16 @@ def ad_past_orders(request):
         subtotal += i.product_price * i.quantity
 
     context = {
-        'order_detail':order_detail,
+        'order_detail': order_detail,
         'order_product_form': order_product_form,
     }
     return render(request, 'ad_past_orders.html', context)
 
 
-
 def ad_order_edit(request, order_number):
-    order_detail = OrderProduct.objects.filter(order__order_number=order_number)
+    order_detail = OrderProduct.objects.filter(
+        order__order_number=order_number)
     order = Order.objects.get(order_number=order_number)
-
 
     if request.method == 'POST':
         order_form = OrderForm(request.POST, instance=order)
@@ -275,14 +290,12 @@ def ad_order_edit(request, order_number):
     else:
         order_form = OrderForm(instance=order)
 
-
     context = {
         'order_form': order_form,
         'order': order,
     }
-    
-    return render(request, 'ad_order_edit.html', context)
 
+    return render(request, 'ad_order_edit.html', context)
 
 
 def ads(request):
@@ -301,7 +314,6 @@ def ad_add_ads(request):
     pass
     # ads_form = AdsForm()
 
-
     # context = {
     #     'ads_form': ads_form,
     # }
@@ -312,7 +324,7 @@ def ad_add_ads(request):
 def report(request):
     brands = Brand.objects.all()
     products = Product.objects.all()
-    orders = Order.objects.filter(is_ordered = True).order_by('-created_at')
+    orders = Order.objects.filter(is_ordered=True).order_by('-created_at')
 
     context = {
         'brands': brands,
@@ -322,12 +334,10 @@ def report(request):
     return render(request, 'ad_report.html', context)
 
 
-
-
-
 def brand_export_csv(request):
-    response = HttpResponse(content_type = 'text/csv')
-    response['Content-Disposition'] = 'attachment; filename = Brands ' + str(datetime.datetime.now()) + '.csv'
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename = Brands ' + \
+        str(datetime.datetime.now()) + '.csv'
 
     writer = csv.writer(response)
     writer.writerow(['BRAND NAME', 'BRAND ID'])
@@ -341,8 +351,9 @@ def brand_export_csv(request):
 
 
 def brand_export_excel(request):
-    response = HttpResponse(content_type = 'application/ms-excel')
-    response['Content-Disposition'] = 'attachment; filename = Brands ' + str(datetime.datetime.now()) + '.xls'
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename = Brands ' + \
+        str(datetime.datetime.now()) + '.xls'
 
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet('Brands')
@@ -369,15 +380,18 @@ def brand_export_excel(request):
 
     return response
 
+
 def brand_export_pdf(request):
-    response = HttpResponse(content_type = 'application/pdf')
-    response['Content-Disposition'] = 'inline; attachment; filename = Brands ' + str(datetime.datetime.now()) + '.pdf'
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; attachment; filename = Brands ' + \
+        str(datetime.datetime.now()) + '.pdf'
     response['Content-Transfer-Encoding'] = 'binary'
 
     brands = Brand.objects.all().order_by('id')
 
-    html_string = render_to_string('brand_pdf_output.html', {'brands': brands, 'total': 0})
-    html = HTML(string = html_string)
+    html_string = render_to_string('brand_pdf_output.html', {
+                                   'brands': brands, 'total': 0})
+    html = HTML(string=html_string)
 
     result = html.write_pdf()
 
@@ -390,13 +404,10 @@ def brand_export_pdf(request):
     return response
 
 
-
-
-
-
 def product_export_csv(request):
-    response = HttpResponse(content_type = 'text/csv')
-    response['Content-Disposition'] = 'attachment; filename = Products ' + str(datetime.datetime.now()) + '.csv'
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename = Products ' + \
+        str(datetime.datetime.now()) + '.csv'
 
     writer = csv.writer(response)
     writer.writerow(['PRODUCT NAME', 'BRAND', 'STOCK', 'PRICE'])
@@ -404,14 +415,16 @@ def product_export_csv(request):
     products = Product.objects.all().order_by('id')
 
     for product in products:
-        writer.writerow([product.product_name, product.brand,  product.stock, product.price])
+        writer.writerow([product.product_name, product.brand,
+                        product.stock, product.price])
 
     return response
 
 
 def product_export_excel(request):
-    response = HttpResponse(content_type = 'application/ms-excel')
-    response['Content-Disposition'] = 'attachment; filename = Products ' + str(datetime.datetime.now()) + '.xls'
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename = Products ' + \
+        str(datetime.datetime.now()) + '.xls'
 
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet('Products')
@@ -426,7 +439,8 @@ def product_export_excel(request):
 
     font_style = xlwt.XFStyle()
 
-    rows = Product.objects.all().order_by('id').values_list('product_name', 'brand', 'stock', 'price')
+    rows = Product.objects.all().order_by('id').values_list(
+        'product_name', 'brand', 'stock', 'price')
 
     for row in rows:
         row_num += 1
@@ -438,15 +452,18 @@ def product_export_excel(request):
 
     return response
 
+
 def product_export_pdf(request):
-    response = HttpResponse(content_type = 'application/pdf')
-    response['Content-Disposition'] = 'inline; attachment; filename = Products ' + str(datetime.datetime.now()) + '.pdf'
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; attachment; filename = Products ' + \
+        str(datetime.datetime.now()) + '.pdf'
     response['Content-Transfer-Encoding'] = 'binary'
 
     products = Product.objects.all().order_by('id')
 
-    html_string = render_to_string('product_pdf_output.html', {'products': products, 'total': 0})
-    html = HTML(string = html_string)
+    html_string = render_to_string('product_pdf_output.html', {
+                                   'products': products, 'total': 0})
+    html = HTML(string=html_string)
 
     result = html.write_pdf()
 
@@ -459,27 +476,28 @@ def product_export_pdf(request):
     return response
 
 
-
-
-
 def order_export_csv(request):
-    response = HttpResponse(content_type = 'text/csv')
-    response['Content-Disposition'] = 'attachment; filename = Orders ' + str(datetime.datetime.now()) + '.csv'
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename = Orders ' + \
+        str(datetime.datetime.now()) + '.csv'
 
     writer = csv.writer(response)
-    writer.writerow(['ORDER NUMBER', 'FULL NAME', 'PHONE', 'EMIAL', 'ORDER TOTAL', 'TAX', 'CREATED AT'])
+    writer.writerow(['ORDER NUMBER', 'FULL NAME', 'PHONE',
+                    'EMIAL', 'ORDER TOTAL', 'TAX', 'CREATED AT'])
 
-    orders = Order.objects.filter(is_ordered = True).order_by('-created_at')
+    orders = Order.objects.filter(is_ordered=True).order_by('-created_at')
 
     for order in orders:
-        writer.writerow([order.order_number, order.full_name(), order.phone, order.email, order.order_total, order.tax, order.created_at])
+        writer.writerow([order.order_number, order.full_name(
+        ), order.phone, order.email, order.order_total, order.tax, order.created_at])
 
     return response
 
 
 def order_export_excel(request):
-    response = HttpResponse(content_type = 'application/ms-excel')
-    response['Content-Disposition'] = 'attachment; filename = Orders ' + str(datetime.datetime.now()) + '.xls'
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename = Orders ' + \
+        str(datetime.datetime.now()) + '.xls'
 
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet('Orders')
@@ -487,14 +505,16 @@ def order_export_excel(request):
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
 
-    columns = ['ORDER NUMBER', 'FULL NAME', 'PHONE', 'EMIAL', 'ORDER TOTAL', 'TAX', 'CREATED AT']
+    columns = ['ORDER NUMBER', 'FULL NAME', 'PHONE',
+               'EMIAL', 'ORDER TOTAL', 'TAX', 'CREATED AT']
 
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
 
     font_style = xlwt.XFStyle()
 
-    rows = Order.objects.filter(is_ordered = True).order_by('-created_at').values_list('order_number', 'first_name', 'phone', 'email', 'order_total', 'tax', 'created_at')
+    rows = Order.objects.filter(is_ordered=True).order_by('-created_at').values_list(
+        'order_number', 'first_name', 'phone', 'email', 'order_total', 'tax', 'created_at')
 
     for row in rows:
         row_num += 1
@@ -508,14 +528,16 @@ def order_export_excel(request):
 
 
 def order_export_pdf(request):
-    response = HttpResponse(content_type = 'application/pdf')
-    response['Content-Disposition'] = 'inline; attachment; filename = Orders ' + str(datetime.datetime.now()) + '.pdf'
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; attachment; filename = Orders ' + \
+        str(datetime.datetime.now()) + '.pdf'
     response['Content-Transfer-Encoding'] = 'binary'
 
-    orders = Order.objects.filter(is_ordered = True).order_by('-created_at')
+    orders = Order.objects.filter(is_ordered=True).order_by('-created_at')
 
-    html_string = render_to_string('order_pdf_output.html', {'orders': orders, 'total': 0})
-    html = HTML(string = html_string)
+    html_string = render_to_string('order_pdf_output.html', {
+                                   'orders': orders, 'total': 0})
+    html = HTML(string=html_string)
 
     result = html.write_pdf()
 
@@ -526,3 +548,23 @@ def order_export_pdf(request):
         response.write(output.read())
 
     return response
+
+
+
+def coupon(request):
+
+    coupon_form = CouponForm()
+    coupons = Coupon.objects.all()
+
+    context = {
+        'coupon_form': coupon_form,
+        'coupons': coupons,
+    }
+    return render(request, 'ad_coupon.html', context)
+
+
+def add_coupon(request):
+    coupon_form = CouponForm(request.POST)
+    if coupon_form.is_valid():
+        coupon_form.save()
+    return JsonResponse({'success': True})
