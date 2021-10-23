@@ -6,10 +6,14 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from account.models import Address
+from admin_panel.views import coupon
+from orders.models import Order
 from product.models import Product
 from cart.models import Cart, CartItem
+from coupon.models import CheckCoupon, Coupon
 
 from django.contrib.auth.decorators import login_required
+import math
 
 # Create your views here.
 
@@ -41,7 +45,8 @@ def add_cart(request, product_id):
         try:
             cart_item = CartItem.objects.get(product=product, user=request.user)
             if cart_item.quantity > cart_item.product.stock-1:
-                messages.info(request, 'Product Out of Stock')
+                print('out of stock')
+                messages.alert(request, 'Product Out of Stock')
                 return redirect('cart')
             else:
                 cart_item.quantity += 1
@@ -69,6 +74,7 @@ def add_cart(request, product_id):
         try:
             cart_item = CartItem.objects.get(product=product, cart=cart)
             if cart_item.quantity > cart_item.product.stock-1:
+                print('out of stock')
                 messages.info(request, 'Product Out of Stock')
                 return redirect('cart')
             else:
@@ -147,8 +153,9 @@ def add_item(request):
         try:
             cart_item = CartItem.objects.get(product=product, user=request.user)
             if cart_item.quantity > cart_item.product.stock-1:
+                print('out of stock')
                 messages.info(request, 'Product Out of Stock')
-                return redirect('cart')
+                return JsonResponse({'success': True})
             else:
                 cart_item.quantity += 1
                 cart_item.save()
@@ -176,7 +183,7 @@ def add_item(request):
             cart_item = CartItem.objects.get(product=product, cart=cart)
             if cart_item.quantity > cart_item.product.stock-1:
                 messages.info(request, 'Product Out of Stock')
-                return redirect('cart')
+                return JsonResponse({'success': True})
             else:
                 cart_item.quantity += 1
                 cart_item.save()
@@ -226,6 +233,14 @@ def cart(request, total=0, quantity=0, cart_items=None):
 
 @login_required(login_url = 'signin')
 def checkout(request, total=0, quantity=0, cart_items=None):
+
+
+    if 'coupon_id' in request.session:
+        del request.session['coupon_id']
+        del request.session['amount_pay']
+        del request.session['discount_price']
+
+
     try:
         tax = 0
         grand_total = 0
@@ -254,6 +269,67 @@ def checkout(request, total=0, quantity=0, cart_items=None):
         'addresses': addresses,
     }
     return render(request, 'checkout.html', context)
+
+
+def Check_coupon(request):
+    flag = 0
+    discount_price = 0
+    amount_pay = 0
+    coupon_code = request.POST.get('coupon_code')
+    grand_total = float(request.POST.get('grand_total'))
+
+    if Coupon.objects.filter(coupon_code=coupon_code).exists():
+        coupon = Coupon.objects.get(coupon_code=coupon_code)
+        if coupon.status == True:
+            flag = 1
+            if not CheckCoupon.objects.filter(user=request.user, coupon = coupon):
+                
+                discount_price = math.ceil(grand_total*int(coupon.discount)/100)
+                amount_pay = grand_total-discount_price
+                flag = 2
+                request.session['amount_pay'] = amount_pay
+                request.session['coupon_id'] = coupon.id
+                request.session['discount_price'] = discount_price
+
+
+    context = {
+        'amount_pay': amount_pay,
+        'flag': flag,
+        'discount_price': discount_price,
+    }
+
+    return JsonResponse(context)
+
+
+
+# def get_coupon(request, code):
+#     try:
+#         coupon = Coupon.objects.get(coupon_code= code)
+#         return coupon
+#     except ObjectDoesNotExist:
+#         messages.info(request, "This coupon does not exist")
+#         return redirect('checkout')
+
+
+
+# def apply_coupon(request):
+#     if request.method == 'POST':
+#         form = CouponEnterForm(request.POST or None)
+#         if form.is_valid():
+#             try:
+#                 code = form.cleaned_data.get('coupon_code')
+#                 print(code)
+#                 cart = Cart.objects.get(cart_id=_cart_id(request))
+#                 order = CartItem.objects.get(user=request.user, cart=cart)
+#                 order.coupon = get_coupon(request, code)
+#                 order.save()
+#                 messages.success(request, "Successfully added Coupon")
+#                 return redirect('checkout')
+#             except ObjectDoesNotExist:
+#                 messages.info(request, "You do not have an active orders")
+#                 return redirect('checkout')
+#     return None
+
 
 
 

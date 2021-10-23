@@ -11,3 +11,6 @@ class AdsForm(forms.ModelForm):
         super(AdsForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = 'form-control'
+
+            self.fields['banner'].widget.attrs['data-toggle'] = 'modal'
+            self.fields['banner'].widget.attrs['data-target'] = '#exampleModal'

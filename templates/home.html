@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 
 {% load static %}
@@ -10,43 +9,49 @@
 
 
 <!-- ========================= SECTION MAIN ========================= -->
+
+
 <section class="section-intro padding-y-sm">
-<div class="container">
+	<div class="container">
 
-<div class="intro-banner-wrap">
-	<img src="{% static 'images/banners/1.jpg' %}" class="img-fluid rounded">
-</div>
+		{% for ads in ads %}
+		<div class="row mb-2">
+			<div class="col-md-12 text-center">
+				<img src="{{ ads.banner.url }}" alt="" width="1180" height="295" class="rounded">
+			</div>
+		</div>
+		{% endfor %}
 
-</div> <!-- container //  -->
+	</div> <!-- container //  -->
 </section>
 <!-- ========================= SECTION MAIN END// ========================= -->
 
 <!-- ========================= SECTION  ========================= -->
 <section class="section-name padding-y-sm">
-<div class="container">
+	<div class="container">
 
-<header class="section-heading">
-	<a href="{% url 'store' %}" class="btn btn-outline-primary float-right">See all</a>
-	<h3 class="section-title">New Arrivals</h3>
-</header><!-- sect-heading -->
+		<header class="section-heading">
+			<a href="{% url 'store' %}" class="btn btn-outline-primary float-right">See all</a>
+			<h3 class="section-title">New Arrivals</h3>
+		</header><!-- sect-heading -->
 
-	
-<div class="row">
 
-	{% for product in products %}
-	<div class="col-md-3">
-		<div class="card card-product-grid pt-3">
-			<a href="{{ product.get_url }}" class="img-wrap"> <img src="{{ product.image1.url }}"> </a>
-			<figcaption class="info-wrap">
-				<a href="{{ product.get_url }}" class="title">{{ product.product_name }}</a>
-				<div class="price mt-1">₹{{ product.price }}</div> <!-- price-wrap.// -->
-			</figcaption>
-		</div>
-	</div> <!-- col.// -->
-	{% endfor %}
-</div> <!-- row.// -->
+		<div class="row">
 
-</div><!-- container // -->
+			{% for product in products %}
+			<div class="col-md-3">
+				<div class="card card-product-grid pt-3">
+					<a href="{{ product.get_url }}" class="img-wrap"> <img src="{{ product.image1.url }}"> </a>
+					<figcaption class="info-wrap">
+						<a href="{{ product.get_url }}" class="title">{{ product.product_name }}</a>
+						<div class="price mt-1">₹{{ product.price }}</div> <!-- price-wrap.// -->
+					</figcaption>
+				</div>
+			</div> <!-- col.// -->
+			{% endfor %}
+		</div> <!-- row.// -->
+
+	</div><!-- container // -->
 </section>
 <!-- ========================= SECTION  END// ========================= -->
 
@@ -55,6 +60,7 @@
 
 
 </body>
+
 </html>
 
 

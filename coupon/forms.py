@@ -12,3 +12,10 @@ class CouponForm(forms.ModelForm):
         super(CouponForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = 'form-control'
+
+
+# class CouponEnterForm(forms.Form):
+#     coupon_code = forms.CharField(widget=forms.TextInput(attrs={
+#         'class': 'form-control',
+#         'placeholder': 'Coupon Code',
+#     }))

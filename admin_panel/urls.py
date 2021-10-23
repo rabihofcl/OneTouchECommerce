@@ -26,6 +26,7 @@ urlpatterns = [
     path('change_status/<id>', views.change_status, name='change_status'),
     path('ads', views.ads, name='ads'),
     path('ad_add_ads', views.ad_add_ads, name='ad_add_ads'),
+    path('delete_ads', views.delete_ads, name='delete_ads'),
     path('report', views.report, name='report'),
     path('brand_export_csv', views.brand_export_csv, name='brand_export_csv'),
     path('brand_export_excel', views.brand_export_excel, name='brand_export_excel'),

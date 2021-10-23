@@ -1,5 +1,6 @@
 from django.db import models
 from account.models import Account
+from coupon.models import Coupon
 from product.models import Product
 
 # Create your models here.
@@ -21,7 +22,7 @@ class Payment(models.Model):
 
 class Order(models.Model):
     STATUS = (
-        ('New', 'New'),
+        ('Placed', 'Placed'),
         ('Accepted','Accepted'),
         ('Shipping', 'Shipping'),
         ('Delivered', 'Delivered'),
@@ -44,11 +45,12 @@ class Order(models.Model):
     order_note = models.CharField(max_length=100, blank=True)
     order_total = models.FloatField()
     tax = models.FloatField()
-    status = models.CharField(max_length=10, choices=STATUS, default='New')
+    status = models.CharField(max_length=10, choices=STATUS, default='Placed')
     ip = models.CharField(blank=True, max_length=20)
     is_ordered = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    coupon = models.ForeignKey(Coupon, on_delete=models.SET_NULL, blank=True, null=True)
 
     def full_name(self):
         return f'{self.first_name} {self.last_name}'
@@ -64,7 +66,7 @@ class Order(models.Model):
 
 class OrderProduct(models.Model):
     STATUS1 = (
-        ('New', 'New'),
+        ('Placed', 'Placed'),
         ('Accepted','Accepted'),
         ('Shipping', 'Shipping'),
         ('Delivered', 'Delivered'),
@@ -81,7 +83,7 @@ class OrderProduct(models.Model):
     ordered = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    status = models.CharField(max_length=10, choices=STATUS1, default='New')
+    status = models.CharField(max_length=10, choices=STATUS1, default='Placed')
 
 
     def __str__(self):

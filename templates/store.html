@@ -91,7 +91,7 @@
 								{% if product.stock <= 0 %}
 								<a href="#" class="btn btn-block btn-secondary">Out of stock </a>
 								{% else %}
-								<a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-primary">Add to cart </a>
+								<a href="{% url 'add_cart' product.id %}" onclick="alert()" class="btn btn-block btn-primary">Add to cart </a>
 								{% endif %}
 								<a href="{% url 'buy_now' product.id %}" class="btn btn-block" style="border: 1px solid rgb(250, 111, 12); color: rgb(250, 111, 12);">Buy Now </a>
 							</figcaption>
@@ -140,5 +140,13 @@
 	</div> <!-- container .//  -->
 </section>
 
+
+
+
+<script>
+	function alert(){
+		swal("Success!", "Item added to cart!", "success");
+	}
+</script>
 
 {% endblock %}

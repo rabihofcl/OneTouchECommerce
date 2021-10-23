@@ -5,23 +5,6 @@
 
 
 {% block content %}
-<!-- 
-
-<style>
-    /* Media query for mobile viewport */
-    @media screen and (max-width: 400px) {
-        #paypal-button-container {
-            width: 100%;
-        }
-    }
-
-    /* Media query for desktop viewport */
-    @media screen and (min-width: 400px) {
-        #paypal-button-container {
-            width: 250px;
-        }
-    }
-</style> -->
 
 
 <section class="section-content padding-y bg">
@@ -112,6 +95,12 @@
                             <dt>Tax:</dt>
                             <dd class="text-right"> ₹ {{ tax }}</dd>
                         </dl>
+                        {% if request.session.amount_pay %}
+                        <dl class="dlist-align">
+                            <dt>Coupon Discount:</dt>
+                            <dd class="text-right text-success b">-₹<strong id="discount_price">{{request.session.discount_price}}</strong></dd>
+                        </dl>
+                        {% endif %}
                         <dl class="dlist-align">
                             <dt>Grand Total:</dt>
                             <dd class="text-right text-dark b"><strong>₹ {{ grand_total }}</strong></dd>
@@ -196,8 +185,8 @@
                 function sendData() {
 
                     fetch(url, {
-                        method : 'POST',
-                        headers : {
+                        method: 'POST',
+                        headers: {
                             "Content-type": "application/json",
                             "X-CSRFToken": csrftoken,
                         },

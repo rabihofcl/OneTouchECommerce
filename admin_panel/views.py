@@ -223,7 +223,7 @@ def blocked_users(request):
     users = Account.objects.order_by('id').filter(is_active=False).all()
     return render(request, 'blocked_users.html', {'users': users})
 
-
+@login_required(login_url='admin_signin')
 def ad_active_orders(request):
     orders = Order.objects.filter(
         user=request.user, is_ordered=True).order_by('-created_at')
@@ -246,7 +246,7 @@ def ad_active_orders(request):
     }
     return render(request, 'ad_active_orders.html', context)
 
-
+@login_required(login_url='admin_signin')
 def change_status(request, id):
     if request.method == 'POST':
         order_product = OrderProduct.objects.get(id=id)
@@ -259,6 +259,7 @@ def change_status(request, id):
     return redirect('ad_active_orders')
 
 
+@login_required(login_url='admin_signin')
 def ad_past_orders(request):
 
     order_detail = OrderProduct.objects.filter(
@@ -276,6 +277,7 @@ def ad_past_orders(request):
     return render(request, 'ad_past_orders.html', context)
 
 
+@login_required(login_url='admin_signin')
 def ad_order_edit(request, order_number):
     order_detail = OrderProduct.objects.filter(
         order__order_number=order_number)
@@ -298,29 +300,45 @@ def ad_order_edit(request, order_number):
     return render(request, 'ad_order_edit.html', context)
 
 
+@login_required(login_url='admin_signin')
 def ads(request):
-    pass
-    # ads_list = Ads.Objects.all()
+    ads_list = Ads.objects.all()
 
-    # print(ads_list)
+    print(ads_list)
 
-    # context = {
-    #     'ads_list': ads_list,
-    # }
-    # return render(request, 'ad_ads.html', context)
+    context = {
+        'ads_list': ads_list,
+    }
+    return render(request, 'ad_ads.html', context)
 
 
+@login_required(login_url='admin_signin')
 def ad_add_ads(request):
-    pass
-    # ads_form = AdsForm()
+    if request.method == 'POST':
+        ads_form = AdsForm(request.POST, request.FILES)
+        print(ads_form)
+        if ads_form.is_valid():
+            ads_form.save()
 
-    # context = {
-    #     'ads_form': ads_form,
-    # }
+            return redirect('ads')
+    else:
+        ads_form = AdsForm()
 
-    # return render(request, 'ad_add_ads.html', context)
+    context = {
+        'ads_form': ads_form,
+    }
+    return render(request, 'ad_add_ads.html', context)
 
 
+@login_required(login_url='admin_signin')
+def delete_ads(request):
+    id = request.POST['id']
+    Ads.objects.filter(id=id).delete()
+    return JsonResponse({'success': True})
+
+
+
+@login_required(login_url='admin_signin')
 def report(request):
     brands = Brand.objects.all()
     products = Product.objects.all()
@@ -334,6 +352,8 @@ def report(request):
     return render(request, 'ad_report.html', context)
 
 
+
+@login_required(login_url='admin_signin')
 def brand_export_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename = Brands ' + \
@@ -350,6 +370,8 @@ def brand_export_csv(request):
     return response
 
 
+
+@login_required(login_url='admin_signin')
 def brand_export_excel(request):
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename = Brands ' + \
@@ -381,6 +403,8 @@ def brand_export_excel(request):
     return response
 
 
+
+@login_required(login_url='admin_signin')
 def brand_export_pdf(request):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'inline; attachment; filename = Brands ' + \
@@ -404,6 +428,8 @@ def brand_export_pdf(request):
     return response
 
 
+
+@login_required(login_url='admin_signin')
 def product_export_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename = Products ' + \
@@ -421,6 +447,8 @@ def product_export_csv(request):
     return response
 
 
+
+@login_required(login_url='admin_signin')
 def product_export_excel(request):
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename = Products ' + \
@@ -453,6 +481,8 @@ def product_export_excel(request):
     return response
 
 
+
+@login_required(login_url='admin_signin')
 def product_export_pdf(request):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'inline; attachment; filename = Products ' + \
@@ -476,6 +506,8 @@ def product_export_pdf(request):
     return response
 
 
+
+@login_required(login_url='admin_signin')
 def order_export_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename = Orders ' + \
@@ -494,6 +526,8 @@ def order_export_csv(request):
     return response
 
 
+
+@login_required(login_url='admin_signin')
 def order_export_excel(request):
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename = Orders ' + \
@@ -527,6 +561,8 @@ def order_export_excel(request):
     return response
 
 
+
+@login_required(login_url='admin_signin')
 def order_export_pdf(request):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'inline; attachment; filename = Orders ' + \
@@ -551,6 +587,7 @@ def order_export_pdf(request):
 
 
 
+@login_required(login_url='admin_signin')
 def coupon(request):
 
     coupon_form = CouponForm()
@@ -563,6 +600,8 @@ def coupon(request):
     return render(request, 'ad_coupon.html', context)
 
 
+
+@login_required(login_url='admin_signin')
 def add_coupon(request):
     coupon_form = CouponForm(request.POST)
     if coupon_form.is_valid():

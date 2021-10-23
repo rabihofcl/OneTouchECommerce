@@ -1,6 +1,7 @@
 from django.core import paginator
 from django.db.models.aggregates import Avg
 from django.http.response import HttpResponse, JsonResponse
+from ads.models import Ads
 from cart.views import _cart_id
 from cart.models import Cart, CartItem
 from brand.models import Brand
@@ -26,8 +27,11 @@ def home(request):
     products = Product.objects.all().filter(
         is_available=True).order_by('-id')[:12]
 
+    ads = Ads.objects.all()
+
     context = {
         'products': products,
+        'ads': ads,
     }
     return render(request, 'home.html', context)
 
@@ -98,7 +102,7 @@ def phone_login(request):
             request.session['phone_number'] = phone_number
 
             account_sid = "ACbd2e01de49095381f621169be1ce4e98"
-            auth_token = "c0f995014d1876e0f2ee93d6667f66f8"
+            auth_token = "230902d89658e7ac1573de2497c560ae"
             client = Client(account_sid, auth_token)
 
             verification = client.verify \
@@ -124,7 +128,7 @@ def phone_login_otp(request):
         phone_number = request.session['phone_number']
 
         account_sid = "ACbd2e01de49095381f621169be1ce4e98"
-        auth_token = "c0f995014d1876e0f2ee93d6667f66f8"
+        auth_token = "230902d89658e7ac1573de2497c560ae"
         client = Client(account_sid, auth_token)
 
         verification_check = client.verify \
@@ -186,7 +190,7 @@ def register(request):
             else:
 
                 account_sid = "ACbd2e01de49095381f621169be1ce4e98"
-                auth_token = "c0f995014d1876e0f2ee93d6667f66f8"
+                auth_token = "230902d89658e7ac1573de2497c560ae"
                 client = Client(account_sid, auth_token)
 
                 verification = client.verify \
@@ -214,7 +218,7 @@ def otp_register(request):
         phone_number = request.session['phone_number']
 
         account_sid = "ACbd2e01de49095381f621169be1ce4e98"
-        auth_token = "c0f995014d1876e0f2ee93d6667f66f8"
+        auth_token = "230902d89658e7ac1573de2497c560ae"
         client = Client(account_sid, auth_token)
 
         verification_check = client.verify \
@@ -280,7 +284,7 @@ def forgotPass(request):
             request.session['phone_number'] = phone_number
 
             account_sid = "ACbd2e01de49095381f621169be1ce4e98"
-            auth_token = "c0f995014d1876e0f2ee93d6667f66f8"
+            auth_token = "230902d89658e7ac1573de2497c560ae"
             client = Client(account_sid, auth_token)
 
             verification = client.verify \
@@ -305,7 +309,7 @@ def forgotPassOtp(request):
         phone_number = request.session['phone_number']
 
         account_sid = "ACbd2e01de49095381f621169be1ce4e98"
-        auth_token = "c0f995014d1876e0f2ee93d6667f66f8"
+        auth_token = "230902d89658e7ac1573de2497c560ae"
         client = Client(account_sid, auth_token)
 
         verification_check = client.verify \
