@@ -14,6 +14,7 @@ from coupon.models import CheckCoupon, Coupon
 
 from django.contrib.auth.decorators import login_required
 import math
+from django.views.decorators.cache import never_cache
 
 # Create your views here.
 
@@ -27,7 +28,7 @@ def _cart_id(request):
 
 
 
-
+@never_cache
 def add_cart(request, product_id):
     url = request.META.get('HTTP_REFERER')
     product = Product.objects.get(id=product_id)  # get the product
@@ -91,7 +92,7 @@ def add_cart(request, product_id):
     return redirect(url)
 
 
-
+@never_cache
 def remove_cart(request):
     product_id = request.POST['id']
     print(id)
@@ -112,7 +113,7 @@ def remove_cart(request):
     return JsonResponse({'success': True})
 
 
-
+@never_cache
 def remove_cart_item(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     if request.user.is_authenticated:
@@ -125,6 +126,7 @@ def remove_cart_item(request, product_id):
     return redirect('cart')
 
 
+@never_cache
 def remove_item(request):
     product_id = request.POST['id']
     product = get_object_or_404(Product, id=product_id)
@@ -138,6 +140,7 @@ def remove_item(request):
     return JsonResponse({'success': True})
     
 
+@never_cache
 def add_item(request):
     product_id = request.POST['id']
     product = Product.objects.get(id=product_id)
@@ -199,7 +202,7 @@ def add_item(request):
 
 
 
-
+@never_cache
 @login_required(login_url = 'signin')
 def cart(request, total=0, quantity=0, cart_items=None):
     try:
@@ -232,6 +235,7 @@ def cart(request, total=0, quantity=0, cart_items=None):
 
 
 
+@never_cache
 @login_required(login_url = 'signin')
 def checkout(request, total=0, quantity=0, cart_items=None):
 
@@ -272,6 +276,8 @@ def checkout(request, total=0, quantity=0, cart_items=None):
     return render(request, 'checkout.html', context)
 
 
+@never_cache
+@login_required(login_url = 'signin')
 def Check_coupon(request):
     flag = 0
     discount_price = 0
@@ -302,39 +308,7 @@ def Check_coupon(request):
     return JsonResponse(context)
 
 
-
-# def get_coupon(request, code):
-#     try:
-#         coupon = Coupon.objects.get(coupon_code= code)
-#         return coupon
-#     except ObjectDoesNotExist:
-#         messages.info(request, "This coupon does not exist")
-#         return redirect('checkout')
-
-
-
-# def apply_coupon(request):
-#     if request.method == 'POST':
-#         form = CouponEnterForm(request.POST or None)
-#         if form.is_valid():
-#             try:
-#                 code = form.cleaned_data.get('coupon_code')
-#                 print(code)
-#                 cart = Cart.objects.get(cart_id=_cart_id(request))
-#                 order = CartItem.objects.get(user=request.user, cart=cart)
-#                 order.coupon = get_coupon(request, code)
-#                 order.save()
-#                 messages.success(request, "Successfully added Coupon")
-#                 return redirect('checkout')
-#             except ObjectDoesNotExist:
-#                 messages.info(request, "You do not have an active orders")
-#                 return redirect('checkout')
-#     return None
-
-
-
-
-
+@never_cache
 @login_required(login_url = 'signin')
 def buy_now(request,id,tax=0, total=0, quantity=0, cart_items=None):
     CartItem.objects.all().delete()

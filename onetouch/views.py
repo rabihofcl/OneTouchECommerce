@@ -17,6 +17,7 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
 import requests
 from account.forms import AddressForm, UserForm, UserProfileForm
+from django.views.decorators.cache import never_cache
 
 
 
@@ -73,6 +74,7 @@ def signin(request):
                 pass
 
             auth.login(request, user)
+            request.session['login'] = 'login'
             messages.success(request, "You logged in successfully!")
 
             url = request.META.get('HTTP_REFERER')
@@ -121,7 +123,7 @@ def phone_login(request):
     return render(request, 'signin.html')
 
     
-
+@never_cache
 def phone_login_otp(request):
     if request.method == 'POST':
         otp = request.POST['otp']
@@ -210,9 +212,8 @@ def register(request):
 
 
 
-
+@never_cache
 def otp_register(request):
-
     if request.method == 'POST':
         otp = request.POST['otp']
 
@@ -268,7 +269,7 @@ def otp_register(request):
 
 
 
-
+@never_cache
 @login_required(login_url = 'signin')
 def signout(request):
     auth.logout(request)
@@ -304,6 +305,7 @@ def forgotPass(request):
     return render(request, 'forgotPass.html')
 
 
+@never_cache
 def forgotPassOtp(request):
     if request.method == 'POST':
         otp = request.POST['otp']
@@ -331,7 +333,7 @@ def forgotPassOtp(request):
 
 
 
-
+@never_cache
 def resetPass(request):
     if request.method == 'POST':
         password1 = request.POST['password1']
@@ -355,7 +357,7 @@ def resetPass(request):
 
 
 
-
+@never_cache
 def store(request, brand_slug=None):
     
     brands = None
@@ -382,6 +384,8 @@ def store(request, brand_slug=None):
     return render(request, 'store.html', context)
 
 
+
+@never_cache
 def product_detail(request, brand_slug, product_slug):
     single_product = Product.objects.get(
             brand__slug=brand_slug, slug=product_slug)
@@ -429,6 +433,8 @@ def product_detail(request, brand_slug, product_slug):
     return render(request, 'product_detail.html', context)
 
 
+
+@never_cache
 def search(request):
     if 'keyword' in request.GET:
         keyword = request.GET['keyword']
@@ -442,7 +448,7 @@ def search(request):
     return render(request, 'store.html', context)
 
 
-
+@never_cache
 @login_required(login_url = 'signin')
 def dashboard(request):
     orders = Order.objects.order_by('-created_at').filter(user_id=request.user.id, is_ordered=True)
@@ -458,7 +464,7 @@ def dashboard(request):
     return render(request, 'dashboard.html', context)
 
 
-
+@never_cache
 @login_required(login_url = 'signin')
 def my_orders(request):
     order_detail = OrderProduct.objects.filter(user=request.user).order_by('-created_at')  
@@ -468,6 +474,8 @@ def my_orders(request):
     return render(request, 'my_orders.html', context)
 
 
+@never_cache
+@login_required(login_url = 'signin')
 def cancel_order(request, id):
     cancelled_product = OrderProduct.objects.get(id=id)
     Product.objects.filter(id=cancelled_product.product.id).update(stock=cancelled_product.product.stock + cancelled_product.quantity)
@@ -475,16 +483,21 @@ def cancel_order(request, id):
     return redirect('my_orders')
 
 
+@never_cache
+@login_required(login_url = 'signin')
 def return_item(request, id):
     OrderProduct.objects.filter(id=id).update(status='Return')
     return redirect('my_orders')
 
 
+@never_cache
+@login_required(login_url = 'signin')
 def cancel_return(request, id):
     OrderProduct.objects.filter(id=id).update(status='Delivered')
     return redirect('my_orders')
 
 
+@never_cache
 @login_required(login_url = 'signin')
 def edit_profile(request):
     userprofile = get_object_or_404(UserProfile, user=request.user)
@@ -509,7 +522,7 @@ def edit_profile(request):
     return render(request, 'edit_profile.html', context)
 
 
-
+@never_cache
 @login_required(login_url = 'signin')
 def my_addresses(request):
 
@@ -537,7 +550,7 @@ def my_addresses(request):
 
     return render(request, 'my_addresses.html', context)
 
-
+@never_cache
 @login_required(login_url = 'signin')
 def delete_address(request):
     address_id = request.POST['id']
@@ -545,7 +558,7 @@ def delete_address(request):
     return JsonResponse({'success': True})
 
 
-
+@never_cache
 @login_required(login_url = 'signin')
 def change_password(request):
     if request.method == 'POST':
@@ -573,7 +586,7 @@ def change_password(request):
 
 
 
-
+@never_cache
 @login_required(login_url = 'signin')
 def order_details(request, order_id):
     order_detail = OrderProduct.objects.filter(order__order_number=order_id)

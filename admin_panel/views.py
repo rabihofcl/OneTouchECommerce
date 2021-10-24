@@ -279,6 +279,21 @@ def change_status(request, id):
 
 
 @login_required(login_url='admin_signin')
+def order_status_change(request):
+    id = request.POST['id']
+    status = request.POST['status']
+    order_product = OrderProduct.objects.get(id=id)
+    order_product.status = status
+    order_product.save()
+    return JsonResponse({'success': True})
+
+    
+
+
+
+
+
+@login_required(login_url='admin_signin')
 def ad_past_orders(request):
 
     order_detail = OrderProduct.objects.filter(

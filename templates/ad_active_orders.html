@@ -20,8 +20,7 @@
                         <th scope="col">Quantity</th>
                         <th scope="col">Price</th>
                         <th scope="col">Status</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Action</th>
+                        <th scope="col">Change Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -34,14 +33,25 @@
                         <td>₹ {{ item.product_price }}</td>
                         <td>{{ item.status }}</td>
                         <td>
-                            <form action="{% url 'change_status' item.id %}" method="post">
-                                {% csrf_token %}
-                                {{ order_product_form.status }}
+                            <select onchange="order_status_change(event, '{{item.id}}')" class="form-control" style="border: red 1px solid; color: red;" name="" id="order_status">
+                                <option value="">{{ item.status }}</option>
+                                {% if item.status != 'Placed' %}
+                                <option value="Placed">Placed</option>
+                                {% endif %}
+                                {% if item.status != 'Accepted' %}
+                                <option value="Accepted">Accepted</option>
+                                {% endif %}
+                                {% if item.status != 'Shipping' %}
+                                <option value="Shipping">Shipping</option>
+                                {% endif %}
+                                {% if item.status != 'Delivered' %}
+                                <option value="Delivered">Delivered</option>
+                                {% endif %}
+                                {% if item.status != 'Cancelled' %}
+                                <option value="Cancelled">Cancelled</option>
+                                {% endif %}
+                            </select>
                             
-                        </td>
-                        <td>
-                            <input type="submit" value="Update Order" class="btn btn-outline-primary">
-                        </form>
                         </td>
                     </tr>
                     {% endfor %}
@@ -52,6 +62,27 @@
 </section>
 
 
+
+<script>
+    function order_status_change(event, item_id){
+        status = event.target.value
+        id = item_id
+        console.log(status, id)
+        $.ajax({
+            url: '/admin/order_status_change',
+            method: 'POST',
+            dataType: 'json',
+            data: {
+                id: id,
+                status: status,
+                csrfmiddlewaretoken: "{{csrf_token}}"
+            },
+            success: (response) => {
+                location.reload()
+            }
+        })
+    }
+</script>
 
 
 

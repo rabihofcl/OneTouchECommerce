@@ -8,9 +8,14 @@ import datetime
 from .models import Order, OrderProduct, Payment, ReviewRating
 import json
 
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
+
 # Create your views here.
 
 
+@never_cache
+@login_required(login_url = 'signin')
 def payments(request):
     body = json.loads(request.body)
 
@@ -77,6 +82,8 @@ def payments(request):
 
 
 
+@never_cache
+@login_required(login_url = 'signin')
 def place_order(request, total=0, quantity=0):
     current_user = request.user
 
@@ -151,6 +158,9 @@ def place_order(request, total=0, quantity=0):
         return redirect('checkout')
 
 
+
+@never_cache
+@login_required(login_url = 'signin')
 def order_complete(request):
     order_number = request.GET.get('order_number')
     transID = request.GET.get('payment_id')
@@ -176,6 +186,8 @@ def order_complete(request):
         return render(request, 'order_complete.html', context)
     except (Payment.DoesNotExist, Order.DoesNotExist):
         return redirect('home')
+
+
 
 
 def submit_review(request, product_id):
