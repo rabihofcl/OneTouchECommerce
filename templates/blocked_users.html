@@ -16,7 +16,9 @@
                             <th scope="col">Username </th>
                             <th scope="col">Email ID </th>
                             <th scope="col">Phone Number </th>
+                            <th scope="col">Status </th>
                             <th scope="col">Active User </th>
+                            <th scope="col">Block </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -26,7 +28,9 @@
                             <td>{{user.username}}</td>
                             <td>{{user.email}}</td>
                             <td>{{user.phone_number}}</td>
+                            <td>{{user.is_active}}</td>
                             <td><i class="fas fa-ban" style="color: red;"></i></td>
+                            <td><a href="{% url 'activate_user' user.id %}" class="btn btn-outline-success">Activate User</a></td>
                         </tr>
                         {% endfor %}
                     </tbody>

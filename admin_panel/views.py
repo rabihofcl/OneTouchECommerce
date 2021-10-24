@@ -218,9 +218,27 @@ def active_users(request):
 
 
 @login_required(login_url='admin_signin')
+def block_user(request, id):
+    user = Account.objects.get(id=id)
+    user.is_active = False
+    user.save()
+    return redirect('active_users')
+
+
+
+@login_required(login_url='admin_signin')
 def blocked_users(request):
     users = Account.objects.order_by('id').filter(is_active=False).all()
     return render(request, 'blocked_users.html', {'users': users})
+
+
+@login_required(login_url='admin_signin')
+def activate_user(request, id):
+    user = Account.objects.get(id=id)
+    user.is_active = True
+    user.save()
+    return redirect('blocked_users')
+
 
 
 @login_required(login_url='admin_signin')
@@ -231,7 +249,7 @@ def ad_active_orders(request):
     order_detail = OrderProduct.objects.exclude(
         Q(status='Delivered') | Q(status='Cancelled')).order_by('-created_at')
 
-    order_product_form = OrderProductForm(instance=request.user)
+    order_product_form = OrderProductForm()
 
     subtotal = 0
     for i in order_detail:
