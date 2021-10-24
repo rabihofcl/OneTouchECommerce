@@ -17,6 +17,30 @@
                             All Orders
                         </p>
                     </caption>
+
+                    <div class="col-md-12 col-sm-12">
+                        <form action="" method="POST">
+                            {%csrf_token%}
+                            <div class="row">
+                                <div class="col-md-2" style="display: flex; justify-content: space-between;">
+                                    <label for="tableFormControlFile1">From:</label>
+                                    <input type="date" class="form-control" id="fromdate" name="datefrom"
+                                        onchange="from(event)" value="" min="2021-03-01" max="2021-12-01" required>
+                                </div>
+                                <div class="col-md-2" style="display: flex;">
+                                    <label for="exampleFormControlFile1">to:</label>
+                                    <input type="date" class="form-control" id="todate" name="dateto" required>
+                                </div>
+                                <div class="col-md-1 " style="display: flex;">
+                                    <button type="submit" class="btn btn-primary">Search</button>
+                                </div>
+                                <div class="col-md-1 " style="display: flex;">
+                                    <a href="{% url 'report' %}" class="btn btn-primary">Show All</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <br>
                     <div class="row mb-2">
                         <div class="col-md-12">
                             <div class="row">

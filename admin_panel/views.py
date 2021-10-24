@@ -63,31 +63,30 @@ def admin_home(request):
     brands = Brand.objects.all().count()
     users = Account.objects.all().count()
 
-
-    #orders chart data
+    # orders chart data
     labels1 = []
-    data1= []
+    data1 = []
 
     orders = Order.objects.filter(is_ordered=True).order_by('-created_at')[:10]
     for order in orders:
         labels1.append(order.order_number)
         data1.append(order.order_total)
 
-    #prodcuts chart data
+    # prodcuts chart data
     labels2 = []
-    data2= []
+    data2 = []
 
-    products_count = (Product.objects.values('brand__brand_name').annotate(dcount=Count('brand')).order_by()) 
+    products_count = (Product.objects.values(
+        'brand__brand_name').annotate(dcount=Count('brand')).order_by())
     for product_count in products_count:
         labels2.append(product_count["brand__brand_name"])
         data2.append(product_count["dcount"])
 
-    
     payments = Payment.objects.all()
     payment_total = 0
     for payment in payments:
         payment_total += float(payment.amount_paid)
-    
+
     print(payment_total)
 
     context = {
@@ -223,6 +222,7 @@ def blocked_users(request):
     users = Account.objects.order_by('id').filter(is_active=False).all()
     return render(request, 'blocked_users.html', {'users': users})
 
+
 @login_required(login_url='admin_signin')
 def ad_active_orders(request):
     orders = Order.objects.filter(
@@ -231,7 +231,7 @@ def ad_active_orders(request):
     order_detail = OrderProduct.objects.exclude(
         Q(status='Delivered') | Q(status='Cancelled')).order_by('-created_at')
 
-    order_product_form = OrderProductForm()
+    order_product_form = OrderProductForm(instance=request.user)
 
     subtotal = 0
     for i in order_detail:
@@ -245,6 +245,7 @@ def ad_active_orders(request):
         'order_product_form': order_product_form,
     }
     return render(request, 'ad_active_orders.html', context)
+
 
 @login_required(login_url='admin_signin')
 def change_status(request, id):
@@ -337,20 +338,45 @@ def delete_ads(request):
     return JsonResponse({'success': True})
 
 
-
 @login_required(login_url='admin_signin')
 def report(request):
-    brands = Brand.objects.all()
-    products = Product.objects.all()
-    orders = Order.objects.filter(is_ordered=True).order_by('-created_at')
+    if 'date_from' in request.session:
+            del request.session['date_from']
+            del request.session['date_to']
 
-    context = {
-        'brands': brands,
-        'products': products,
-        'orders': orders,
-    }
-    return render(request, 'ad_report.html', context)
+    if request.method == 'POST':
 
+        if 'date_from' in request.session:
+            del request.session['date_from']
+            del request.session['date_to']
+
+        date_from = request.POST['datefrom']
+        date_to = request.POST['dateto']
+
+        request.session['date_from'] = date_from
+        request.session['date_to'] = date_to
+
+        orders = Order.objects.filter(created_at__range=[date_from, date_to], is_ordered=True).order_by('-created_at')
+        brands = Brand.objects.all()
+        products = Product.objects.all()
+
+        context = {
+            'brands': brands,
+            'products': products,
+            'orders': orders,
+        }
+        return render(request, 'ad_report.html', context)
+    else:
+        brands = Brand.objects.all()
+        products = Product.objects.all()
+        orders = Order.objects.filter(is_ordered=True).order_by('-created_at')
+
+        context = {
+            'brands': brands,
+            'products': products,
+            'orders': orders,
+        }
+        return render(request, 'ad_report.html', context)
 
 
 @login_required(login_url='admin_signin')
@@ -368,7 +394,6 @@ def brand_export_csv(request):
         writer.writerow([brand.brand_name, brand.id])
 
     return response
-
 
 
 @login_required(login_url='admin_signin')
@@ -403,7 +428,6 @@ def brand_export_excel(request):
     return response
 
 
-
 @login_required(login_url='admin_signin')
 def brand_export_pdf(request):
     response = HttpResponse(content_type='application/pdf')
@@ -428,7 +452,6 @@ def brand_export_pdf(request):
     return response
 
 
-
 @login_required(login_url='admin_signin')
 def product_export_csv(request):
     response = HttpResponse(content_type='text/csv')
@@ -445,7 +468,6 @@ def product_export_csv(request):
                         product.stock, product.price])
 
     return response
-
 
 
 @login_required(login_url='admin_signin')
@@ -481,7 +503,6 @@ def product_export_excel(request):
     return response
 
 
-
 @login_required(login_url='admin_signin')
 def product_export_pdf(request):
     response = HttpResponse(content_type='application/pdf')
@@ -506,7 +527,6 @@ def product_export_pdf(request):
     return response
 
 
-
 @login_required(login_url='admin_signin')
 def order_export_csv(request):
     response = HttpResponse(content_type='text/csv')
@@ -517,14 +537,18 @@ def order_export_csv(request):
     writer.writerow(['ORDER NUMBER', 'FULL NAME', 'PHONE',
                     'EMIAL', 'ORDER TOTAL', 'TAX', 'CREATED AT'])
 
-    orders = Order.objects.filter(is_ordered=True).order_by('-created_at')
+    if 'date_from' in request.session:
+        date_from = request.session['date_from']
+        date_to = request.session['date_to']
+        orders = Order.objects.filter(created_at__range=[date_from, date_to], is_ordered=True).order_by('-created_at')
+    else:
+        orders = Order.objects.filter(is_ordered=True).order_by('-created_at')
 
     for order in orders:
         writer.writerow([order.order_number, order.full_name(
         ), order.phone, order.email, order.order_total, order.tax, order.created_at])
 
     return response
-
 
 
 @login_required(login_url='admin_signin')
@@ -547,7 +571,13 @@ def order_export_excel(request):
 
     font_style = xlwt.XFStyle()
 
-    rows = Order.objects.filter(is_ordered=True).order_by('-created_at').values_list(
+    if 'date_from' in request.session:
+        date_from = request.session['date_from']
+        date_to = request.session['date_to']
+        rows = Order.objects.filter(created_at__range=[date_from, date_to], is_ordered=True).order_by('-created_at').values_list(
+        'order_number', 'first_name', 'phone', 'email', 'order_total', 'tax', 'created_at')
+    else:
+        rows = Order.objects.filter(is_ordered=True).order_by('-created_at').values_list(
         'order_number', 'first_name', 'phone', 'email', 'order_total', 'tax', 'created_at')
 
     for row in rows:
@@ -561,7 +591,6 @@ def order_export_excel(request):
     return response
 
 
-
 @login_required(login_url='admin_signin')
 def order_export_pdf(request):
     response = HttpResponse(content_type='application/pdf')
@@ -569,7 +598,12 @@ def order_export_pdf(request):
         str(datetime.datetime.now()) + '.pdf'
     response['Content-Transfer-Encoding'] = 'binary'
 
-    orders = Order.objects.filter(is_ordered=True).order_by('-created_at')
+    if 'date_from' in request.session:
+        date_from = request.session['date_from']
+        date_to = request.session['date_to']
+        orders = Order.objects.filter(created_at__range=[date_from, date_to], is_ordered=True).order_by('-created_at')
+    else:
+        orders = Order.objects.filter(is_ordered=True).order_by('-created_at')
 
     html_string = render_to_string('order_pdf_output.html', {
                                    'orders': orders, 'total': 0})
@@ -586,7 +620,6 @@ def order_export_pdf(request):
     return response
 
 
-
 @login_required(login_url='admin_signin')
 def coupon(request):
 
@@ -598,7 +631,6 @@ def coupon(request):
         'coupons': coupons,
     }
     return render(request, 'ad_coupon.html', context)
-
 
 
 @login_required(login_url='admin_signin')
