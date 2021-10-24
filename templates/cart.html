@@ -28,13 +28,7 @@
         {% else %}
         <div class="row">
             <aside class="col-lg-9">
-                <div class="row">
-                    <div class="col-md-12 text-center">
-                        {% for message in messages %}
-                        <p style="color: red;">{{ message }}</p>
-                        {% endfor %}
-                    </div>
-                </div>
+                {% include 'includes/alert.html' %}
                 <div class="card">
                     <table class="table table-borderless table-shopping-cart table-responsive">
                         <thead class="text-muted">

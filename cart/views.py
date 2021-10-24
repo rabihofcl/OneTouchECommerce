@@ -46,7 +46,7 @@ def add_cart(request, product_id):
             cart_item = CartItem.objects.get(product=product, user=request.user)
             if cart_item.quantity > cart_item.product.stock-1:
                 print('out of stock')
-                messages.alert(request, 'Product Out of Stock')
+                messages.info(request, 'Product Out of Stock')
                 return redirect('cart')
             else:
                 cart_item.quantity += 1
@@ -87,6 +87,7 @@ def add_cart(request, product_id):
                 cart=cart,
             )
             cart_item.save()
+    messages.success(request, 'Item added to cart successfully!')
     return redirect(url)
 
 

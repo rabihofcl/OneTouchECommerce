@@ -73,6 +73,7 @@ def signin(request):
                 pass
 
             auth.login(request, user)
+            messages.success(request, "You logged in successfully!")
 
             url = request.META.get('HTTP_REFERER')
             try:
@@ -271,6 +272,7 @@ def otp_register(request):
 @login_required(login_url = 'signin')
 def signout(request):
     auth.logout(request)
+    messages.success(request, 'You logged out successfully!')
     return redirect('home')
 
 
