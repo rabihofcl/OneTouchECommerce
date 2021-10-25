@@ -88,7 +88,6 @@ def add_cart(request, product_id):
                 cart=cart,
             )
             cart_item.save()
-    messages.success(request, 'Item added to cart successfully!')
     return redirect(url)
 
 

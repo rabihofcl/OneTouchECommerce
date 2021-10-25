@@ -24,7 +24,6 @@ import xlwt
 from django.template.loader import render_to_string
 from weasyprint import HTML
 import tempfile
-from django.db.models import Sum
 
 # Create your views here.
 
@@ -163,11 +162,13 @@ def ad_product_list(request):
 def ad_add_product(request):
     if request.method == 'POST':
         product_form = ProductForm(request.POST, request.FILES)
-        print(product_form)
         if product_form.is_valid():
             product = product_form.save(commit=False)
             product.slug = product.product_name.lower().replace(" ", "-")
             product_form.save()
+            return redirect('ad_add_product')
+        else:
+            messages.info(request, 'Product name already exists')
             return redirect('ad_add_product')
     else:
         product_form = ProductForm()
@@ -218,11 +219,13 @@ def active_users(request):
 
 
 @login_required(login_url='admin_signin')
-def block_user(request, id):
+def block_user(request):
+    id = request.POST['id']
     user = Account.objects.get(id=id)
     user.is_active = False
     user.save()
-    return redirect('active_users')
+    return JsonResponse({'success': True})
+
 
 
 
@@ -233,11 +236,12 @@ def blocked_users(request):
 
 
 @login_required(login_url='admin_signin')
-def activate_user(request, id):
+def activate_user(request):
+    id = request.POST['id']
     user = Account.objects.get(id=id)
     user.is_active = True
     user.save()
-    return redirect('blocked_users')
+    return JsonResponse({'success': True})
 
 
 
@@ -374,8 +378,8 @@ def delete_ads(request):
 @login_required(login_url='admin_signin')
 def report(request):
     if 'date_from' in request.session:
-            del request.session['date_from']
-            del request.session['date_to']
+        del request.session['date_from']
+        del request.session['date_to']
 
     if request.method == 'POST':
 
@@ -385,6 +389,7 @@ def report(request):
 
         date_from = request.POST['datefrom']
         date_to = request.POST['dateto']
+        print(date_to)
 
         request.session['date_from'] = date_from
         request.session['date_to'] = date_to
@@ -670,5 +675,7 @@ def coupon(request):
 def add_coupon(request):
     coupon_form = CouponForm(request.POST)
     if coupon_form.is_valid():
+        coupon = coupon_form.save(commit=False)
+        coupon.status = True
         coupon_form.save()
     return JsonResponse({'success': True})

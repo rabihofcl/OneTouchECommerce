@@ -30,7 +30,7 @@
                             <td>{{user.phone_number}}</td>
                             <td>{{user.is_active}}</td>
                             <td><i class="fas fa-check" style="color: green;"></i></td>
-                            <td><a href="{% url 'block_user' user.id %}" class="btn btn-outline-danger">Block User</a></td>
+                            <td><a onclick="block_user('{{user.id}}')" class="btn btn-outline-danger text-danger"  data-toggle="modal" data-target="#exampleModalCenter">Block User</a></td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -38,6 +38,62 @@
             </div>
         </div>
 </section>
+
+
+
+<!-- Modal -->
+
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h6>Are you sure to block this user ?</h6>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a onclick="blockUser()" id="block_user"><button type=" button"
+                        class="btn btn-danger">Block</button></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Ends Here -->
+
+
+
+<script>
+
+    function block_user(id) {
+        document.getElementById('block_user').value = id
+    }
+
+    function blockUser() {
+        var id = document.getElementById('block_user').value
+        $.ajax({
+            url: '/admin/block_user',
+            method: 'POST',
+            dataType: 'json',
+            data: {
+                id: id,
+                csrfmiddlewaretoken: "{{csrf_token}}"
+            },
+            success: (response) => {
+                location.reload()
+            }
+        })
+
+    }
+</script>
+
+
 
 
 {% endblock %}

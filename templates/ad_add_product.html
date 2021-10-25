@@ -16,7 +16,9 @@
 
 <section style="padding-left: 50px;">
 	<div class="row">
+		{% include 'includes/alert.html' %}
 		<div class="col-md-10 card">
+			
 			<form method="POST" action="" enctype="multipart/form-data" id="submit-form">
 				{% csrf_token %}
 				<div class="row ">

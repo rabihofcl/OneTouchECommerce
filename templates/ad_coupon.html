@@ -22,6 +22,7 @@
                         <th>Coupon Name</th>
                         <th scope="col">Coupon Code</th>
                         <th scope="col">Discount(%)</th>
+                        <th scope="col">Status</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
@@ -32,11 +33,11 @@
                         <td>{{coupon.coupon_name}}</td>
                         <td>{{coupon.coupon_code}}</td>
                         <td>{{coupon.discount}}</td>
+                        <td>{{coupon.status}}</td>
                         <td>
-                            <a href="" class="pr-5"><i class="fas fa-edit"></i></a>
-
                             
-                            <a  type="button" style="color: red;"><i
+                            <a onclick="delete_coupon('{{coupon.id}}')" ata-toggle="modal"
+                            data-target="#exampleModalCenter1" type="button" style="color: red;"><i
                                     class="fas fa-trash-alt"></i></a>
                         </td>
                     </tr>
@@ -46,6 +47,33 @@
         </div>
     </div>
 </section>
+
+
+<!-- Modal -->
+
+<div class="modal fade" id="exampleModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter1Title"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h6>Are you sure to delete ?</h6>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a onclick="deleteCoupon()" id="delete_coupon"><button type=" button"
+                        class="btn btn-danger">Delete</button></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Ends Here -->
 
 
 
@@ -103,6 +131,30 @@
             }
         })
     }
+
+
+    function delete_coupon(id) {
+        document.getElementById('delete_coupon').value = id
+        console.log(id)
+    }
+
+    function deleteBrand() {
+        var id = document.getElementById('delete_coupon').value
+        $.ajax({
+            url: '/admin/ad_delete_coupon',
+            method: 'POST',
+            dataType: 'json',
+            data: {
+                id: id,
+                csrfmiddlewaretoken: "{{csrf_token}}"
+            },
+            success: (response) => {
+                location.reload()
+            }
+        })
+
+    }
+
 </script>
 
 {% endblock %}
