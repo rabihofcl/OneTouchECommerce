@@ -47,9 +47,9 @@ urlpatterns = [
     path('delete_address', views.delete_address, name='delete_address'),
     path('change_password/', views.change_password, name='change_password'),
     path('order_details/<int:order_id>/', views.order_details, name='order_details'),
-    path('cancel_order/<id>', views.cancel_order, name='cancel_order'),
-    path('return_item/<id>', views.return_item, name='return_item'),
-    path('cancel_return/<id>', views.cancel_return, name='cancel_return'),
+    path('cancel_order/', views.cancel_order, name='cancel_order'),
+    path('return_item/', views.return_item, name='return_item'),
+    path('cancel_return/', views.cancel_return, name='cancel_return'),
     
 
 

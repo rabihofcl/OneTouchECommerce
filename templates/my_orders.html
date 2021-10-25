@@ -41,13 +41,13 @@
                         <div class="col-md-2 mt-2">
                             {% if item.status == "Delivered"  %}
                             <a href="{% url 'order_details' item.order.order_number %}"><button class="btn btn-primary">Invoice</button></a>
-                            <a onclick="return confirm('Are you sure to return the Item?')" href="{% url 'return_item' item.id %}"><button class="btn btn-outline-danger mt-1">Return Item</button></a>
+                            <a onclick="return_item('{{item.id}}')" class="btn btn-outline-danger text-outline-danger mt-1" data-toggle="modal" data-target="#exampleModalCenter">Return Item</a>
                             {% elif item.status == "Cancelled"  %}
 
                             {% elif item.status == "Return"  %}
-                            <a  onclick="return confirm('Are you sure to cancel the return?')" href="{% url 'cancel_return' item.id %}"><button class="btn btn-warning">Cancel Return</button></a>
+                            <a onclick="cancel_return('{{item.id}}')"><button class="btn btn-warning"  data-toggle="modal" data-target="#exampleModalCenter11">Cancel Return</button></a>
                             {% else %}
-                            <a  onclick="return confirm('Are you sure to cancel this order?')" href="{% url 'cancel_order' item.id %}"><button class="btn btn-danger">Cancel Order</button></a>
+                            <a onclick="cancel_order('{{item.id}}')"><button class="btn btn-danger"  data-toggle="modal" data-target="#exampleModalCenter22">Cancel</button></a>
                             {% endif %}
                         </div>
                     </div>
@@ -61,5 +61,168 @@
 
 </section>
 <!-- ========================= SECTION CONTENT END// ========================= -->
+
+
+
+<!-- Modal  return item-->
+
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h6>Are you sure to return item ?</h6>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a onclick="returnItem()" id="return_item"><button type=" button"
+                        class="btn btn-danger">Return</button></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Ends Here -->
+
+
+<!-- Modal  cancel return-->
+
+<div class="modal fade" id="exampleModalCenter11" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h6>Are you sure to cancel return ?</h6>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a onclick="cancelReturn()" id="cancel_return"><button type=" button"
+                        class="btn btn-danger">Cancel Return</button></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Ends Here -->
+
+
+
+
+<!-- Modal  cancel order-->
+
+<div class="modal fade" id="exampleModalCenter22" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h6>Are you sure to cancel order ?</h6>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a onclick="cancelOrder()" id="cancel_order"><button type=" button"
+                        class="btn btn-danger">Cancel Order</button></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Ends Here -->
+
+<script>
+
+    
+
+    function return_item(id) {
+        console.log(id)
+        document.getElementById('return_item').value = id
+    }
+
+    function returnItem() {
+        var id = document.getElementById('return_item').value
+        console.log(id)
+        $.ajax({
+            url: '/return_item/',
+            method: 'POST',
+            dataType: 'json',
+            data: {
+                id: id,
+                csrfmiddlewaretoken: "{{csrf_token}}"
+            },
+            success: (response) => {
+                location.reload()
+            }
+        })
+
+    }
+
+
+
+    function cancel_return(id) {
+        document.getElementById('cancel_return').value = id
+    }
+
+    function cancelReturn() {
+        var id = document.getElementById('cancel_return').value
+        $.ajax({
+            url: '/cancel_return/',
+            method: 'POST',
+            dataType: 'json',
+            data: {
+                id: id,
+                csrfmiddlewaretoken: "{{csrf_token}}"
+            },
+            success: (response) => {
+                location.reload()
+            }
+        })
+
+    }
+
+
+
+    function cancel_order(id) {
+        document.getElementById('cancel_order').value = id
+    }
+
+    function cancelOrder() {
+        var id = document.getElementById('cancel_order').value
+        $.ajax({
+            url: '/cancel_order/',
+            method: 'POST',
+            dataType: 'json',
+            data: {
+                id: id,
+                csrfmiddlewaretoken: "{{csrf_token}}"
+            },
+            success: (response) => {
+                location.reload()
+            }
+        })
+
+    } 
+</script>
+
+
+
+
+
 
 {% endblock %}

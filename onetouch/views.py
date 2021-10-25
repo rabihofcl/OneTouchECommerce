@@ -476,25 +476,30 @@ def my_orders(request):
 
 @never_cache
 @login_required(login_url = 'signin')
-def cancel_order(request, id):
+def cancel_order(request):
+    id = request.POST['id']
     cancelled_product = OrderProduct.objects.get(id=id)
     Product.objects.filter(id=cancelled_product.product.id).update(stock=cancelled_product.product.stock + cancelled_product.quantity)
     OrderProduct.objects.filter(id=id).update(status='Cancelled')
-    return redirect('my_orders')
+    return JsonResponse({'success': True})
 
 
 @never_cache
 @login_required(login_url = 'signin')
-def return_item(request, id):
+def return_item(request):
+    id = request.POST['id']
+    print(id)
     OrderProduct.objects.filter(id=id).update(status='Return')
-    return redirect('my_orders')
+    return JsonResponse({'success': True})
 
 
 @never_cache
 @login_required(login_url = 'signin')
-def cancel_return(request, id):
+def cancel_return(request):
+    id = request.POST['id']
+    print(id)
     OrderProduct.objects.filter(id=id).update(status='Delivered')
-    return redirect('my_orders')
+    return JsonResponse({'success': True})
 
 
 @never_cache
