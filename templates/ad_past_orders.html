@@ -20,8 +20,6 @@
                         <th scope="col">Quantity</th>
                         <th scope="col">Price</th>
                         <th scope="col">Status</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -33,16 +31,6 @@
                         <td>{{ item.quantity }}</td>
                         <td>₹ {{ item.product_price }}</td>
                         <td>{{ item.status }}</td>
-                        <td>
-                            <form action="{% url 'change_status' item.id %}" method="post">
-                                {% csrf_token %}
-                                {{ order_product_form.status }}
-                            
-                        </td>
-                        <td>
-                            <input type="submit" value="Update Order" class="btn btn-outline-primary">
-                        </form>
-                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
