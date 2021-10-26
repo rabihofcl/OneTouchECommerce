@@ -16,6 +16,7 @@
                     <tr>
                         <th scope="col">No.</th>
                         <th>Order #</th>
+                        <th scope="col">Name </th>
                         <th scope="col">Product Name </th>
                         <th scope="col">Quantity</th>
                         <th scope="col">Price</th>
@@ -27,6 +28,7 @@
                     <tr>
                         <td scope="row">{{forloop.counter}}</td>
                         <td><a href="{% url 'ad_order_edit' item.order.order_number %}">{{ item.order.order_number }}</a></td>
+                        <td>{{item.order.full_name}}</td>
                         <td>{{ item.product.product_name }}</td>
                         <td>{{ item.quantity }}</td>
                         <td>₹ {{ item.product_price }}</td>
