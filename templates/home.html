@@ -26,6 +26,8 @@
 </section>
 <!-- ========================= SECTION MAIN END// ========================= -->
 
+
+
 <!-- ========================= SECTION  ========================= -->
 <section class="section-name padding-y-sm">
 	<div class="container">
@@ -34,7 +36,6 @@
 			<a href="{% url 'store' %}" class="btn btn-outline-primary float-right">See all</a>
 			<h3 class="section-title">New Arrivals</h3>
 		</header><!-- sect-heading -->
-
 
 		<div class="row">
 
@@ -46,6 +47,20 @@
 						<a href="{{ product.get_url }}" class="title">{{ product.product_name }}</a>
 						<div class="price mt-1">₹{{ product.price }}</div> <!-- price-wrap.// -->
 					</figcaption>
+					<div class="row mb-3">
+						{% if product.stock <= 0 %}
+						<div class="col-md-12 text-center">
+							<a  class="btn btn-secondary text-white" >Out of stock</a>
+						</div>
+						{% else %}
+						<div class="col-md-6 text-center">
+							<a href="{% url 'add_cart' product.id %}" class="btn btn-outline-primary">Add to Cart</a>
+						</div>
+						<div class="col-md-6 text-center">
+							<a href="{% url 'buy_now' product.id %}" class="btn" style="background: rgb(250, 111, 12); color: white;">Buy Now</a>
+						</div>
+						{% endif %}
+					</div>
 				</div>
 			</div> <!-- col.// -->
 			{% endfor %}

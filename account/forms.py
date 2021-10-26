@@ -13,30 +13,32 @@ class UserForm(forms.ModelForm):
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = 'form-control'
 
-    
 
 class UserProfileForm(forms.ModelForm):
-    profile_picture = forms.ImageField(required=False, error_messages = {'invalid':("Image files only")}, widget=forms.FileInput)
+    profile_picture = forms.ImageField(required=False, error_messages={
+                                       'invalid': ("Image files only")}, widget=forms.FileInput)
+
     class Meta:
         model = UserProfile
-        fields = ('address_line_1', 'address_line_2', 'city', 'state', 'country', 'profile_picture', 'pincode')
+        fields = ('address_line_1', 'address_line_2', 'city',
+                  'state', 'country', 'profile_picture', 'pincode')
 
     def __init__(self, *args, **kwargs):
         super(UserProfileForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = 'form-control'
 
-
+            self.fields['profile_picture'].widget.attrs['data-toggle'] = 'modal'
+            self.fields['profile_picture'].widget.attrs['data-target'] = '#exampleModal'
 
 
 class AddressForm(forms.ModelForm):
     class Meta:
         model = Address
-        fields = ['first_name', 'last_name', 'phone_number', 'email','address_line_1', 'address_line_2', 'city', 'state', 'country','pincode']
+        fields = ['first_name', 'last_name', 'phone_number', 'email',
+                  'address_line_1', 'address_line_2', 'city', 'state', 'country', 'pincode']
 
     def __init__(self, *args, **kwargs):
         super(AddressForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = 'form-control'
-
-

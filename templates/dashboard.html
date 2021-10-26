@@ -36,7 +36,11 @@
                     <div class="col-md-6">
                         <div class="card">
                             <div class="card-body text-center">
+                                {% if userprofile.profile_picture %}
                                 <img src="{{ userprofile.profile_picture.url }}" alt="profilr picture" width="50" height="50" style="border-radius: 50%;">
+                                {% else %}
+                                <img src="{% static 'images/pro_pic.jpg' %}" alt="profilr picture" width="50" height="50" style="border-radius: 50%;">
+                                {% endif %}
                                 <p class="mb-0">{{ user.email }}</p>
                                 <p>{{ user.phone_number }}</p>
                             </div>
