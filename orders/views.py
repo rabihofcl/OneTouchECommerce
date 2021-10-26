@@ -168,6 +168,7 @@ def place_order(request, total=0, quantity=0):
 
     grand_total = 0
     tax = 0
+    discount = 0
     for cart_item in cart_items:
         total += (cart_item.product.price * cart_item.quantity)
         quantity += cart_item.quantity
@@ -175,8 +176,10 @@ def place_order(request, total=0, quantity=0):
     pre_grand_total = total + tax
 
     if 'coupon_id' in request.session:
+        discount = request.session['discount_price']
         grand_total = request.session['amount_pay']   
     else:
+        discount = 0
         grand_total = pre_grand_total
     
 
@@ -203,6 +206,7 @@ def place_order(request, total=0, quantity=0):
             data.order_note = form.cleaned_data['order_note']
             data.order_total = grand_total
             data.tax = tax
+            data.discount = discount
             data.ip = request.META.get('REMOTE_ADDR')
             data.save()
 
@@ -245,6 +249,7 @@ def buynow_place_order(request, total=0, quantity=0):
 
     grand_total = 0
     tax = 0
+    discount = 0
     for buynow_item in buynow_items:
         total += (buynow_item.product.price * buynow_item.quantity)
         quantity += buynow_item.quantity
@@ -252,8 +257,10 @@ def buynow_place_order(request, total=0, quantity=0):
     pre_grand_total = total + tax
 
     if 'coupon_id' in request.session:
+        discount = request.session['discount_price']
         grand_total = request.session['amount_pay']   
     else:
+        discount = 0
         grand_total = pre_grand_total
     
 
@@ -280,6 +287,7 @@ def buynow_place_order(request, total=0, quantity=0):
             data.order_note = form.cleaned_data['order_note']
             data.order_total = grand_total
             data.tax = tax
+            data.discount = discount
             data.ip = request.META.get('REMOTE_ADDR')
             data.save()
 
