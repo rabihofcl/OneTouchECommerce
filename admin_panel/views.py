@@ -388,8 +388,9 @@ def report(request):
             del request.session['date_to']
 
         date_from = request.POST['datefrom']
-        date_to = request.POST['dateto']
-        print(date_to)
+        date_to = datetime.datetime.strptime(request.POST['dateto'], "%Y-%m-%d")
+        date_to = date_to + datetime.timedelta(days=1)
+        date_to = datetime.datetime.strftime(date_to, "%Y-%m-%d")
 
         request.session['date_from'] = date_from
         request.session['date_to'] = date_to
