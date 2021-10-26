@@ -1,6 +1,6 @@
 from django.http.response import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
-from cart.models import CartItem
+from cart.models import BuynowItem, CartItem
 from coupon.models import CheckCoupon, Coupon
 from product.models import Product
 from .forms import OrderForm1, ReviewForm
@@ -79,6 +79,78 @@ def payments(request):
         'transID': payment.payment_id,
     }    
     return JsonResponse(data)
+
+
+@never_cache
+@login_required(login_url = 'signin')
+def buynow_payments(request):
+    body = json.loads(request.body)
+
+    order = Order.objects.get(user=request.user, is_ordered=False, order_number=body['orderID'])
+
+    #store transaction details inside payment model
+    payment = Payment(
+        user = request.user,
+        payment_id = body['transID'],
+        payment_method = body['payment_method'],
+        amount_paid = order.order_total,
+        status = body['status'],
+    )
+    payment.save()
+    order.payment = payment
+    order.is_ordered = True
+    order.save()
+
+    if 'coupon_id' in request.session:
+        coupon_id = request.session['coupon_id']
+        coupon = Coupon.objects.get(id=coupon_id)
+        CheckCoupon.objects.create(user=request.user, coupon= coupon)
+
+        del request.session['coupon_id']
+        del request.session['amount_pay']
+        del request.session['discount_price']
+
+    # Move the cart items to Order Product Table
+    buynow_items = BuynowItem.objects.filter(user=request.user)
+
+    for item in buynow_items:
+        orderproduct = OrderProduct()
+        orderproduct.order_id = order.id
+        orderproduct.payment = payment
+        orderproduct.user_id = request.user.id
+        orderproduct.product_id = item.product_id
+        orderproduct.quantity = item.quantity
+        orderproduct.product_price = item.product.price
+        orderproduct.ordered = True
+        orderproduct.save()
+
+
+        # Reduce the quantity of the sold products
+        product = Product.objects.get(id=item.product_id)
+        product.stock -= item.quantity
+        product.save()
+
+    # Clear cart
+    BuynowItem.objects.filter(user=request.user).delete()
+
+    # Send order recieved email to customer
+
+
+
+
+
+    # Send order nuber and transaction id back to sendData method via JsonResponse
+
+    data = {
+        'order_number': order.order_number,
+        'transID': payment.payment_id,
+    }    
+    return JsonResponse(data)
+
+
+
+
+
 
 
 
@@ -161,6 +233,87 @@ def place_order(request, total=0, quantity=0):
 
 @never_cache
 @login_required(login_url = 'signin')
+def buynow_place_order(request, total=0, quantity=0):
+    current_user = request.user
+
+    #if the cart count is less than or equal to 0, then redirect back to shop
+    buynow_items = BuynowItem.objects.filter(user=current_user)
+    # cart_count = buynow_items.count()
+    # if cart_count <= 0:
+    #     return redirect('store')
+
+
+    grand_total = 0
+    tax = 0
+    for buynow_item in buynow_items:
+        total += (buynow_item.product.price * buynow_item.quantity)
+        quantity += buynow_item.quantity
+    tax = (2*total)/100
+    pre_grand_total = total + tax
+
+    if 'coupon_id' in request.session:
+        grand_total = request.session['amount_pay']   
+    else:
+        grand_total = pre_grand_total
+    
+
+
+    if request.method == 'POST':
+
+        form = OrderForm1(request.POST)
+        
+        if form.is_valid():
+
+            #store all the billing information inside order table
+            data = Order()
+            data.user = current_user
+            data.first_name = form.cleaned_data['first_name']
+            data.last_name = form.cleaned_data['last_name']
+            data.phone = form.cleaned_data['phone']
+            data.email = form.cleaned_data['email']
+            data.address_line_1 = form.cleaned_data['address_line_1']
+            data.address_line_2 = form.cleaned_data['address_line_2']
+            data.country = form.cleaned_data['country']
+            data.state = form.cleaned_data['state']
+            data.city = form.cleaned_data['city']
+            data.pincode = form.cleaned_data['pincode']
+            data.order_note = form.cleaned_data['order_note']
+            data.order_total = grand_total
+            data.tax = tax
+            data.ip = request.META.get('REMOTE_ADDR')
+            data.save()
+
+            #Generating order number
+            yr = int(datetime.date.today().strftime('%Y'))
+            dt = int(datetime.date.today().strftime('%d'))
+            mt = int(datetime.date.today().strftime('%m'))
+            d = datetime.date(yr,mt,dt)
+            current_date = d.strftime("%Y%m%d")  #20211004
+            order_number = current_date + str(data.id)
+            data.order_number = order_number
+            data.save()
+
+            order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
+
+            context = {
+                'order': order,
+                'cart_items': buynow_items,
+                'total': total,
+                'tax': tax,
+                'grand_total': grand_total,
+            }
+            return render(request, 'buynow_payments.html', context)
+    else:
+        return redirect('checkout')
+
+
+
+
+
+
+
+@never_cache
+@login_required(login_url = 'signin')
 def order_complete(request):
     order_number = request.GET.get('order_number')
     transID = request.GET.get('payment_id')
@@ -186,6 +339,39 @@ def order_complete(request):
         return render(request, 'order_complete.html', context)
     except (Payment.DoesNotExist, Order.DoesNotExist):
         return redirect('home')
+
+
+
+
+@never_cache
+@login_required(login_url = 'signin')
+def buynow_order_complete(request):
+    order_number = request.GET.get('order_number')
+    transID = request.GET.get('payment_id')
+
+    try:
+        order = Order.objects.get(order_number=order_number, is_ordered=True)
+        ordered_products = OrderProduct.objects.filter(order_id=order.id)
+
+        subtotal = 0
+        for i in ordered_products:
+            subtotal += i.product_price * i.quantity
+
+        payment = Payment.objects.get(payment_id=transID)
+
+        context = {
+            'order': order,
+            'ordered_products': ordered_products,
+            'order_number': order.order_number,
+            'transID': payment.payment_id,
+            'payment': payment,
+            'subtotal': subtotal,
+        }
+        return render(request, 'order_complete.html', context)
+    except (Payment.DoesNotExist, Order.DoesNotExist):
+        return redirect('home')
+
+
 
 
 

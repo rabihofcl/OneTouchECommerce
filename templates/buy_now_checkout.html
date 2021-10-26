@@ -80,7 +80,7 @@
 
                         <h4 class="card-title mt-4 mb-4">Billing Address</h4>
 
-                        <form action="{% url 'place_order' %}" method="POST" id="submit-form">
+                        <form action="{% url 'buynow_place_order' %}" method="POST" id="submit-form">
                             {% csrf_token %}
                             <div class="form-row">
                                 <div class="col form-group">
@@ -158,15 +158,15 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for cart_item in cart_items %}
+                                {% for buynow_item in buynow_items %}
                                 <tr>
                                     <td>
                                         <figure class="itemside align-items-center">
-                                            <div class="aside"><img src="{{ cart_item.product.image1.url }}"
+                                            <div class="aside"><img src="{{ buynow_item.product.image1.url }}"
                                                     class="img-sm"></div>
                                             <figcaption class="info">
-                                                <a href="{{ cart_item.product.get_url }}"
-                                                    class="title text-dark">{{cart_item.product.product_name}}</a>
+                                                <a href="{{ buynow_item.product.get_url }}"
+                                                    class="title text-dark">{{buynow_item.product.product_name}}</a>
                                                 <!-- <p class="text-muted small">Color: Black <br> Brand: {{
                                                     cart_item.product.brand }}</p> -->
                                             </figcaption>
@@ -175,13 +175,13 @@
                                     <td>
 
 
-                                        <label for="">{{ cart_item.quantity }}</label>
+                                        <label for="">{{ buynow_item.quantity }}</label>
 
                                     </td>
                                     <td>
                                         <div class="price-wrap">
-                                            <var class="price">₹ {{ cart_item.sub_total }}</var>
-                                            <small class="text-muted"> ₹ {{ cart_item.product.price }} each </small>
+                                            <var class="price">₹ {{ buynow_item.sub_total }}</var>
+                                            <small class="text-muted"> ₹ {{ buynow_item.product.price }} each </small>
                                         </div> <!-- price-wrap .// -->
                                     </td>
                                 </tr>

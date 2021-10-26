@@ -1,3 +1,4 @@
+from django.db.models.base import Model
 from account.models import Account
 from coupon.models import Coupon
 from product.models import Product
@@ -24,6 +25,20 @@ class CartItem(models.Model):
     coupon = models.ForeignKey(Coupon, on_delete=models.SET_NULL, blank=True, null=True)
 
 
+
+    def sub_total(self):
+        return self.product.price * self.quantity
+
+    def __str__(self):
+        return str(self.product)
+
+
+class BuynowItem(models.Model):
+    user = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, null=True)
+    quantity = models.IntegerField()
+    is_active = models.BooleanField(default=True)
 
     def sub_total(self):
         return self.product.price * self.quantity

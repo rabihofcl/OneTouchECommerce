@@ -264,8 +264,6 @@
     function apply_coupon() {
         var coupon_code = document.getElementById('coupon_code').value
         var grand_total = document.getElementById('grand_total').textContent
-        console.log(grand_total)
-        console.log(coupon_code)
         $.ajax({
             url: '/cart/apply_coupon',
             method: 'POST',
