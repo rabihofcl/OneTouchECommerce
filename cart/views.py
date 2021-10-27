@@ -46,7 +46,6 @@ def add_cart(request, product_id):
         try:
             cart_item = CartItem.objects.get(product=product, user=request.user)
             if cart_item.quantity > cart_item.product.stock-1:
-                print('out of stock')
                 messages.info(request, 'Product Out of Stock')
                 return redirect('cart')
             else:
@@ -75,7 +74,6 @@ def add_cart(request, product_id):
         try:
             cart_item = CartItem.objects.get(product=product, cart=cart)
             if cart_item.quantity > cart_item.product.stock-1:
-                print('out of stock')
                 messages.info(request, 'Product Out of Stock')
                 return redirect('cart')
             else:
@@ -94,7 +92,6 @@ def add_cart(request, product_id):
 @never_cache
 def remove_cart(request):
     product_id = request.POST['id']
-    print(id)
     product = get_object_or_404(Product, id=product_id)
     try:
         if request.user.is_authenticated:
@@ -156,7 +153,6 @@ def add_item(request):
         try:
             cart_item = CartItem.objects.get(product=product, user=request.user)
             if cart_item.quantity > cart_item.product.stock-1:
-                print('out of stock')
                 messages.info(request, 'Product Out of Stock')
                 return JsonResponse({'success': True})
             else:
@@ -290,7 +286,7 @@ def Check_coupon(request):
             flag = 1
             if not CheckCoupon.objects.filter(user=request.user, coupon = coupon):
                 
-                discount_price = math.ceil(grand_total*int(coupon.discount)/100)
+                discount_price = math.floor(grand_total*int(coupon.discount)/100)
                 amount_pay = grand_total-discount_price
                 flag = 2
                 request.session['amount_pay'] = amount_pay
@@ -311,6 +307,10 @@ def Check_coupon(request):
 @login_required(login_url = 'signin')
 def buy_now(request,id,tax=0, total=0, quantity=0, cart_items=None):
     BuynowItem.objects.all().delete()
+    if 'coupon_id' in request.session:
+        del request.session['coupon_id']
+        del request.session['amount_pay']
+        del request.session['discount_price']
     
     product = Product.objects.get(id=id)
     try:

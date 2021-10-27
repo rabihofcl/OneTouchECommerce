@@ -105,7 +105,7 @@ def phone_login(request):
             request.session['phone_number'] = phone_number
 
             account_sid = "ACbd2e01de49095381f621169be1ce4e98"
-            auth_token = "fd50f58f0db93ad2621db5687d0ecc92"
+            auth_token = "85b2ebae9ba4639ceb04391269b951aa"
             client = Client(account_sid, auth_token)
 
             verification = client.verify \
@@ -113,7 +113,6 @@ def phone_login(request):
                 .verifications \
                 .create(to='+91'+phone_number, channel='sms')
 
-            print(verification.status)
             return redirect('phone_login_otp')
 
         else:
@@ -131,7 +130,7 @@ def phone_login_otp(request):
         phone_number = request.session['phone_number']
 
         account_sid = "ACbd2e01de49095381f621169be1ce4e98"
-        auth_token = "fd50f58f0db93ad2621db5687d0ecc92"
+        auth_token = "85b2ebae9ba4639ceb04391269b951aa"
         client = Client(account_sid, auth_token)
 
         verification_check = client.verify \
@@ -139,7 +138,7 @@ def phone_login_otp(request):
             .verification_checks \
             .create(to='+91'+phone_number, code=otp)
 
-        print(verification_check.status)
+
 
         if verification_check.status == 'approved':
 
@@ -193,7 +192,7 @@ def register(request):
             else:
 
                 account_sid = "ACbd2e01de49095381f621169be1ce4e98"
-                auth_token = "fd50f58f0db93ad2621db5687d0ecc92"
+                auth_token = "85b2ebae9ba4639ceb04391269b951aa"
                 client = Client(account_sid, auth_token)
 
                 verification = client.verify \
@@ -201,7 +200,6 @@ def register(request):
                     .verifications \
                     .create(to='+91'+phone_number, channel='sms')
 
-                print(verification.status)
 
                 return redirect('otp_register')
         else:
@@ -220,7 +218,7 @@ def otp_register(request):
         phone_number = request.session['phone_number']
 
         account_sid = "ACbd2e01de49095381f621169be1ce4e98"
-        auth_token = "fd50f58f0db93ad2621db5687d0ecc92"
+        auth_token = "85b2ebae9ba4639ceb04391269b951aa"
         client = Client(account_sid, auth_token)
 
         verification_check = client.verify \
@@ -228,7 +226,6 @@ def otp_register(request):
             .verification_checks \
             .create(to='+91'+phone_number, code=otp)
 
-        print(verification_check.status)
 
         if verification_check.status == 'approved':
             first_name = request.session['first_name']
@@ -287,7 +284,7 @@ def forgotPass(request):
             request.session['phone_number'] = phone_number
 
             account_sid = "ACbd2e01de49095381f621169be1ce4e98"
-            auth_token = "fd50f58f0db93ad2621db5687d0ecc92"
+            auth_token = "85b2ebae9ba4639ceb04391269b951aa"
             client = Client(account_sid, auth_token)
 
             verification = client.verify \
@@ -295,7 +292,6 @@ def forgotPass(request):
                 .verifications \
                 .create(to='+91'+phone_number, channel='sms')
 
-            print(verification.status)
             return redirect('forgotPassOtp')
 
         else:
@@ -313,7 +309,7 @@ def forgotPassOtp(request):
         phone_number = request.session['phone_number']
 
         account_sid = "ACbd2e01de49095381f621169be1ce4e98"
-        auth_token = "fd50f58f0db93ad2621db5687d0ecc92"
+        auth_token = "85b2ebae9ba4639ceb04391269b951aa"
         client = Client(account_sid, auth_token)
 
         verification_check = client.verify \
@@ -321,7 +317,6 @@ def forgotPassOtp(request):
             .verification_checks \
             .create(to='+91'+phone_number, code=otp)
 
-        print(verification_check.status)
 
         if verification_check.status == 'approved':
             return redirect('resetPass')
@@ -488,7 +483,6 @@ def cancel_order(request):
 @login_required(login_url = 'signin')
 def return_item(request):
     id = request.POST['id']
-    print(id)
     OrderProduct.objects.filter(id=id).update(status='Return')
     return JsonResponse({'success': True})
 
@@ -497,7 +491,6 @@ def return_item(request):
 @login_required(login_url = 'signin')
 def cancel_return(request):
     id = request.POST['id']
-    print(id)
     OrderProduct.objects.filter(id=id).update(status='Delivered')
     return JsonResponse({'success': True})
 
@@ -539,10 +532,7 @@ def my_addresses(request):
             address = address_form.save(commit=False)
             address.user = request.user
             address.save()
-            print('saved')
             return redirect(url)
-        else:
-            print('ddd')
     else:
         address_form = AddressForm()
 

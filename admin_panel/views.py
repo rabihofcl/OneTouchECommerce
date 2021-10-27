@@ -86,7 +86,6 @@ def admin_home(request):
     for payment in payments:
         payment_total += float(payment.amount_paid)
 
-    print(payment_total)
 
     context = {
         'products': products,
@@ -342,7 +341,6 @@ def ad_order_edit(request, order_number):
 def ads(request):
     ads_list = Ads.objects.all()
 
-    print(ads_list)
 
     context = {
         'ads_list': ads_list,
@@ -354,7 +352,6 @@ def ads(request):
 def ad_add_ads(request):
     if request.method == 'POST':
         ads_form = AdsForm(request.POST, request.FILES)
-        print(ads_form)
         if ads_form.is_valid():
             ads_form.save()
 
