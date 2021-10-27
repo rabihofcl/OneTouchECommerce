@@ -10,6 +10,7 @@ class Product(models.Model):
     product_name = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=200, unique=True)
     description = models.TextField(max_length=500, blank=True)
+    offer = models.IntegerField(null=True)
     price = models.IntegerField()
     image1 = models.ImageField(upload_to='photos/products')
     image2 = models.ImageField(upload_to='photos/products')
@@ -28,6 +29,14 @@ class Product(models.Model):
 
     def __str__(self):
         return self.product_name
+
+    def actual_price(self):
+        if self.offer:
+            actual_price = self.price-(self.price*self.offer/100)
+        else:
+            actual_price = self.price
+        return actual_price
+
 
     # def averageReview(self):
     #     reviews = ReviewRating.objects.filter(product=self, status=True).aggregate(average=Avg('rating'))

@@ -276,9 +276,13 @@
             success: (response) => {
                 if (response.flag == 1) {
                     swal("Sorry!", "Coupon already used!", "error");
+                    document.getElementById('discount_price').textContent = 0
+                    document.getElementById('amount_pay').textContent = grand_total
                 }
                 else if (response.flag == 0){
                     swal("Sorry!", "Invalid Coupon!", "error");
+                    document.getElementById('discount_price').textContent = 0
+                    document.getElementById('amount_pay').textContent = grand_total
                 }
                 else{
                     swal("Congratulations!", "Coupon applied Successfully!", "success");
