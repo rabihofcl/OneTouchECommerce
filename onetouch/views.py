@@ -18,6 +18,7 @@ from django.db.models import Q
 import requests
 from account.forms import AddressForm, UserForm, UserProfileForm
 from django.views.decorators.cache import never_cache
+from decouple import config
 
 
 
@@ -104,8 +105,8 @@ def phone_login(request):
 
             request.session['phone_number'] = phone_number
 
-            account_sid = "ACbd2e01de49095381f621169be1ce4e98"
-            auth_token = "85b2ebae9ba4639ceb04391269b951aa"
+            account_sid = config('account_sid')
+            auth_token = config('auth_token')
             client = Client(account_sid, auth_token)
 
             verification = client.verify \
@@ -129,8 +130,8 @@ def phone_login_otp(request):
 
         phone_number = request.session['phone_number']
 
-        account_sid = "ACbd2e01de49095381f621169be1ce4e98"
-        auth_token = "85b2ebae9ba4639ceb04391269b951aa"
+        account_sid = config('account_sid')
+        auth_token = config('auth_token')
         client = Client(account_sid, auth_token)
 
         verification_check = client.verify \
@@ -191,8 +192,8 @@ def register(request):
                 return redirect('register')
             else:
 
-                account_sid = "ACbd2e01de49095381f621169be1ce4e98"
-                auth_token = "85b2ebae9ba4639ceb04391269b951aa"
+                account_sid = config('account_sid')
+                auth_token = config('auth_token')
                 client = Client(account_sid, auth_token)
 
                 verification = client.verify \
@@ -217,8 +218,8 @@ def otp_register(request):
 
         phone_number = request.session['phone_number']
 
-        account_sid = "ACbd2e01de49095381f621169be1ce4e98"
-        auth_token = "85b2ebae9ba4639ceb04391269b951aa"
+        account_sid = config('account_sid')
+        auth_token = config('auth_token')
         client = Client(account_sid, auth_token)
 
         verification_check = client.verify \
@@ -283,8 +284,8 @@ def forgotPass(request):
 
             request.session['phone_number'] = phone_number
 
-            account_sid = "ACbd2e01de49095381f621169be1ce4e98"
-            auth_token = "85b2ebae9ba4639ceb04391269b951aa"
+            account_sid = config('account_sid')
+            auth_token = config('auth_token')
             client = Client(account_sid, auth_token)
 
             verification = client.verify \
@@ -308,8 +309,8 @@ def forgotPassOtp(request):
 
         phone_number = request.session['phone_number']
 
-        account_sid = "ACbd2e01de49095381f621169be1ce4e98"
-        auth_token = "85b2ebae9ba4639ceb04391269b951aa"
+        account_sid = config('account_sid')
+        auth_token = config('auth_token')
         client = Client(account_sid, auth_token)
 
         verification_check = client.verify \

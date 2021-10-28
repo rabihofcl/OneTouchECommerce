@@ -274,6 +274,11 @@ def checkout(request, total=0, quantity=0, cart_items=None):
 @never_cache
 @login_required(login_url = 'signin')
 def Check_coupon(request):
+    if 'coupon_id' in request.session:
+        del request.session['coupon_id']
+        del request.session['amount_pay']
+        del request.session['discount_price']
+
     flag = 0
     discount_price = 0
     amount_pay = 0
@@ -301,6 +306,9 @@ def Check_coupon(request):
     }
 
     return JsonResponse(context)
+
+
+
 
 
 @never_cache

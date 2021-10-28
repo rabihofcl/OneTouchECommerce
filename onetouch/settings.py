@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 import os
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,10 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-$9jkvfo&ps8=7vh(-&0)68lrib_gjf2-masopq(s_+k3$ii5km'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)  #True
 
 ALLOWED_HOSTS = []
 
@@ -55,6 +56,7 @@ INSTALLED_APPS = [
     'orders',
     'ads',
     'coupon',
+    'admin_honeypot',
 ]
 
 MIDDLEWARE = [
@@ -96,11 +98,11 @@ WSGI_APPLICATION = 'onetouch.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'onetouch',
-        'USER' : 'rabih',
-        'PASSWORD' : 'rabih',
-        'HOST' : 'localhost',
+        'ENGINE': config('ENGINE'),
+        'NAME': config('NAME'),
+        'USER' : config('USER'),
+        'PASSWORD' : config('PASSWORD'),
+        'HOST' : config('HOST'),
     }
 }
 

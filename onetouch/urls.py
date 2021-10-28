@@ -22,8 +22,9 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 urlpatterns = [
-    path('mainadmin/', admin.site.urls),
-    path('admin/', include('admin_panel.urls')),
+    path('admin', include('admin_honeypot.urls', namespace='admin_honeypot')),
+    path('securemainadmin/', admin.site.urls),
+    path('secureadmin/', include('admin_panel.urls')),
     path('', views.home, name='home'),
     path('signin', views.signin, name='signin'),
     path('phone_login', views.phone_login, name='phone_login'),
