@@ -164,6 +164,11 @@ def ad_add_product(request):
         if product_form.is_valid():
             product = product_form.save(commit=False)
             product.slug = product.product_name.lower().replace(" ", "-")
+            if product.offer is not None:
+                product.price = product.mrp-(product.mrp*product.offer/100)
+            else:
+                product.price = product.mrp
+
             product_form.save()
             return redirect('ad_add_product')
         else:
@@ -191,6 +196,11 @@ def ad_product_edit(request, id):
         if product_form.is_valid():
             product = product_form.save(commit=False)
             product.slug = product.product_name.lower().replace(" ", "-")
+            if product.offer is not None:
+                product.price = product.mrp-(product.mrp*product.offer/100)
+            else:
+                product.price = product.mrp
+
             product_form.save()
             return redirect('ad_product_list')
 

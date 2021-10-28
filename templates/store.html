@@ -83,12 +83,13 @@
 							<figcaption class="info-wrap">
 								<div class="fix-height">
 									<a href="{{ product.get_url }}" class="title">{{ product.product_name }}</a>
-									<div class="price-wrap mt-2">
+									<div class="price-wrap mt-2 d-flex justify-content-start">
 										{% if product.offer > 0 %}
-										<span class="price">₹{{product.actual_price}}</span>
-										<del class="price-old">₹{{product.price}}</del>
+										<span class="price">₹{{product.price}}</span>&#160;&#160;
+										<del class="price-old mb-0">₹{{product.mrp}}</del>&#160;
+										<p style="color: green;">{{product.offer}}% off</p>
 										{% else %}
-										<span class="price">₹{{product.actual_price}}</span>
+										<span class="price">₹{{product.price}}</span>
 										{% endif %}
 									</div> <!-- price-wrap.// -->
 								</div>

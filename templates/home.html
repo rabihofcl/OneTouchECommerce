@@ -43,28 +43,36 @@
 			<div class="col-md-3">
 				<div class="card card-product-grid pt-3">
 					<a href="{{ product.get_url }}" class="img-wrap"> <img src="{{ product.image1.url }}"> </a>
-					<figcaption class="info-wrap">
+					<figcaption class="info-wrap ">
 						<a href="{{ product.get_url }}" class="title">{{ product.product_name }}</a>
-						<div class="price mt-1">₹{{ product.price }}</div> <!-- price-wrap.// -->
+						<div class="d-flex justify-content-start">
+							{% if product.offer > 0 %}
+							<span class="price">₹{{product.price}}</span>&#160;&#160;
+							<del class="price-old mb-0">₹{{product.mrp}}</del>&#160;
+							<p style="color: green;">{{product.offer}}% off</p>
+							{% else %}
+							<span class="price">₹{{product.price}}</span>
+							{% endif %}
+						</div>
 					</figcaption>
 					<div class="row mb-3">
-						{% if product.stock <= 0 %}
-						<div class="col-md-12 text-center">
-							<a  class="btn btn-secondary text-white" >Out of stock</a>
-						</div>
-						{% else %}
-						<div class="col-md-6 text-center">
-							<a href="{% url 'add_cart' product.id %}" class="btn btn-outline-primary">Add to Cart</a>
-						</div>
-						<div class="col-md-6 text-center">
-							<a href="{% url 'buy_now' product.id %}" class="btn" style="background: rgb(250, 111, 12); color: white;">Buy Now</a>
-						</div>
-						{% endif %}
+						{% if product.stock <= 0 %} <div class="col-md-12 text-center">
+							<a class="btn btn-secondary text-white">Out of stock</a>
 					</div>
+					{% else %}
+					<div class="col-md-6 text-center">
+						<a href="{% url 'add_cart' product.id %}" class="btn btn-outline-primary">Add to Cart</a>
+					</div>
+					<div class="col-md-6 text-center">
+						<a href="{% url 'buy_now' product.id %}" class="btn"
+							style="background: rgb(250, 111, 12); color: white;">Buy Now</a>
+					</div>
+					{% endif %}
 				</div>
-			</div> <!-- col.// -->
-			{% endfor %}
-		</div> <!-- row.// -->
+			</div>
+		</div> <!-- col.// -->
+		{% endfor %}
+	</div> <!-- row.// -->
 
 	</div><!-- container // -->
 </section>

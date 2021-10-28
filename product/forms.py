@@ -9,7 +9,7 @@ class ProductForm(forms.ModelForm):
     image4 = forms.ImageField(required=False, error_messages = {'invalid':("Image files only")}, widget=forms.FileInput)
     class Meta:
         model = Product
-        fields = ['product_name','description','price','offer','image1','image2','image3','image4','stock','brand']
+        fields = ['product_name','description','mrp','offer','image1','image2','image3','image4','stock','brand']
 
     def __init__(self, *args, **kwargs):
         super(ProductForm, self).__init__(*args, **kwargs)

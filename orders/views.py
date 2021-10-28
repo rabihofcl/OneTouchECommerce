@@ -312,7 +312,7 @@ def buynow_place_order(request, total=0, quantity=0):
             }
             return render(request, 'buynow_payments.html', context)
     else:
-        return redirect('checkout')
+        return redirect('buy_now')
 
 
 
@@ -323,37 +323,6 @@ def buynow_place_order(request, total=0, quantity=0):
 @never_cache
 @login_required(login_url = 'signin')
 def order_complete(request):
-    order_number = request.GET.get('order_number')
-    transID = request.GET.get('payment_id')
-
-    try:
-        order = Order.objects.get(order_number=order_number, is_ordered=True)
-        ordered_products = OrderProduct.objects.filter(order_id=order.id)
-
-        subtotal = 0
-        for i in ordered_products:
-            subtotal += i.product_price * i.quantity
-
-        payment = Payment.objects.get(payment_id=transID)
-
-        context = {
-            'order': order,
-            'ordered_products': ordered_products,
-            'order_number': order.order_number,
-            'transID': payment.payment_id,
-            'payment': payment,
-            'subtotal': subtotal,
-        }
-        return render(request, 'order_complete.html', context)
-    except (Payment.DoesNotExist, Order.DoesNotExist):
-        return redirect('home')
-
-
-
-
-@never_cache
-@login_required(login_url = 'signin')
-def buynow_order_complete(request):
     order_number = request.GET.get('order_number')
     transID = request.GET.get('payment_id')
 
