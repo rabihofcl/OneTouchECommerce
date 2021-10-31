@@ -209,10 +209,14 @@ def register(request):
                     auth_token = config('auth_token')
                     client = Client(account_sid, auth_token)
 
-                    verification = client.verify \
-                        .services('VA47f566d6a44e75409506f475d3231b04') \
-                        .verifications \
-                        .create(to='+91'+phone_number, channel='sms')
+                    try:
+                        verification = client.verify \
+                            .services('VA47f566d6a44e75409506f475d3231b04') \
+                            .verifications \
+                            .create(to='+91'+phone_number, channel='sms')
+                    except:
+                        messages.error(request, 'Enter a valid mobile number')
+                        return render(request, 'register.html')
 
 
                     return redirect('otp_register')
