@@ -72,24 +72,7 @@
 <script>
 
     function block_user(id) {
-        document.getElementById('block_user').value = id
-    }
-
-    function blockUser() {
-        var id = document.getElementById('block_user').value
-        $.ajax({
-            url: '/admin/block_user',
-            method: 'POST',
-            dataType: 'json',
-            data: {
-                id: id,
-                csrfmiddlewaretoken: "{{csrf_token}}"
-            },
-            success: (response) => {
-                location.reload()
-            }
-        })
-
+        document.getElementById('block_user').href = 'block_user/' + id
     }
 </script>
 

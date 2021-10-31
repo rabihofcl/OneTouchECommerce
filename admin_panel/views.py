@@ -126,11 +126,9 @@ def ad_add_brand(request):
     return render(request, 'ad_add_brand.html', {'form': form})
 
 
-@login_required(login_url='admin_signin')
-def ad_delete_brand(request):
-    id = request.POST['id']
+def ad_delete_brand(request,id):
     Brand.objects.filter(id=id).delete()
-    return JsonResponse({'success': True})
+    return redirect('ad_brand_list')
 
 
 @login_required(login_url='admin_signin')
@@ -215,11 +213,9 @@ def ad_product_edit(request, id):
 
 
 @login_required(login_url='admin_signin')
-def ad_delete_product(request):
-    id = request.POST['id']
+def ad_delete_product(request,id):
     Product.objects.filter(id=id).delete()
-    return JsonResponse({'success': True})
-
+    return redirect('ad_product_list')
 
 @login_required(login_url='admin_signin')
 def active_users(request):
@@ -228,12 +224,11 @@ def active_users(request):
 
 
 @login_required(login_url='admin_signin')
-def block_user(request):
-    id = request.POST['id']
+def block_user(request,id):
     user = Account.objects.get(id=id)
     user.is_active = False
     user.save()
-    return JsonResponse({'success': True})
+    return redirect('active_users')
 
 
 
@@ -245,12 +240,11 @@ def blocked_users(request):
 
 
 @login_required(login_url='admin_signin')
-def activate_user(request):
-    id = request.POST['id']
+def activate_user(request,id):
     user = Account.objects.get(id=id)
     user.is_active = True
     user.save()
-    return JsonResponse({'success': True})
+    return redirect('blocked_users')
 
 
 
@@ -376,11 +370,9 @@ def ad_add_ads(request):
 
 
 @login_required(login_url='admin_signin')
-def delete_ads(request):
-    id = request.POST['id']
+def delete_ads(request,id):
     Ads.objects.filter(id=id).delete()
-    return JsonResponse({'success': True})
-
+    return redirect('ads')
 
 @login_required(login_url='admin_signin')
 def report(request):

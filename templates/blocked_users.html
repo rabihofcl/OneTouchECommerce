@@ -60,7 +60,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <a onclick="activateUser()" id="activate_user"><button type=" button"
+                <a href="" id="activate_user"><button type=" button"
                         class="btn btn-danger">Activate</button></a>
             </div>
         </div>
@@ -74,27 +74,9 @@
 <script>
 
     function activate_user(id) {
-        document.getElementById('activate_user').value = id
-        console.log(id)
+        document.getElementById('activate_user').href = 'activate_user/' + id
     }
 
-    function activateUser() {
-        var id = document.getElementById('activate_user').value
-        console.log(id)
-        $.ajax({
-            url: '/admin/activate_user',
-            method: 'POST',
-            dataType: 'json',
-            data: {
-                id: id,
-                csrfmiddlewaretoken: "{{csrf_token}}"
-            },
-            success: (response) => {
-                location.reload()
-            }
-        })
-
-    }
 </script>
 
 

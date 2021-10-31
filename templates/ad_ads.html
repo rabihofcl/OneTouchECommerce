@@ -76,7 +76,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <a onclick="deleteAds()" id="delete_ads"><button type=" button"
+                <a href="" id="delete_ads"><button type=" button"
                         class="btn btn-danger">Delete</button></a>
             </div>
         </div>
@@ -89,25 +89,9 @@
 <script>
 
     function delete_ads(id) {
-        document.getElementById('delete_ads').value = id
+        document.getElementById('delete_ads').href = 'delete_ads/' + id
     }
 
-    function deleteAds() {
-        var id = document.getElementById('delete_ads').value
-        $.ajax({
-            url: '/admin/delete_ads',
-            method: 'POST',
-            dataType: 'json',
-            data: {
-                id: id,
-                csrfmiddlewaretoken: "{{csrf_token}}"
-            },
-            success: (response) => {
-                location.reload()
-            }
-        })
-
-    }
 </script>
 
 {% endblock %}
