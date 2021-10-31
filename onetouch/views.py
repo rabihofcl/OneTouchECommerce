@@ -19,6 +19,7 @@ import requests
 from account.forms import AddressForm, UserForm, UserProfileForm
 from django.views.decorators.cache import never_cache
 from decouple import config
+
 from twilio.base.exceptions import TwilioRestException
 
 
@@ -205,12 +206,12 @@ def register(request):
                     messages.info(request, 'Phone number already taken')
                     return redirect('register')
                 else:
-
-                    account_sid = config('account_sid')
-                    auth_token = config('auth_token')
-                    client = Client(account_sid, auth_token)
-
                     try:
+                        account_sid = config('account_sid')
+                        auth_token = config('auth_token')
+                        client = Client(account_sid, auth_token)
+
+                    
                         verification = client.verify \
                             .services('VA47f566d6a44e75409506f475d3231b04') \
                             .verifications \
