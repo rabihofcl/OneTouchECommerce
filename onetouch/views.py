@@ -214,14 +214,12 @@ def register(request):
                             .services('VA47f566d6a44e75409506f475d3231b04') \
                             .verifications \
                             .create(to='+91'+phone_number, channel='sms')
+                        return redirect('otp_register')
                     except:
                         messages.error(request, 'Enter a valid mobile number')
                         return render(request, 'register.html')
-
-
-                    return redirect('otp_register')
             else:
-                messages.info(request, 'Password is not matching')
+                messages.info(request, 'Password is not matching' ,extra_tags='twilio')
                 return redirect('register')
 
         return render(request, 'register.html')
