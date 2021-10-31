@@ -19,6 +19,7 @@ import requests
 from account.forms import AddressForm, UserForm, UserProfileForm
 from django.views.decorators.cache import never_cache
 from decouple import config
+from twilio.base.exceptions import TwilioRestException
 
 
 
@@ -215,7 +216,8 @@ def register(request):
                             .verifications \
                             .create(to='+91'+phone_number, channel='sms')
                         return redirect('otp_register')
-                    except:
+                        
+                    except TwilioRestException:
                         messages.error(request, 'Enter a valid mobile number')
                         return render(request, 'register.html')
             else:
