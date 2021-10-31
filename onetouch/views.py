@@ -216,7 +216,7 @@ def register(request):
                             .verifications \
                             .create(to='+91'+phone_number, channel='sms')
                         return redirect('otp_register')
-                        
+
                     except TwilioRestException:
                         messages.error(request, 'Enter a valid mobile number')
                         return render(request, 'register.html')
@@ -292,7 +292,6 @@ def otp_register(request):
 @login_required(login_url = 'signin')
 def signout(request):
     del request.session['user_login']
-    auth.logout(request)
     messages.success(request, 'You logged out successfully!')
     return redirect('home')
 
