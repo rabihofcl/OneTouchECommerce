@@ -147,7 +147,7 @@
     function deleteCoupon() {
         var id = document.getElementById('delete_coupon').value
         $.ajax({
-            url: "{% url 'ad_delete_coupon' %}",
+            url: '/secureadmin/ad_delete_coupon',
             method: 'POST',
             dataType: 'json',
             data: {
