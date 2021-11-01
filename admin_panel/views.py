@@ -679,3 +679,9 @@ def add_coupon(request):
         coupon.status = True
         coupon_form.save()
     return JsonResponse({'success': True})
+
+
+def ad_delete_coupon(request):
+    id = request.POST['id']
+    Coupon.objects.filter(id=id).delete()
+    return redirect('coupon')

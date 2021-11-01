@@ -42,6 +42,7 @@ urlpatterns = [
     path('order_export_pdf', views.order_export_pdf, name='order_export_pdf'),
     path('coupon', views.coupon, name='coupon'),
     path('add_coupon', views.add_coupon, name='add_coupon'),
+    path('ad_delete_coupon', views.ad_delete_coupon, name='ad_delete_coupon'),
 
     
 ]
