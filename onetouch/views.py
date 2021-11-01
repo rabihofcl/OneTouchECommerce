@@ -295,10 +295,9 @@ def otp_register(request):
 @never_cache
 @login_required(login_url = 'signin')
 def signout(request):
-    del request.session['user_login']
-    auth.logout(request)
-    messages.success(request, 'You logged out successfully!')
-    return redirect('home')
+        auth.logout(request)
+        messages.success(request, 'You logged out successfully!')
+        return redirect('home')
 
 
 
