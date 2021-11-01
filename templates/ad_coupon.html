@@ -42,8 +42,8 @@
                                 <span class="slider round"></span>
                             </label> -->
 
-                            <a onclick="delete_coupon('{{coupon.id}}')" ata-toggle="modal"
-                                data-target="#exampleModalCenter22" type="button" style="color: red;"><i
+                            <a onclick="delete_coupon('{{coupon.id}}')" type="button" data-toggle="modal"
+                                data-target="#exampleModalCenter00" style="color: red;"><i
                                     class="fas fa-trash-alt"></i></a>
                         </td>
                     </tr>
@@ -91,7 +91,7 @@
 
 <!-- Modal cancel order-->
 
-<div class="modal fade" id="exampleModalCenter22" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+<div class="modal fade" id="exampleModalCenter00" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -102,7 +102,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <h6>Are you sure to cancel order ?</h6>
+                <h6>Are you sure to delete coupon ?</h6>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -147,6 +147,7 @@
 
     function deleteCoupon() {
         var id = document.getElementById('delete_coupon').value
+        console.log(id)
         $.ajax({
             url: "{% url 'ad_delete_coupon' %}",
             method: 'POST',

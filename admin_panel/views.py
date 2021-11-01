@@ -683,5 +683,7 @@ def add_coupon(request):
 
 def ad_delete_coupon(request):
     id = request.POST['id']
+    print(id)
     Coupon.objects.filter(id=id).delete()
-    return redirect('coupon')
+    return JsonResponse({'success': True})
+
