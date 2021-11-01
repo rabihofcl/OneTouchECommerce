@@ -142,12 +142,10 @@
 
     function delete_coupon(id) {
         document.getElementById('delete_coupon').value = id
-        console.log(id)
     }
 
     function deleteCoupon() {
         var id = document.getElementById('delete_coupon').value
-        console.log(id)
         $.ajax({
             url: "{% url 'ad_delete_coupon' %}",
             method: 'POST',
