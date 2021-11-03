@@ -40,13 +40,8 @@
                                             <div class="text-center">
                                                 <div class="row text-center">
                                                     <div class="col-md-6">
-                                                        {% if userprofile.profile_picture %}
                                                         <img src="{{ userprofile.profile_picture.url }}"
                                                             alt="Profile Picture" width="150px" height="150px">
-                                                        {% else %}
-                                                        <img src="{% static 'images/pro_pic.jpg' %}"
-                                                            alt="Profile Picture" width="150px" height="150px">
-                                                        {% endif %}
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="col-md-4 text-center">
@@ -262,7 +257,6 @@
                     noSpace: true,
                 },
                 last_name: {
-                    required: true,
                     alpha: true,
                     noSpace: true,
                 },

@@ -266,7 +266,7 @@ def otp_register(request):
 
                 profile = UserProfile()
                 profile.user_id = user.id
-                profile.profile_picture = 'default/default-pro-pic.png'
+                profile.profile_picture = 'default/pro_pic.jpg'
                 profile.save()
 
 
@@ -274,9 +274,8 @@ def otp_register(request):
                 request.session['user_login'] = 'user_login'
 
                 # deleting details in session
-
-                del request.session['last_name']
                 del request.session['first_name']
+                del request.session['last_name']
                 del request.session['username']
                 del request.session['email']
                 del request.session['phone_number']
