@@ -266,7 +266,7 @@ def otp_register(request):
 
                 profile = UserProfile()
                 profile.user_id = user.id
-                profile.profile_picture = 'userprofile/pro_pic.jpg'
+                profile.profile_picture = 'pro_pic.jpg'
                 profile.save()
 
 
