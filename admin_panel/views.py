@@ -24,6 +24,7 @@ import xlwt
 from django.template.loader import render_to_string
 from weasyprint import HTML
 import tempfile
+import math
 
 # Create your views here.
 
@@ -85,6 +86,7 @@ def admin_home(request):
     payment_total = 0
     for payment in payments:
         payment_total += float(payment.amount_paid)
+    payment_total = math.floor(payment_total)
 
 
     context = {
