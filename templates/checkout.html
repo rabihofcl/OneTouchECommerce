@@ -335,14 +335,17 @@
                 first_name: {
                     required: true,
                     alpha: true,
+                    maxlength: 15,
                 },
                 last_name: {
                     required: true,
                     alpha: true,
+                    maxlength: 15,
                 },
                 email: {
                     required: true,
-                    isEmail: true
+                    isEmail: true,
+                    maxlength: 30,
                 },
                 phone: {
                     required: true,
@@ -352,15 +355,22 @@
                 },
                 address_line_1: {
                     required: true,
+                    maxlength: 50,
+                },
+                address_line_2: {
+                    maxlength: 50,
                 },
                 city: {
                     required: true,
+                    maxlength: 10,
                 },
                 state: {
                     required: true,
+                    maxlength: 10,
                 },
                 country: {
                     required: true,
+                    maxlength: 10,
                 },
                 pincode: {
                     required: true,
