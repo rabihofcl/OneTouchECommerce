@@ -91,6 +91,7 @@ def add_cart(request, product_id):
 
 @never_cache
 def remove_cart(request):
+    flag = 0
     product_id = request.POST['id']
     product = get_object_or_404(Product, id=product_id)
     try:
@@ -103,10 +104,39 @@ def remove_cart(request):
             cart_item.quantity -= 1
             cart_item.save()
         else:
-            cart_item.delete()
+            flag = 1
+            context = {
+                'flag': flag,
+                'id': cart_item.product.id,
+            }
+            return JsonResponse(context)
     except:
         pass
-    return JsonResponse({'success': True})
+
+    total = 0
+    all_quantity = 0
+    cart_count = 0
+    cart_itemss = CartItem.objects.filter(user=request.user, is_active=True).order_by('-id')
+    for cart_items in cart_itemss:
+        total += (cart_items.product.price * cart_items.quantity)
+        all_quantity += cart_items.quantity
+        cart_count += cart_items.quantity
+
+    tax = (2*total)/100
+    grand_total = total + tax
+
+    sub_total=cart_item.quantity*cart_item.product.price
+    context = {
+        'quantity': cart_item.quantity,
+        'id': cart_item.product.id,
+        'sub_total': sub_total,
+        'total': total,
+        'tax': tax,
+        'grand_total': grand_total,
+        'flag': flag,
+        'cart_count': cart_count,
+    }
+    return JsonResponse(context)
 
 
 @never_cache
@@ -138,6 +168,7 @@ def remove_item(request):
 
 @never_cache
 def add_item(request):
+    flag = 0
     product_id = request.POST['id']
     product = Product.objects.get(id=product_id)
     if request.user.is_authenticated:
@@ -153,8 +184,11 @@ def add_item(request):
         try:
             cart_item = CartItem.objects.get(product=product, user=request.user)
             if cart_item.quantity > cart_item.product.stock-1:
-                messages.info(request, 'Product Out of Stock')
-                return JsonResponse({'success': True})
+                flag=1
+                context = {
+                    'flag': flag
+                }
+                return JsonResponse(context)
             else:
                 cart_item.quantity += 1
                 cart_item.save()
@@ -181,8 +215,11 @@ def add_item(request):
         try:
             cart_item = CartItem.objects.get(product=product, cart=cart)
             if cart_item.quantity > cart_item.product.stock-1:
-                messages.info(request, 'Product Out of Stock')
-                return JsonResponse({'success': True})
+                flag=1
+                context = {
+                    'flag': flag
+                }
+                return JsonResponse(context)
             else:
                 cart_item.quantity += 1
                 cart_item.save()
@@ -193,7 +230,35 @@ def add_item(request):
                 cart=cart,
             )
             cart_item.save()
-    return JsonResponse({'success': True})
+
+
+    total = 0
+    all_quantity = 0
+    cart_count = 0
+
+    cart_itemss = CartItem.objects.filter(user=request.user, is_active=True).order_by('-id')
+    for cart_items in cart_itemss:
+        total += (cart_items.product.price * cart_items.quantity)
+        all_quantity += cart_items.quantity
+        cart_count += cart_items.quantity
+
+    tax = (2*total)/100
+    grand_total = total + tax
+    
+
+    sub_total=cart_item.quantity*cart_item.product.price
+    context = {
+        'stock': cart_item.product.stock-1,
+        'quantity': cart_item.quantity,
+        'id': cart_item.product.id,
+        'sub_total': sub_total,
+        'total': total,
+        'tax': tax,
+        'grand_total': grand_total,
+        'flag': flag,
+        'cart_count': cart_count,
+    }
+    return JsonResponse(context)
 
 
 

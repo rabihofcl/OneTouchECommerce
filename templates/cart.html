@@ -58,45 +58,28 @@
                                     <!-- col.// -->
                                     <div class="col">
                                         <div class="input-group input-spinner">
-
-                                            {% if cart_item.quantity == 1%}
                                             <div class="input-group-prepend">
-                                                <a onclick="remove_item('{{cart_item.product.id}}')" data-toggle="modal"
-                                                    data-target="#exampleModalCenter" class="btn btn-light"
-                                                    type="button" id="button-minus"> <i class="fa fa-minus"></i> </a>
-                                            </div>
-
-
-                                            <input type="text" class="form-control" id="quantity"
-                                                value="{{ cart_item.quantity }}">
-                                            <div class="input-group-append">
-                                                <a onclick="add_item('{{cart_item.product.id}}')" class="btn btn-light"
-                                                    type="button" id="button-plus"> <i class="fa fa-plus"></i> </a>
-                                            </div>
-
-
-                                            {% else %}
-                                            <div class="input-group-prepend">
-                                                <a onclick="remove_cart('{{cart_item.product.id}}')" 
-                                                    class="btn btn-light" type="button" id="button-minus"> <i
+                                                <a onclick="remove_cart('{{cart_item.product.id}}')"
+                                                    class="btn btn-light" type="button" id="button-minus11"> <i
                                                         class="fa fa-minus"></i> </a>
                                             </div>
 
 
-                                            <input type="text" class="form-control" id="quantity"
-                                                value="{{ cart_item.quantity }}">
+                                            <input type="text" class="form-control"
+                                                id="quantity{{cart_item.product.id}}" value="{{cart_item.quantity}}"
+                                                disabled>
                                             <div class="input-group-append">
                                                 <a onclick="add_item('{{cart_item.product.id}}')" class="btn btn-light"
                                                     type="button" id="button-plus"> <i class="fa fa-plus"></i> </a>
                                             </div>
-                                            {% endif %}
                                         </div> <!-- input-group.// -->
                                     </div> <!-- col.// -->
                                 </td>
                                 <td>
                                     <div class="price-wrap">
-                                        <var class="price">₹ {{ cart_item.sub_total }}</var>
-                                        <small class="text-muted"> ₹ {{ cart_item.product.price }} each </small>
+                                        <var class="price" id="sub_total{{cart_item.product.id}}">₹
+                                            {{cart_item.sub_total}}</var>
+                                        <small class="text-muted"> ₹ {{cart_item.product.price}} each </small>
                                     </div> <!-- price-wrap .// -->
                                 </td>
                                 <td class="text-right">
@@ -119,15 +102,15 @@
                     <div class="card-body">
                         <dl class="dlist-align">
                             <dt>Total price:</dt>
-                            <dd class="text-right">₹ {{ total }}</dd>
+                            <dd class="text-right" id="total">₹ {{total}}</dd>
                         </dl>
                         <dl class="dlist-align">
                             <dt>Tax:</dt>
-                            <dd class="text-right"> ₹ {{ tax }}</dd>
+                            <dd class="text-right" id="tax"> ₹ {{tax}}</dd>
                         </dl>
                         <dl class="dlist-align">
                             <dt>Grand Total:</dt>
-                            <dd class="text-right text-dark b"><strong>₹ {{ grand_total }}</strong></dd>
+                            <dd class="text-right text-dark b"><strong id="grand_total">₹ {{grand_total}}</strong></dd>
                         </dl>
                         <hr>
                         <p class="text-center mb-3">
@@ -177,7 +160,7 @@
 <!-- ========================= SECTION CONTENT END// ========================= -->
 
 
-
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 
 
@@ -220,7 +203,41 @@
                 csrfmiddlewaretoken: "{{csrf_token}}"
             },
             success: (response) => {
-                location.reload()
+                if (response.flag == 1) {
+                    swal({
+                        title: "Are you sure to remove item?",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    })
+                        .then((willDelete) => {
+                            if (willDelete) {
+                                swal("Item removed from cart!", {
+                                    icon: "success",
+                                });
+                                $.ajax({
+                                    url: '/cart/remove_item/',
+                                    method: 'POST',
+                                    dataType: 'json',
+                                    data: {
+                                        id: id,
+                                        csrfmiddlewaretoken: "{{csrf_token}}"
+                                    },
+                                    success: (response) => {
+                                        location.reload()
+                                    }
+                                })
+                            }
+                        });
+                }
+                else {
+                    document.getElementById("quantity" + response.id).value = response.quantity
+                    document.getElementById("sub_total" + response.id).textContent = '₹ ' + response.sub_total
+                    document.getElementById("total").textContent = '₹ ' + response.total
+                    document.getElementById("tax").textContent = '₹ ' + response.tax
+                    document.getElementById("grand_total").textContent = '₹ ' + response.grand_total
+                    document.getElementById("cart_count").textContent = response.cart_count
+                }
             }
         })
     }
@@ -238,7 +255,18 @@
                 csrfmiddlewaretoken: "{{csrf_token}}"
             },
             success: (response) => {
-                location.reload()
+                if (response.flag == 1) {
+                    swal("Sorry!", "Product out of stock");
+                }
+                else {
+                    document.getElementById("quantity" + response.id).value = response.quantity
+                    document.getElementById("sub_total" + response.id).textContent = '₹ ' + response.sub_total
+                    document.getElementById("total").textContent = '₹ ' + response.total
+                    document.getElementById("tax").textContent = '₹ ' + response.tax
+                    document.getElementById("grand_total").textContent = '₹ ' + response.grand_total
+                    document.getElementById("cart_count").textContent = response.cart_count
+
+                }
             }
 
         })

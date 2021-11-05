@@ -5,7 +5,7 @@
 {% block content %}
 
 <section>
-	<div >
+	<div>
 		<div class="col-md-12 heading mt-3 mb-3">
 			<p class="heading-text">Edit Brand</p>
 		</div>
@@ -13,15 +13,15 @@
 </section>
 
 
-<section >
-	<div class="row "  style="display: flex; justify-content: center;">
+<section>
+	<div class="row " style="display: flex; justify-content: center;">
 		<div class="col-md-6 card" style="display: flex; justify-content: center;">
 
 			<form method="POST" action="" enctype="multipart/form-data" id="submit-form">
 				{% csrf_token %}
 				<div class="col-md-12 mt-3">
 
-				
+
 					<div class="form-group mr-2">
 						<label>Product Name</label>
 						{{form.brand_name}}
@@ -31,11 +31,11 @@
 						{{form.description}}
 					</div>
 					<div class="form-group mr-2">
-                        <div class="row">
-                            <div class="col-md-12  text-center">
-                                <img src="{{ brand.logo.url }}" alt="" height="80px">
-                            </div>
-                        </div>
+						<div class="row">
+							<div class="col-md-12  text-center">
+								<img src="{{ brand.logo.url }}" alt="" height="80px">
+							</div>
+						</div>
 						<label>Logo</label><br>
 						{{form.logo}}
 					</div>
@@ -46,41 +46,15 @@
 					</div>
 
 					<div class="form-group mb-0">
-						<button data-toggle="modal" data-target="#exampleModalCenter55" class="btn btn-info" id="confirm-btn" style="width: 100%; margin-top: 10px;"
-							type="submit">Add</button>
+						<button onclick="confirmation()" class="btn btn-info" id="confirm-btn"
+							style="width: 100%; margin-top: 10px;" type="submit">Add</button>
 					</div>
 
-			</div>
+				</div>
 			</form>
 		</div>
 	</div>
 </section>
-
-<!-- Modal -->
-
-<div class="modal fade" id="exampleModalCenter55" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Delete</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <h6>Are you sure to edit ?</h6>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <a href="" id="delete_brand"><button type=" button"
-                        class="btn btn-danger">Confirm</button></a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Ends Here -->
 
 
 <!-- Modal -->
@@ -155,7 +129,7 @@
 			// For more settings, check out their official documentation at https://github.com/fengyuanchen/cropperjs
 			const cropper = new Cropper(image, {
 				viewMode: 2,
-				aspectRatio: 1/1,
+				aspectRatio: 1 / 1,
 				minCropBoxWidth: 200,
 				minCropBoxHeight: 200,
 			})
@@ -193,24 +167,48 @@
 		}
 	});
 </script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 <script>
 	$(document).ready(function () {
-  
-  
-	  $("#submit-form").validate({
-		rules: {
-		  brand_name: {
-			required: true,
-		  },
-		  description: {
-			required: true,
-		  },
-		},
-	  })
-	  
+
+
+		$("#submit-form").validate({
+			rules: {
+				brand_name: {
+					required: true,
+				},
+				description: {
+					required: true,
+				},
+				logo: {
+					required: true,
+				},
+			},
+		})
+
+
 	})
-  </script>
+</script>
+<script>
+	function confirmation() {
+		swal({
+			title: "Are you sure to edit ?",
+			icon: "warning",
+			buttons: true,
+			dangerMode: true,
+		})
+			.then((willDelete) => {
+				if (willDelete) {
+					swal("Editted Successfully!", {
+						icon: "success",
+					});
+				} else {
+					swal("Edit Aborted!");
+				}
+			});
+	}
+</script>
 
 
 
