@@ -14,6 +14,7 @@ class ProductForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProductForm, self).__init__(*args, **kwargs)
         for field in self.fields:
+            self.fields['brand'].empty_label = 'Select Brand'
             self.fields[field].widget.attrs['class'] = 'form-control'
 
             self.fields['image1'].widget.attrs['data-toggle'] = 'modal'

@@ -23,16 +23,18 @@
                 <div class="card-header mb-3">
                     <div class="row">
                         <div class="col-md-2 text-center">
-                            <img src="{{ item.product.image1.url }}" alt="item_image" height="100px">
+                            <a href="{{ item.product.get_url }}"><img src="{{ item.product.image1.url }}" alt="item_image" height="100px"></a>
                         </div>
                         <div class="col-md-4" >
-                            <p class="mb-0 font-weight-bold">{{ item.product.product_name }}</p>
+                            <a href="{{ item.product.get_url }}"><p class="mb-0 font-weight-bold">{{ item.product.product_name }}</p></a>
                             <p class="mb-0">Quantity: {{ item.quantity }}</p>
                             <p class="mb-0">Order: # {{ item.order.order_number }}</p>
                         </div>
                         <div class="col-md-2" >
                             <p class="mb-0">Price:</p>
                             <p class="mb-0"> ₹ {{ item.product_price }}</p>
+                            <p class="mb-0">Location:</p>
+                            <p class="mb-0"> {{item.order.city}}, {{item.order.state}}</p>
                         </div>
                         <div class="col-md-2" >
                             <p class="mb-0">Order Status:</p>

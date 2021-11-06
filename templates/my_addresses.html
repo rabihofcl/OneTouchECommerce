@@ -74,39 +74,6 @@
 <!-- ========================= SECTION CONTENT END// ========================= -->
 
 
-
-
-
-<!-- Modal -->
-<!-- Add Address Modal  -->
-
-<div class="modal fade" id="exampleModalCenter99" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Add Address</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button onclick="address_submit()" type="button" class="btn btn-primary">Submit</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<!-- Modal cancel order-->
-
-
-<!-- Modal -->
-<!-- Update Address Modal  -->
-
 <div class="modal fade" id="exampleModalCenter313" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -122,7 +89,6 @@
                     {% csrf_token %}
                     <div class="container">
                         <div class="row">
-
                             <div class="form-row mt-3">
                                 <div class="form-group col-md-6">
                                     <label>First Name</label>
@@ -181,7 +147,89 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button onclick="update_address()" type="button" class="btn btn-primary">Submit</button>
+                <button onclick="address_submit()" type="button" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+
+<div class="modal fade" id="exampleModalCenter99" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Add Address</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="container">
+                        <div class="row">
+                            <div class="form-row mt-3">
+                                <div class="form-group col-md-6">
+                                    <label>First Name</label>
+                                    {{ address_form.first_name }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label>Last Name</label>
+                                    {{ address_form.last_name }}
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label>Address Line 1</label>
+                                    {{ address_form.address_line_1 }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label>Address Line 2</label>
+                                    {{ address_form.address_line_2 }}
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label>City</label>
+                                    {{ address_form.city }}
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>State</label>
+                                    {{ address_form.state }}
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>Country</label>
+                                    {{ address_form.country }}
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>Pincode</label>
+                                    {{ address_form.pincode }}
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label>Phone Number</label>
+                                    {{ address_form.phone_number }}
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label>Email</label>
+                                    {{ address_form.email }}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button onclick="address_submit()" type="button" class="btn btn-primary">Submit</button>
             </div>
         </div>
     </div>
@@ -279,41 +327,6 @@
     }
 
 
-    function update_address() {
-        var first_name = document.getElementById('id_first_name').value
-        var last_name = document.getElementById('id_last_name').value
-        var address_line_1 = document.getElementById('id_address_line_1').value
-        var address_line_2 = document.getElementById('id_address_line_2').value
-        var city = document.getElementById('id_city').value
-        var state = document.getElementById('id_state').value
-        var country = document.getElementById('id_country').value
-        var pincode = document.getElementById('id_pincode').value
-        var phone_number = document.getElementById('id_phone_number').value
-        var email = document.getElementById('id_email').value
-
-        $.ajax({
-            url: "{% url 'add_address'%}",
-            method: 'POST',
-            dataType: 'json',
-            data: {
-                first_name: first_name,
-                last_name: last_name,
-                address_line_1: address_line_1,
-                address_line_2: address_line_2,
-                city: city,
-                state: state,
-                country: country,
-                pincode: pincode,
-                phone_number: phone_number,
-                email: email,
-
-                csrfmiddlewaretoken: "{{csrf_token}}"
-            },
-            success: (response) => {
-                location.reload()
-            }
-        })
-    }
 
 </script>
 
