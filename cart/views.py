@@ -29,8 +29,8 @@ def _cart_id(request):
 
 
 @never_cache
-def add_cart(request, product_id):
-    url = request.META.get('HTTP_REFERER')
+def add_cart(request):
+    product_id = request.POST['id']
     product = Product.objects.get(id=product_id)  # get the product
 
     if request.user.is_authenticated:
@@ -86,7 +86,17 @@ def add_cart(request, product_id):
                 cart=cart,
             )
             cart_item.save()
-    return redirect(url)
+
+
+    cart_count = 0
+    cart_itemss = CartItem.objects.filter(user=request.user, is_active=True)
+    for cart_items in cart_itemss:
+        cart_count += cart_items.quantity
+
+    context = {
+        'cart_count': cart_count,
+    }
+    return JsonResponse(context)
 
 
 @never_cache

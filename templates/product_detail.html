@@ -6,6 +6,79 @@
 
 {% block content %}
 
+<style>
+	#snackbar {
+		visibility: hidden;
+		min-width: 250px;
+		margin-left: -125px;
+		background-color: rgb(255, 255, 255);
+		color: #3167eb;
+		font-weight: bold;
+		border-radius: 10px;
+		border: 1px solid #3167eb;
+		text-align: center;
+		padding: 16px;
+		position: fixed;
+		z-index: 1;
+		left: 50%;
+		bottom: 30px;
+		font-size: 17px;
+	}
+
+	#snackbar.show {
+		visibility: visible;
+		-webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+		animation: fadein 0.5s, fadeout 0.5s 2.5s;
+	}
+
+	@-webkit-keyframes fadein {
+		from {
+			bottom: 0;
+			opacity: 0;
+		}
+
+		to {
+			bottom: 30px;
+			opacity: 1;
+		}
+	}
+
+	@keyframes fadein {
+		from {
+			bottom: 0;
+			opacity: 0;
+		}
+
+		to {
+			bottom: 30px;
+			opacity: 1;
+		}
+	}
+
+	@-webkit-keyframes fadeout {
+		from {
+			bottom: 30px;
+			opacity: 1;
+		}
+
+		to {
+			bottom: 0;
+			opacity: 0;
+		}
+	}
+
+	@keyframes fadeout {
+		from {
+			bottom: 30px;
+			opacity: 1;
+		}
+
+		to {
+			bottom: 0;
+			opacity: 0;
+		}
+	}
+</style>
 
 
 
@@ -74,7 +147,7 @@
 									cart</span>
 								<i class="fas fa-eye"></i> </a>
 							{% else %}
-							<a href="{% url 'add_cart' single_product.id %}" class="btn  btn-primary"> <span
+							<a onclick="add_cart('{{single_product.id}}')" class="btn  btn-primary text-white"> <span
 									class="text">Add to Cart</span>
 								<i class="fas fa-shopping-cart"></i> </a>
 							{% endif %}
@@ -89,7 +162,8 @@
 		<!-- ============================ COMPONENT 1 END .// ================================= -->
 
 		<br>
-
+		{% if user.is_authenticated %}
+		{% if orderproduct %}
 		<div class="row">
 			<div class="col-md-12">
 
@@ -129,8 +203,7 @@
 						Review:
 						<textarea name="review" class="form-control" rows="4"></textarea>
 						<br>
-						{% if user.is_authenticated %}
-						{% if orderproduct %}
+						
 						<input type="submit" value="Submit Review" class="btn btn-primary">
 						{% else %}
 						<p>You must purchase this product to post a review.</p>
@@ -190,6 +263,7 @@
 
 
 	</div> <!-- container .//  -->
+	<div id="snackbar" >Item added to cart</div>
 </section>
 <script src="{% static 'js/zoomsl.js' %}" type="text/javascript"></script>
 <!-- ========================= SECTION CONTENT END// ========================= -->
@@ -210,6 +284,32 @@
 			zoomrange: [1, 1]
 		})
 	})
+</script>
+
+
+<script>
+
+
+
+	function add_cart(id) {
+
+		var x = document.getElementById("snackbar");
+		x.className = "show";
+		setTimeout(function () { x.className = x.className.replace("show", ""); }, 1000);
+
+		$.ajax({
+			url: "{% url 'add_cart' %}",
+			method: 'POST',
+			dataType: 'json',
+			data: {
+				id: id,
+				csrfmiddlewaretoken: "{{csrf_token}}"
+			},
+			success: (response) => {
+				document.getElementById("cart_count").textContent = response.cart_count
+			}
+		})
+	}
 </script>
 
 {% endblock %}

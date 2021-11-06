@@ -562,18 +562,7 @@ def edit_profile(request):
 @never_cache
 @login_required(login_url = 'signin')
 def my_addresses(request):
-
-    url = request.META.get('HTTP_REFERER')
-
-    if request.method == 'POST':
-        address_form = AddressForm(request.POST)
-        if address_form.is_valid():
-            address = address_form.save(commit=False)
-            address.user = request.user
-            address.save()
-            return redirect(url)
-    else:
-        address_form = AddressForm()
+    address_form = AddressForm()
 
     addresses = Address.objects.filter(user=request.user)
 
@@ -583,6 +572,21 @@ def my_addresses(request):
     }
 
     return render(request, 'my_addresses.html', context)
+
+
+
+@never_cache
+@login_required(login_url = 'signin')
+def add_address(request):
+    address_form = AddressForm(request.POST)
+    if address_form.is_valid():
+        address = address_form.save(commit=False)
+        address.user = request.user
+        address.save()
+    return JsonResponse({'success': True})
+
+
+
 
 @never_cache
 @login_required(login_url = 'signin')

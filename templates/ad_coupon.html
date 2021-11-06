@@ -65,7 +65,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalLongTitle">Add Coupon</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -120,7 +120,6 @@
         var coupon_name = document.getElementById('id_coupon_name').value
         var coupon_code = document.getElementById('id_coupon_code').value
         var discount = document.getElementById('id_discount').value
-        console.log(coupon_name, coupon_code, discount)
 
         $.ajax({
             url: "{% url 'add_coupon'%}",

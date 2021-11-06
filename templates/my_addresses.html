@@ -27,10 +27,19 @@
                                 <div class="card-body" style="height: 200px;">
                                     <div class="row">
                                         <div class="container" style="display: flex; justify-content: space-between;">
-                                            <h5 class="card-title mb-0">{{address.full_name}}</h5>
-                                            <a onclick="delete_address('{{address.id}}')" type="button"
-                                                data-toggle="modal" data-target="#exampleModalCenter"><i
-                                                    class="fas fa-trash-alt" style="color: red;"></i></a>
+                                            <div>
+                                                <h5 class="card-title mb-0">{{address.full_name}}</h5>
+                                            </div>
+
+                                            <div>
+
+                                                <a onclick="update_address('{{address.id}}')" type="button"
+                                                    data-toggle="modal" data-target="#exampleModalCenter313"><i
+                                                        class="far fa-edit mr-2"></i></a>
+                                                <a onclick="delete_address('{{address.id}}')" type="button"
+                                                    data-toggle="modal" data-target="#exampleModalCenter"><i
+                                                        class="fas fa-trash-alt" style="color: red;"></i></a>
+                                            </div>
                                         </div>
                                     </div>
                                     <p class="card-text mb-0">Address:</p>
@@ -48,15 +57,71 @@
                     </div>
                 </article>
 
+                <div class="row mt-3" style="display: flex; justify-content: center;">
+                    <a href="" data-toggle="modal" data-target="#exampleModalCenter99"><button
+                            class="btn btn-primary">Add Address</button></a>
+                </div>
 
-                <article class="card mt-3">
-                    <header class="card-header mb-2">
-                        <strong class="d-inline-block mr-3">Add Address</strong>
-                    </header>
 
-                    <div class="col-md-12">
-                        <form action="" method="post" id="submit-form">
-                            {% csrf_token %}
+
+
+            </main>
+        </div> <!-- row.// -->
+    </div>
+
+
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+
+
+
+
+
+<!-- Modal -->
+<!-- Add Address Modal  -->
+
+<div class="modal fade" id="exampleModalCenter99" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Add Address</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button onclick="address_submit()" type="button" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal cancel order-->
+
+
+<!-- Modal -->
+<!-- Update Address Modal  -->
+
+<div class="modal fade" id="exampleModalCenter313" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Add Address</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="container">
+                        <div class="row">
 
                             <div class="form-row mt-3">
                                 <div class="form-group col-md-6">
@@ -110,25 +175,20 @@
                                 </div>
                             </div>
 
-                            <div class="form-row mb-3" style="display: flex; justify-content: center ;">
-                                <input type="submit" class="btn btn-primary">
-                            </div>
-
-                        </form>
+                        </div>
                     </div>
-
-                </article>
-
-
-
-
-            </main>
-        </div> <!-- row.// -->
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button onclick="update_address()" type="button" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
     </div>
+</div>
 
 
-</section>
-<!-- ========================= SECTION CONTENT END// ========================= -->
+<!-- Modal cancel order-->
 
 
 <!-- Modal -->
@@ -180,8 +240,81 @@
                 location.reload()
             }
         })
-
     }
+
+    function address_submit() {
+        var first_name = document.getElementById('id_first_name').value
+        var last_name = document.getElementById('id_last_name').value
+        var address_line_1 = document.getElementById('id_address_line_1').value
+        var address_line_2 = document.getElementById('id_address_line_2').value
+        var city = document.getElementById('id_city').value
+        var state = document.getElementById('id_state').value
+        var country = document.getElementById('id_country').value
+        var pincode = document.getElementById('id_pincode').value
+        var phone_number = document.getElementById('id_phone_number').value
+        var email = document.getElementById('id_email').value
+
+        $.ajax({
+            url: "{% url 'add_address'%}",
+            method: 'POST',
+            dataType: 'json',
+            data: {
+                first_name: first_name,
+                last_name: last_name,
+                address_line_1: address_line_1,
+                address_line_2: address_line_2,
+                city: city,
+                state: state,
+                country: country,
+                pincode: pincode,
+                phone_number: phone_number,
+                email: email,
+
+                csrfmiddlewaretoken: "{{csrf_token}}"
+            },
+            success: (response) => {
+                location.reload()
+            }
+        })
+    }
+
+
+    function update_address() {
+        var first_name = document.getElementById('id_first_name').value
+        var last_name = document.getElementById('id_last_name').value
+        var address_line_1 = document.getElementById('id_address_line_1').value
+        var address_line_2 = document.getElementById('id_address_line_2').value
+        var city = document.getElementById('id_city').value
+        var state = document.getElementById('id_state').value
+        var country = document.getElementById('id_country').value
+        var pincode = document.getElementById('id_pincode').value
+        var phone_number = document.getElementById('id_phone_number').value
+        var email = document.getElementById('id_email').value
+
+        $.ajax({
+            url: "{% url 'add_address'%}",
+            method: 'POST',
+            dataType: 'json',
+            data: {
+                first_name: first_name,
+                last_name: last_name,
+                address_line_1: address_line_1,
+                address_line_2: address_line_2,
+                city: city,
+                state: state,
+                country: country,
+                pincode: pincode,
+                phone_number: phone_number,
+                email: email,
+
+                csrfmiddlewaretoken: "{{csrf_token}}"
+            },
+            success: (response) => {
+                location.reload()
+            }
+        })
+    }
+
 </script>
 
 <!-- Modal Ends Here -->
