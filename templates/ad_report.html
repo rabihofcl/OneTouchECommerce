@@ -42,6 +42,8 @@
                     </div>
                     <br>
                     <div class="row mb-2">
+                        {%if not orders%}
+                        {%else%}
                         <div class="col-md-12">
                             <div class="row">
                                 <a href="{% url 'order_export_csv' %}" class="btn btn-outline-info ml-3 mr-2">Export
@@ -52,6 +54,7 @@
                                     PDF</a>
                             </div>
                         </div>
+                        {%endif%}
                     </div>
                     <table class="table mt-3" id="myTable3">
                         <thead>
@@ -76,7 +79,7 @@
                                 <td>{{order.email}}</td>
                                 <td>{{order.order_total}}</td>
                                 <td>{{order.tax}}</td>
-                                <td>{{order.created_at}}</td>
+                                <td>{{order.created_at.date}}</td>
                             </tr>
                             {% endfor %}
                         </tbody>

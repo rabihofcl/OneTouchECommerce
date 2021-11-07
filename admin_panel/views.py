@@ -399,7 +399,6 @@ def report(request):
         orders = Order.objects.filter(created_at__range=[date_from, date_to], is_ordered=True).order_by('-created_at')
         brands = Brand.objects.all()
         products = Product.objects.all()
-
         context = {
             'brands': brands,
             'products': products,

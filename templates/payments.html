@@ -111,6 +111,12 @@
                         </p>
                         <!-- Set up a container element for the button -->
                         <div id="paypal-button-container"></div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <img src="{% static './images/misc/razorpay_1.jpg' %}" alt="" class="img-fluid">
+                            </div>
+                            
+                        </div>
 
 
                     </div> <!-- card-body.// -->
@@ -157,10 +163,7 @@
     paypal.Buttons({
 
         style: {
-            color: 'blue',
-            shape: 'rect',
-            label: 'pay',
-            height: 40
+            layout: 'horizontal'
         },
 
         // Set up the transaction
