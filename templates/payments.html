@@ -151,7 +151,7 @@
         return cookieValue;
     }
 
-    var amount = "{{ grand_total }}"
+    var amount = "{{ price_in_dollar }}"
     var url = "{% url 'payments' %}"
     var csrftoken = getCookie('csrftoken')
     var orderID = "{{ order.order_number }}"
@@ -163,7 +163,11 @@
     paypal.Buttons({
 
         style: {
-            layout: 'horizontal'
+            layout: 'horizontal',
+            color: 'blue',
+            shape: 'rect',
+            label: 'pay',
+            height: 40
         },
 
         // Set up the transaction

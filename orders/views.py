@@ -10,9 +10,13 @@ import json
 
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
-
+import math
+import requests
 # Create your views here.
 
+
+
+	
 
 @never_cache
 @login_required(login_url = 'signin')
@@ -20,7 +24,10 @@ def payments(request):
     body = json.loads(request.body)
 
     order = Order.objects.get(user=request.user, is_ordered=False, order_number=body['orderID'])
+    # Where USD is the base currency you want to use
 
+
+    
     #store transaction details inside payment model
     payment = Payment(
         user = request.user,
@@ -183,6 +190,17 @@ def place_order(request, total=0, quantity=0):
         grand_total = pre_grand_total
     
 
+    url = 'https://v6.exchangerate-api.com/v6/e71cd6c326f5499dd27514b0/latest/USD'
+
+    # Making our request
+    response = requests.get(url)
+    data = response.json()
+    exchange_rate = data['conversion_rates']['INR']
+
+
+    price_in_dollar = "%.2f" % (grand_total/exchange_rate)
+
+
 
     if request.method == 'POST':
 
@@ -228,6 +246,7 @@ def place_order(request, total=0, quantity=0):
                 'total': total,
                 'tax': tax,
                 'grand_total': grand_total,
+                'price_in_dollar': price_in_dollar,
             }
             return render(request, 'payments.html', context)
     else:
