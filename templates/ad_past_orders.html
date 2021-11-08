@@ -21,6 +21,7 @@
                         <th scope="col">Quantity</th>
                         <th scope="col">Price</th>
                         <th scope="col">Status</th>
+                        <th scope="col">Date</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -33,6 +34,7 @@
                         <td>{{ item.quantity }}</td>
                         <td>₹ {{ item.product_price }}</td>
                         <td>{{ item.status }}</td>
+                        <td>{{ item.created_at.date }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

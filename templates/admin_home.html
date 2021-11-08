@@ -5,43 +5,52 @@
 {% block content %}
 
 
-<section class="pl-5">
-    <div class="row ">
-        <p class="dashboard_side_head">Dashboard</p>
-    </div>
+<section class="pl-5 mt-5">
     <div class="row pr-5">
         <div class="col-md-12">
             <div class="row">
                 <div class="col-md-3">
-                    <div class="row">
-                        <p class="mb-0 mt-2" style="font-size: x-large; font-weight: bold; color: var(--main_color);">Total Revenue</p>
-                    </div>
-                    <div class="row">
-                        <p style="color: #17a2b8; font-weight: bold; font-size: 45px;">₹ {{payment_total}}</p>
-                    </div>
-                </div>
-                <div class="col-md-3 dashboard_widgets widget1">
-                    <div class="row">
-                        <p class="widget_name">Total Products</p>
-                    </div>
-                    <div class="row">
-                        <p class="widget_no"> {{ products }} </p>
+                    <div
+                        style="background-image: linear-gradient(to bottom right, #ffcb52, #ff7b02); border-radius: 20px;">
+                        <div class="row mt-3 ml-3 pt-3">
+                            <p style="font-size: x-large; font-weight: bold; color: white;">Total Revenue</p>
+                        </div>
+                        <div class="row pl-5">
+                            <p style="color: white; font-weight: bold; font-size: 45px;">₹ {{payment_total}}</p>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-3 dashboard_widgets widget2">
-                    <div class="row">
-                        <p class="widget_name">Total Brands</p>
-                    </div>
-                    <div class="row">
-                        <p class="widget_no"> {{ brands }} </p>
+                <div class="col-md-3">
+                    <div
+                        style="background-image: linear-gradient(to bottom right,#fd9869, #f2c9c9); border-radius: 20px;">
+                        <div class="row mt-3 ml-3 pt-3">
+                            <p style="font-size: x-large; font-weight: bold; color: white;">Total Products</p>
+                        </div>
+                        <div class="row pl-5">
+                            <p style="color: white; font-weight: bold; font-size: 45px;">{{products}}</p>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-3 dashboard_widgets widget3">
-                    <div class="row">
-                        <p class="widget_name">Total Users</p>
+                <div class="col-md-3">
+                    <div
+                        style="background-image: linear-gradient(to bottom right, #c165dd, #5c27fe); border-radius: 20px;">
+                        <div class="row mt-3 ml-3 pt-3">
+                            <p style="font-size: x-large; font-weight: bold; color: white;">Total Brands</p>
+                        </div>
+                        <div class="row pl-5">
+                            <p style="color: white; font-weight: bold; font-size: 45px;">{{brands}}</p>
+                        </div>
                     </div>
-                    <div class="row">
-                        <p class="widget_no"> {{ users }} </p>
+                </div>
+                <div class="col-md-3">
+                    <div
+                        style="background-image: linear-gradient(to bottom right, #1de5e2, #b588f7); border-radius: 20px;">
+                        <div class="row mt-3 ml-3 pt-3">
+                            <p style="font-size: x-large; font-weight: bold; color: white;">Total Users</p>
+                        </div>
+                        <div class="row pl-5">
+                            <p style="color: white; font-weight: bold; font-size: 45px;">{{users}}</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -50,14 +59,14 @@
 </section>
 
 <section>
-    <div class="row mt-5">
+    <div class="row pl-5 mt-5 pr-5">
         <div class="col-md-12">
             <div class="row">
                 <div class="col-md-6">
                     <canvas id="myChart" width="400" height="200"></canvas>
                 </div>
-                <div class="col-md-3">
-                    <canvas id="myChart2" width="200" height="200"></canvas>
+                <div class="col-md-6">
+                    <canvas id="myChart2" width="200" height="100"></canvas>
                 </div>
             </div>
         </div>
@@ -66,9 +75,118 @@
 
 
 
-
 <section>
+    <div class="row pl-5 mt-5 pr-5">
+
+        <div class="col-md-12"
+            style="background-image: linear-gradient(to bottom right,#00b3cc, #d6ff7f); border-radius: 20px;">
+            <p class="ml-5 mt-5" style="font-size: x-large; font-weight: bolder; color: white;">Latest Brands</p>
+            <div class="row pr-5">
+                {% for brand_img in brand_img %}
+                <div class="col-md-2 p-5 ml-5 mb-5"
+                    style=" border-radius: 20px; display: flex; justify-content: center; background-color: white;">
+                    <img src="{{brand_img.logo.url}}" alt="" class="img-fluid">
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 </section>
+
+<section class="pl-5 mt-5">
+    <div class="row pr-5">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-2">
+                    <div
+                        style="height: 100px; background-image: linear-gradient(to bottom right, #fa7cbb, #f14658); border-radius: 20px;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="text-white pl-3 pt-2">Delivered Orders</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="text-white pt-1" style="font-weight: bolder; font-size: 60px;">
+                                    {{delivered_orders}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div
+                        style="height: 100px; background-image: linear-gradient(to bottom right, #fa7cbb, #f14658); border-radius: 20px;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="text-white pl-3 pt-2">Shipping Orders</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="text-white pt-1" style="font-weight: bolder; font-size: 60px;">
+                                    {{shipping_orders}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div
+                        style="height: 100px; background-image: linear-gradient(to bottom right, #fa7cbb, #f14658); border-radius: 20px;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="text-white pl-3 pt-2">Accepted Orders</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="text-white pt-1" style="font-weight: bolder; font-size: 60px;">
+                                    {{accepted_orders}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div
+                        style="height: 100px; background-image: linear-gradient(to bottom right, #fa7cbb, #f14658); border-radius: 20px;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="text-white pl-3 pt-2">Cancelled Orders</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="text-white pt-1" style="font-weight: bolder; font-size: 60px;">
+                                    {{cancelled_orders}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div
+                        style="height: 100px; background-image: linear-gradient(to bottom right, #fa7cbb, #f14658); border-radius: 20px;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="text-white pl-3 pt-2">Returned Orders</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="text-white pt-1" style="font-weight: bolder; font-size: 60px;">
+                                    {{return_orders}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div
+                        style="height: 100px; background-image: linear-gradient(to bottom right, #fa7cbb, #f14658); border-radius: 20px;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="text-white pl-3 pt-2">Placed Orders</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="text-white pt-1" style="font-weight: bolder; font-size: 60px;">
+                                    {{placed_orders}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
 
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
@@ -105,13 +223,14 @@
     options: {
         scales: {
             y: {
-                beginAtZero: true
+                fontColor: "green",
+                    beginAtZero: true
             }
         },
         plugins: {
             title: {
                 display: true,
-                text: 'Latest Orders'
+                    text: 'Latest Orders'
             }
         }
     }
@@ -122,11 +241,11 @@
 <script>
     var ctx = document.getElementById('myChart2').getContext('2d');
     var myChart = new Chart(ctx, {
-        type: 'doughnut',
+        type: 'bar',
         data: {
             labels: {{ labels2| safe}},
     datasets: [{
-        label: '# of Votes',
+        label: '# of products',
         data: {{ data2| safe}},
         backgroundColor: [
         'rgba(255, 99, 132, 1)',
@@ -153,7 +272,7 @@
         plugins: {
             title: {
                 display: true,
-                text: 'Leading Brands'
+                    text: 'Leading Brands'
             }
         }
     }

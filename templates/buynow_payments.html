@@ -111,6 +111,11 @@
                         </p>
                         <!-- Set up a container element for the button -->
                         <div id="paypal-button-container"></div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <a href="" class="btn btn-primary" style="width: 100%;">Pay with<span style="font-weight: bold; font-size: large;"><i> Razorpay </i></span></a>
+                            </div>
+                        </div>
 
 
                     </div> <!-- card-body.// -->
@@ -145,7 +150,7 @@
         return cookieValue;
     }
 
-    var amount = "{{ grand_total }}"
+    var amount = "{{ price_in_dollar }}"
     var url = "{% url 'buynow_payments' %}"
     var csrftoken = getCookie('csrftoken')
     var orderID = "{{ order.order_number }}"

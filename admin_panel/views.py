@@ -1,5 +1,5 @@
 
-from django.db.models.aggregates import Count
+from django.db.models.aggregates import Count, Sum, Min, Max, Avg
 from django.http.response import HttpResponse, JsonResponse
 from admin_panel.forms import BrandForm
 from ads.forms import AdsForm
@@ -25,6 +25,7 @@ from django.template.loader import render_to_string
 from weasyprint import HTML
 import tempfile
 import math
+from django.db.models.functions import TruncMonth
 
 # Create your views here.
 
@@ -63,13 +64,18 @@ def admin_home(request):
     brands = Brand.objects.all().count()
     users = Account.objects.all().count()
 
+    sam = Order.objects.filter(is_ordered=True).order_by('created_at').values('order_total').annotate(created_count=Count('order_total'))
+
+    aaa = Order.objects.filter(is_ordered=True).order_by('-id').values('created_at__day').annotate(c=Sum('order_total'))
+    print(aaa)
+
     # orders chart data
     labels1 = []
     data1 = []
 
     orders = Order.objects.filter(is_ordered=True).order_by('-created_at')[:10]
     for order in orders:
-        labels1.append(order.order_number)
+        labels1.append(order.updated_at.day)
         data1.append(order.order_total)
 
     # prodcuts chart data
@@ -89,10 +95,26 @@ def admin_home(request):
     payment_total = math.floor(payment_total)
 
 
+    brand_img = Brand.objects.all().order_by('-id')
+    placed_orders = OrderProduct.objects.all().order_by('-id').filter(ordered=True, status='Placed').count()
+    accepted_orders = OrderProduct.objects.all().order_by('-id').filter(ordered=True, status='Accepted').count()
+    shipping_orders = OrderProduct.objects.all().order_by('-id').filter(ordered=True, status='Shipping').count()
+    delivered_orders = OrderProduct.objects.all().order_by('-id').filter(ordered=True, status='Delivered').count()
+    cancelled_orders = OrderProduct.objects.all().order_by('-id').filter(ordered=True, status='Cancelled').count()
+    return_orders = OrderProduct.objects.all().order_by('-id').filter(ordered=True, status='Return').count()
+
     context = {
         'products': products,
         'brands': brands,
         'users': users,
+        'brand_img': brand_img,
+        
+        'placed_orders': placed_orders,
+        'accepted_orders': accepted_orders,
+        'shipping_orders': shipping_orders,
+        'delivered_orders': delivered_orders,
+        'cancelled_orders': cancelled_orders,
+        'return_orders': return_orders,
 
         'labels': labels1,
         'data': data1,

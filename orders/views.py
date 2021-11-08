@@ -12,6 +12,9 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 import math
 import requests
+import razorpay
+from django.conf import settings
+
 # Create your views here.
 
 
@@ -200,6 +203,7 @@ def place_order(request, total=0, quantity=0):
 
     price_in_dollar = "%.2f" % (grand_total/exchange_rate)
 
+    
 
 
     if request.method == 'POST':
@@ -239,6 +243,15 @@ def place_order(request, total=0, quantity=0):
             data.save()
 
             order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
+
+
+
+            # razorpay_amount = grand_total
+            # order_currency = 'INR'
+            # client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
+
+            # razorpay_order = client.order.create({'amount':razorpay_amount*100,'currency':'INR','receipt': order_number, 'payment_capture': '0'})
+    
 
             context = {
                 'order': order,
@@ -282,6 +295,17 @@ def buynow_place_order(request, total=0, quantity=0):
         discount = 0
         grand_total = pre_grand_total
     
+
+    url = 'https://v6.exchangerate-api.com/v6/e71cd6c326f5499dd27514b0/latest/USD'
+
+    # Making our request
+    response = requests.get(url)
+    data = response.json()
+    exchange_rate = data['conversion_rates']['INR']
+
+
+    price_in_dollar = "%.2f" % (grand_total/exchange_rate)
+
 
 
     if request.method == 'POST':
@@ -328,6 +352,7 @@ def buynow_place_order(request, total=0, quantity=0):
                 'total': total,
                 'tax': tax,
                 'grand_total': grand_total,
+                'price_in_dollar': price_in_dollar,
             }
             return render(request, 'buynow_payments.html', context)
     else:

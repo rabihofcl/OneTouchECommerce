@@ -22,6 +22,7 @@
                         <th scope="col">Price</th>
                         <th scope="col">Status</th>
                         <th scope="col">Change Status</th>
+                        <th scope="col">Date</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -32,7 +33,7 @@
                         <td>{{item.order.full_name}}</td>
                         <td>{{ item.product.product_name }}</td>
                         <td>{{ item.quantity }}</td>
-                        <td>₹ {{ item.product_price }}</td>
+                        <td>₹ {{ item.order.order_total }}</td>
                         <td>{{ item.status }}</td>
                         <td>
                             <select onchange="order_status_change(event, '{{item.id}}')" class="form-control" style="border: red 1px solid; color: red;" name="" id="order_status">
@@ -53,8 +54,8 @@
                                 <option value="Cancelled">Cancelled</option>
                                 {% endif %}
                             </select>
-                            
                         </td>
+                        <td>{{ item.created_at.date }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
