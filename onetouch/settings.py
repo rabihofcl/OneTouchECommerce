@@ -33,10 +33,6 @@ ALLOWED_HOSTS = [config('ALLOWED_HOSTS'), '127.0.0.1', 'onetouch.rabih.ml', 'www
 AUTH_USER_MODEL = 'account.Account'
 
 
-# Razorpay Keys
-
-RAZOR_KEY_ID = 'rzp_test_f7vxIPQ8EghJf2'
-RAZOR_KEY_SECRET = 'yX1P5EhzVmRIr3wjbqEQbqWQ'
 
 
 # AUTHENTICATION_BACKENDS = (

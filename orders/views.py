@@ -12,7 +12,6 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 import math
 import requests
-import razorpay
 from django.conf import settings
 
 # Create your views here.
@@ -244,14 +243,6 @@ def place_order(request, total=0, quantity=0):
 
             order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
 
-
-
-            # razorpay_amount = grand_total
-            # order_currency = 'INR'
-            # client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
-
-            # razorpay_order = client.order.create({'amount':razorpay_amount*100,'currency':'INR','receipt': order_number, 'payment_capture': '0'})
-    
 
             context = {
                 'order': order,
