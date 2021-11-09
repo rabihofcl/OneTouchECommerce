@@ -27,7 +27,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)  #True
 
-ALLOWED_HOSTS = [config('ALLOWED_HOSTS'), '127.0.0.1', 'onetouch.rabih.ml', 'www.onetouch.rabih.ml']
+ALLOWED_HOSTS = [config('ALLOWED_HOSTS'), '127.0.0.1', 'onetouch.rabih.ml', 'www.onetouch.rabih.ml', '18.191.168.177']
 
 
 AUTH_USER_MODEL = 'account.Account'
