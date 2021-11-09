@@ -24,6 +24,8 @@
                         <th>Coupon Name</th>
                         <th scope="col">Coupon Code</th>
                         <th scope="col">Discount(%)</th>
+                        <th scope="col">Valid From</th>
+                        <th scope="col">Valid To</th>
                         <th scope="col">Status</th>
                         <th scope="col">Actions</th>
                     </tr>
@@ -35,13 +37,15 @@
                         <td>{{coupon.coupon_name}}</td>
                         <td>{{coupon.coupon_code}}</td>
                         <td>{{coupon.discount}}</td>
+                        <td>{{coupon.valid_from}}</td>
+                        <td>{{coupon.valid_to}}</td>
                         <td>{{coupon.status}}</td>
                         <td>
                             <!-- <label class="switch">
                                 <input type="checkbox">
                                 <span class="slider round"></span>
                             </label> -->
-
+                            <a href="{% url 'edit_coupon' coupon.id %}" type="button"><i class="far fa-edit"></i></a>
                             <a onclick="delete_coupon('{{coupon.id}}')" type="button" data-toggle="modal"
                                 data-target="#exampleModalCenter00" style="color: red;"><i
                                     class="fas fa-trash-alt"></i></a>
@@ -71,7 +75,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="" method="post">
+                <form action="" method="post" enctype="multipart/form-data" id="submit_form">
                     {% csrf_token %}
                     <div class="container">
                         <div class="row">
@@ -87,6 +91,9 @@
         </div>
     </div>
 </div>
+
+
+
 
 
 <!-- Modal cancel order-->
@@ -120,6 +127,8 @@
         var coupon_name = document.getElementById('id_coupon_name').value
         var coupon_code = document.getElementById('id_coupon_code').value
         var discount = document.getElementById('id_discount').value
+        var valid_from = document.getElementById('id_valid_from').value
+        var valid_to = document.getElementById('id_valid_to').value
 
         $.ajax({
             url: "{% url 'add_coupon'%}",
@@ -130,6 +139,8 @@
                 coupon_name: coupon_name,
                 coupon_code: coupon_code,
                 discount: discount,
+                valid_from: valid_from,
+                valid_to: valid_to,
                 csrfmiddlewaretoken: "{{csrf_token}}"
             },
             success: (response) => {
@@ -157,8 +168,9 @@
                 location.reload()
             }
         })
-
     }
+
+
 
 </script>
 

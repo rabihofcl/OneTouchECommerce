@@ -26,6 +26,7 @@ from weasyprint import HTML
 import tempfile
 import math
 from django.db.models.functions import TruncMonth
+from datetime import date
 
 # Create your views here.
 
@@ -683,9 +684,15 @@ def order_export_pdf(request):
 
 @login_required(login_url='admin_signin')
 def coupon(request):
-
+    today = date.today()
     coupon_form = CouponForm()
-    coupons = Coupon.objects.all()
+    coupons = Coupon.objects.all().order_by('-id')
+
+    for coupon in coupons:
+        if coupon.valid_from <= today and coupon.valid_to >= today:
+            Coupon.objects.filter(id=coupon.id).update(status=True)
+        else:
+            Coupon.objects.filter(id=coupon.id).update(status=False)
 
     context = {
         'coupon_form': coupon_form,
@@ -696,10 +703,14 @@ def coupon(request):
 
 @login_required(login_url='admin_signin')
 def add_coupon(request):
+    today = date.today()
     coupon_form = CouponForm(request.POST)
     if coupon_form.is_valid():
         coupon = coupon_form.save(commit=False)
-        coupon.status = True
+        if coupon.valid_from <= today and coupon.valid_to >= today:
+            coupon.status = True
+        else:
+            coupon.status = False
         coupon_form.save()
     return JsonResponse({'success': True})
 
@@ -708,4 +719,26 @@ def ad_delete_coupon(request):
     id = request.POST['id']
     Coupon.objects.filter(id=id).delete()
     return JsonResponse({'success': True})
+
+
+def edit_coupon(request, id):
+    coupon = Coupon.objects.get(id=id)
+    today = date.today()
+    if request.method == 'POST':
+        coupon_form = CouponForm(request.POST, instance=coupon)
+        if coupon_form.is_valid():
+            coupon = coupon_form.save(commit=False)
+        if coupon.valid_from <= today and coupon.valid_to >= today:
+            coupon.status = True
+        else:
+            coupon.status = False
+        coupon_form.save()
+
+        return redirect('coupon')
+    else:
+        coupon_form = CouponForm(instance=coupon)
+    context = {
+        'coupon_form': coupon_form
+    }
+    return render(request, 'ad_edit_coupon.html', context)
 

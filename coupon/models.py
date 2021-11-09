@@ -1,3 +1,4 @@
+from tempfile import TemporaryDirectory
 from django.db import models
 from account.models import Account
 
@@ -9,6 +10,8 @@ class Coupon(models.Model):
     coupon_code = models.CharField(max_length=50, unique=True)
     discount = models.CharField(max_length=50)
     status = models.BooleanField(default=True, blank=True)
+    valid_from = models.DateField()
+    valid_to = models.DateField()
 
     def __str__(self):
         return self.coupon_name

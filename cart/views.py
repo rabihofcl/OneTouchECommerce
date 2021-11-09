@@ -1,6 +1,7 @@
 
 
 
+from datetime import date
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import HttpResponse, JsonResponse
@@ -308,6 +309,14 @@ def cart(request, total=0, quantity=0, cart_items=None):
 @never_cache
 @login_required(login_url = 'signin')
 def checkout(request, total=0, quantity=0, cart_items=None):
+    today = date.today()
+    coupons = Coupon.objects.all()
+
+    for coupon in coupons:
+        if coupon.valid_from <= today and coupon.valid_to >= today:
+            Coupon.objects.filter(id=coupon.id).update(status=True)
+        else:
+            Coupon.objects.filter(id=coupon.id).update(status=False)
 
 
     if 'coupon_id' in request.session:

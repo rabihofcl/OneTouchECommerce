@@ -1,0 +1,98 @@
+{% extends 'admin_base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<section>
+	<div style="padding-left: 50px;">
+		<div class="col-md-10 heading mt-3 mb-3">
+			<p class="heading-text">Edit Product</p>
+		</div>
+	</div>
+</section>
+
+
+<section style="padding-left: 50px;">
+	<div class="row">
+		<div class="col-md-10 ">
+			<form method="POST" action="" enctype="multipart/form-data" id="submit-form">
+				{% csrf_token %}
+				<div class="row ">
+                    <div class="col-md-4">
+                        
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+							<label>Coupon Name</label>
+							{{coupon_form.coupon_name}}
+						</div>
+                        <div class="form-group">
+							<label>Coupon Code</label>
+							{{coupon_form.coupon_code}}
+						</div>
+                        <div class="form-group">
+							<label>Discount(%)</label>
+							{{coupon_form.discount}}
+						</div>
+                        <div class="form-group">
+							<label>Valid From</label>
+							{{coupon_form.valid_from}}
+						</div>
+                        <div class="form-group">
+							<label>Valid To</label>
+							{{coupon_form.valid_to}}
+						</div>
+                        <div class="text-center mt-3">
+                            <button class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        
+                    </div>
+                </div>
+                <div>
+                    
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+
+<script>
+	$(document).ready(function () {
+
+
+		$("#submit-form").validate({
+			rules: {
+				coupon_name: {
+					required: true,
+				},
+				coupon_code: {
+					required: true,
+				},
+				discount: {
+					required: true,
+					digits: true,
+				},
+				valid_from: {
+					required: true,
+				},
+				valid_to: {
+					required: true,
+				},
+			},
+		})
+	})
+</script>
+
+
+
+{% endblock %}
