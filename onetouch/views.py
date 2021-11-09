@@ -37,8 +37,6 @@ def home(request):
     else:
         in_wishlist = None
 
-    print(in_wishlist)
-
     ads = Ads.objects.all()
 
     context = {
