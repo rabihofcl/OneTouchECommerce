@@ -26,16 +26,25 @@ from twilio.base.exceptions import TwilioRestException
 
 from django.contrib.auth.decorators import login_required
 
+from wishlist.models import Wishlist
+
 
 def home(request):
     products = Product.objects.all().filter(
         is_available=True).order_by('-id')[:12]
+    if request.user.is_authenticated:
+        in_wishlist = Wishlist.objects.filter(user=request.user)
+    else:
+        in_wishlist = None
+
+    print(in_wishlist)
 
     ads = Ads.objects.all()
 
     context = {
         'products': products,
         'ads': ads,
+        'in_wishlist': in_wishlist,
     }
     return render(request, 'home.html', context)
 

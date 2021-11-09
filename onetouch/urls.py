@@ -52,6 +52,7 @@ urlpatterns = [
     path('cancel_order/', views.cancel_order, name='cancel_order'),
     path('return_item/', views.return_item, name='return_item'),
     path('cancel_return/', views.cancel_return, name='cancel_return'),
+    path('wishlist/', include('wishlist.urls')),
     
 
 

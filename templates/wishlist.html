@@ -82,69 +82,69 @@
 
 
 
-<!-- ========================= SECTION MAIN ========================= -->
-
-
-<section class="section-intro padding-y-sm">
-	<div class="container">
-		{% include 'includes/alert.html' %}
-		{% for ads in ads %}
-		<div class="row mb-2">
-			<div class="col-md-12 text-center">
-				<img src="{{ ads.banner.url }}" alt="" width="1180" height="295" class="rounded">
-			</div>
-		</div>
-		{% endfor %}
-
-	</div> <!-- container //  -->
-</section>
-<!-- ========================= SECTION MAIN END// ========================= -->
-
-
 
 <!-- ========================= SECTION  ========================= -->
+
+{% if not wishlist %}
+<h2 class="text-center" style="color: grey;">Your Wishlist is Empty</h2>
+<br>
+<div class="text-center">
+	<img src="{% static './images/empty-wishlist.png' %}" alt="zx c">
+</div>
+<br>
+<div class="text-center mb-3">
+	<a href="{% url 'store' %}" class="btn btn-primary" style="padding: 10px 80px;">Start Wishlisting</a>
+</div>
+
+
+{% else %}
+
+
 <section class="section-name padding-y-sm">
 	<div class="container">
 
 		<header class="section-heading">
-			<a href="{% url 'store' %}" class="btn btn-outline-primary float-right">See all</a>
-			<h3 class="section-title">New Arrivals</h3>
+			<h3 class="section-title">Your wishlist</h3>
 		</header><!-- sect-heading -->
 
 		<div class="row">
 
-			{% for product in products %}
+			{% for wish in wishlist %}
 			<div class="col-md-3">
 				<div class="card card-product-grid pt-3">
-					<div class="mr-3" style="display: none; justify-content: end;" id="remove_wishlist{{product.id}}">
-						<a onclick="remove_wishlist('{{product.id}}')" ><i class="fas fa-heart fa-lg" style="color: red;"></i></a>
+					<div class="mr-3" style="display: flex; justify-content: end;"
+						id="remove_wishlist{{wish.product.id}}">
+						<a onclick="remove_wishlist('{{wish.product.id}}')"><i class="fas fa-heart fa-lg"
+								style="color: red;"></i></a>
 					</div>
-					<div class="mr-3" style="display: flex; justify-content: end;" id="add_wishlist{{product.id}}">
-						<a onclick="add_wishlist('{{product.id}}')" ><i class="far fa-heart fa-lg"></i></a>
+					<div class="mr-3" style="display: none; justify-content: end;" id="add_wishlist{{wish.product.id}}">
+						<a onclick="add_wishlist('{{wish.product.id}}')"><i class="far fa-heart fa-lg"></i></a>
 					</div>
-					<a href="{{ product.get_url }}" class="img-wrap"> <img src="{{ product.image1.url }}"> </a>
+					<a href="{{ wish.product.get_url }}" class="img-wrap"> <img src="{{ wish.product.image1.url }}">
+					</a>
 					<figcaption class="info-wrap ">
-						<a href="{{ product.get_url }}" class="title">{{ product.product_name }}</a>
+						<a href="{{ wish.product.get_url }}" class="title">{{ wish.product.product_name }}</a>
 						<div class="d-flex justify-content-start">
-							{% if product.offer > 0 %}
-							<span class="price">₹{{product.price}}</span>&#160;&#160;
-							<del class="price-old mb-0">₹{{product.mrp}}</del>&#160;
-							<p style="color: green;">{{product.offer}}% off</p>
+							{% if wish.product.offer > 0 %}
+							<span class="price">₹{{wish.product.price}}</span>&#160;&#160;
+							<del class="price-old mb-0">₹{{wish.product.mrp}}</del>&#160;
+							<p style="color: green;">{{wish.product.offer}}% off</p>
 							{% else %}
-							<span class="price">₹{{product.price}}</span>
+							<span class="price">₹{{wish.product.price}}</span>
 							{% endif %}
 						</div>
 					</figcaption>
 					<div class="row mb-3">
-						{% if product.stock <= 0 %} <div class="col-md-12 text-center">
+						{% if wish.product.stock <= 0 %} <div class="col-md-12 text-center">
 							<a class="btn btn-secondary text-white">Out of stock</a>
 					</div>
 					{% else %}
 					<div class="col-md-6 text-center">
-						<a onclick="add_cart('{{product.id}}')" class="btn btn-outline-primary text-primary">Add to Cart</a>
+						<a onclick="add_cart('{{wish.product.id}}')" class="btn btn-outline-primary text-primary">Add to
+							Cart</a>
 					</div>
 					<div class="col-md-6 text-center">
-						<a href="{% url 'buy_now' product.id %}" class="btn"
+						<a href="{% url 'buy_now' wish.product.id %}" class="btn"
 							style="background: rgb(250, 111, 12); color: white;">Buy Now</a>
 					</div>
 					{% endif %}
@@ -155,8 +155,9 @@
 	</div> <!-- row.// -->
 
 	</div><!-- container // -->
-	<div id="snackbar" >Item added to cart</div>
+	<div id="snackbar">Item added to cart</div>
 </section>
+{% endif %}
 <!-- ========================= SECTION  END// ========================= -->
 
 
@@ -193,7 +194,7 @@
 
 
 
-	function add_wishlist(id){
+	function add_wishlist(id) {
 		$.ajax({
 			url: "{% url 'add_wishlist' %}",
 			method: 'POST',
@@ -203,13 +204,13 @@
 				csrfmiddlewaretoken: "{{csrf_token}}"
 			},
 			success: (response) => {
-				document.getElementById('add_wishlist'+response.id).style.display = 'none'
-				document.getElementById('remove_wishlist'+response.id).style.display = 'flex'
+				document.getElementById('add_wishlist' + response.id).style.display = 'none'
+				document.getElementById('remove_wishlist' + response.id).style.display = 'flex'
 			}
 		})
 	}
 
-	function remove_wishlist(id){
+	function remove_wishlist(id) {
 		$.ajax({
 			url: "{% url 'remove_wishlist' %}",
 			method: 'POST',
@@ -219,8 +220,8 @@
 				csrfmiddlewaretoken: "{{csrf_token}}"
 			},
 			success: (response) => {
-				document.getElementById('add_wishlist'+response.id).style.display = 'flex'
-				document.getElementById('remove_wishlist'+response.id).style.display = 'none'
+				document.getElementById('add_wishlist' + response.id).style.display = 'flex'
+				document.getElementById('remove_wishlist' + response.id).style.display = 'none'
 			}
 		})
 	}

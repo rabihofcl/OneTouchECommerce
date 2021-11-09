@@ -148,6 +148,12 @@
 					{% for product in products %}
 					<div class="col-md-4">
 						<figure class="card card-product-grid pt-3">
+							<div class="mr-3" style="display: none; justify-content: end;" id="remove_wishlist{{product.id}}">
+								<a onclick="remove_wishlist('{{product.id}}')" ><i class="fas fa-heart fa-lg" style="color: red;"></i></a>
+							</div>
+							<div class="mr-3" style="display: flex; justify-content: end;" id="add_wishlist{{product.id}}">
+								<a onclick="add_wishlist('{{product.id}}')" ><i class="far fa-heart fa-lg"></i></a>
+							</div>
 							<div class="img-wrap">
 
 								<a href="{{ product.get_url }}"><img src="{{ product.image1.url }}"></a>
@@ -250,6 +256,43 @@
 			}
 		})
 	}
+
+
+
+	function add_wishlist(id){
+		$.ajax({
+			url: "{% url 'add_wishlist' %}",
+			method: 'POST',
+			dataType: 'json',
+			data: {
+				id: id,
+				csrfmiddlewaretoken: "{{csrf_token}}"
+			},
+			success: (response) => {
+				document.getElementById('add_wishlist'+response.id).style.display = 'none'
+				document.getElementById('remove_wishlist'+response.id).style.display = 'flex'
+			}
+		})
+	}
+
+	function remove_wishlist(id){
+		$.ajax({
+			url: "{% url 'remove_wishlist' %}",
+			method: 'POST',
+			dataType: 'json',
+			data: {
+				id: id,
+				csrfmiddlewaretoken: "{{csrf_token}}"
+			},
+			success: (response) => {
+				document.getElementById('add_wishlist'+response.id).style.display = 'flex'
+				document.getElementById('remove_wishlist'+response.id).style.display = 'none'
+			}
+		})
+	}
+
+
+	
 </script>
 
 {% endblock %}

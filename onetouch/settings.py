@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'ads',
     'coupon',
     'admin_honeypot',
+    'wishlist'
 ]
 
 MIDDLEWARE = [
