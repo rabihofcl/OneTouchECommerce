@@ -274,7 +274,6 @@ def add_item(request):
 
 
 @never_cache
-@login_required(login_url = 'signin')
 def cart(request, total=0, quantity=0, cart_items=None):
     try:
         tax = 0

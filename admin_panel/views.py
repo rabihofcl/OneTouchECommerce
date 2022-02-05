@@ -68,7 +68,6 @@ def admin_home(request):
     sam = Order.objects.filter(is_ordered=True).order_by('created_at').values('order_total').annotate(created_count=Count('order_total'))
 
     aaa = Order.objects.filter(is_ordered=True).order_by('-id').values('created_at__day').annotate(c=Sum('order_total'))
-    print(aaa)
 
     # orders chart data
     labels1 = []
